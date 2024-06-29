@@ -7,55 +7,54 @@
 
 import SwiftUI
 import SwiftData
+import Vision
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @State private var selectedTab: Tabs = .history
+    @State private var title: String = ""
+    @State private var showSheet: Bool = false
+    @State private var showScanner: Bool = false
+    
+    @State private var texts: [Scan] = []
+    
+    @State private var items: [Item] = []
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        NavigationStack {
+            switch selectedTab {
+            case .history:
+                HistoryView()
+            case .friend:
+                FriendView()
+            case .result:
+                ScanResultView(items: $items)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
         }
-    }
+        .navigationTitle("Scan Result")
+        .sheet(isPresented: $showScanner, content: {
+            makeScannerView()
+        })
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
+        BagiraTab(selectedTab: $selectedTab, showScanner: $showScanner)
     }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+    
+    private func makeScannerView() -> ScannerView {
+        ScannerView(completionHandler: { it in
+            if it == nil {
+                showScanner = false
+                return
             }
-        }
+            
+            if it?.count ?? 0 > 0 {
+                items = it ?? []
+            }
+            
+            selectedTab = .result
+            showScanner = false
+        })
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
