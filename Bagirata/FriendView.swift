@@ -10,17 +10,33 @@ import SwiftData
 
 struct FriendView: View {
     @Environment(\.modelContext) private var context
-    @Query(sort: \Friend.createdAt) private var friends: [Friend]
+    @Query private var friends: [Friend]
     
-    @State private var selection: String = ""
-    @State private var search: String = ""
+    var search: String
+    
+    init(search: String) {
+        self.search = search
+        
+        _friends = Query(
+            filter: #Predicate<Friend> { book in
+                book.name.localizedStandardContains(search) || search.isEmpty
+            },
+            sort: \Friend.createdAt,
+            order: .reverse
+        )
+    }
+    
     @State private var showSheet: Bool = false
     @State private var showUpdateSheet: Bool = false
+    @State private var selected: Friend?
     
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(friends) { friend in
+        List {
+            ForEach(friends) { friend in
+                Button(action: {
+                    selected = friend
+                    showUpdateSheet.toggle()
+                }, label: {
                     HStack {
                         BagirataAvatar(name: friend.name, width: 32, height: 32, fontSize: 16, background: Color(hex: friend.accentColor))
                             .padding(.vertical, 2.3)
@@ -30,43 +46,43 @@ struct FriendView: View {
                             .font(.system(size: 12))
                             .foregroundStyle(Color.gray)
                     }
-                    .onTapGesture {
-                        selection = friend.id.uuidString
-                        showUpdateSheet.toggle()
-                    }
-                }
-                .onDelete(perform: { indexSet in
-                    indexSet.forEach { index in
-                        let friend = friends[index]
-                        context.delete(friend)
-                    }
                 })
             }
-            .listStyle(.plain)
-            .searchable(text: $search,placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Friends")
-            .toolbar {
-                ToolbarItem {
-                    Button(action: {
-                        showSheet.toggle()
-                    }, label: {
-                        Label("Add Item", systemImage: "plus")
-                    })
+            .onDelete(perform: { indexSet in
+                indexSet.forEach { index in
+                    let friend = friends[index]
+                    context.delete(friend)
                 }
+            })
+//            .sheet(isPresented: $showUpdateSheet, content: {
+//                if let friend = selected {
+//                    EditFriend(friend: friend)
+//                        .presentationDetents([.medium])
+//                }
+//            })
+        }
+        .listStyle(.plain)
+        .toolbar {
+            ToolbarItem {
+                Button(action: {
+                    showSheet.toggle()
+                }, label: {
+                    Label("Add Item", systemImage: "plus")
+                })
             }
-            .navigationTitle("Friends")
-            .sheet(isPresented: $showSheet, content: {
-                AddFriend()
-                    .presentationDetents([.medium])
-            })
-            .sheet(isPresented: $showUpdateSheet, content: {
-                let friend = friends.first(where: {$0.id.uuidString == selection})
-                UpdateFriend(friend: friend!)
-                    .padding()
-            })
+        }
+        .navigationTitle("Friends")
+        .sheet(isPresented: $showSheet, content: {
+            AddFriend()
+                .presentationDetents([.medium])
+        })
+        .sheet(item: $selected) { friend in
+            EditFriend(friend: friend)
+                .presentationDetents([.medium])
         }
     }
 }
 
 #Preview {
-    FriendView()
+    FriendView(search: "")
 }

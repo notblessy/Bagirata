@@ -11,9 +11,8 @@ import Vision
 
 struct ContentView: View {
     @State private var selectedTab: Tabs = .history
-    @State private var title: String = ""
-    @State private var showSheet: Bool = false
     @State private var showScanner: Bool = false
+    @State private var search: String = ""
     
     @State private var texts: [Scan] = []
     
@@ -25,7 +24,10 @@ struct ContentView: View {
             case .history:
                 HistoryView()
             case .friend:
-                FriendView()
+                NavigationStack {
+                    FriendView(search: search)
+                        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Friends")
+                }
             case .result:
                 ScanResultView(items: $items)
             }

@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-struct UpdateFriend: View {
+struct EditFriend: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) var dismiss
     
-    var friend: Friend
+    let friend: Friend
     @State var name: String = ""
     
     var body: some View {
         NavigationView {
             VStack {
-                Text("Add Friend")
+                Text("Edit Friend")
                     .font(.title2)
                     .fontWeight(.medium)
                 
@@ -37,7 +37,7 @@ struct UpdateFriend: View {
                         friend.name = name
                         dismiss()
                     }, label: {
-                        Text("Save Changes")
+                        Text("Save")
                             .frame(maxWidth: .infinity, alignment: .center)
                     })
                     .disabled(name.isEmpty)
