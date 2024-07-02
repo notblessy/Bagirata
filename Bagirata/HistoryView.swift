@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HistoryView: View {
-    private var splits: [ItemSplit] = ItemSplit.createExamples()
+    private var splits: [ItemSplit] = []
     
     @State private var search: String = ""
     @State private var showSheet: Bool = false

@@ -18,7 +18,7 @@ final class TextRecognizer {
     
     private let queue = DispatchQueue(label: "scan-codes", qos: .default, attributes: [],autoreleaseFrequency: .workItem)
     
-    func recognizeText(withCompletionHandler completionHandler:@escaping ([Item]) -> Void) {
+    func recognizeText(withCompletionHandler completionHandler:@escaping (ItemSplit) -> Void) {
         queue.async {
             let images = (0..<self.cameraScan.pageCount).compactMap({
                 self.cameraScan.imageOfPage(at: $0).cgImage
@@ -40,60 +40,62 @@ final class TextRecognizer {
             
             
             DispatchQueue.main.sync {
-                var items: [Item] = []
-                
                 for text in texts {
-                    var index = 0
-                    while index < text.count {
-                        if index + 1 < text.count {
-                            let item = text[index]
-                            let priceString = text[index + 1]
-    
-                            if isNumber(priceString) && isNumber(String(item.prefix(1)))  {
-                                let qty = Int(item.prefix(1))
-                                let price = Int(priceString)
-                                let name = String(item.dropFirst(2))
-                                
-                                if qty ?? 0 > 0 && price ?? 0 > 0 {
-                                    items.append(Item(id: UUID(), qty: qty ?? 0, price: price ?? 0, name: name))
-                                }
-                            }
-                        }
-    
-                        index += 1
-                    }
-                }
-                
-                for text in texts {
-                    var index = 0
-                    
                     print(text)
-                    
-                    while index < text.count {
-                        if index + 1 < text.count {
-                            let name = text[index]
-                            let nextString = text[index + 1]
-                            let components = nextString.split(separator: "x")
-                            
-                            if components.count == 2 {
-                                let qtyString = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
-                                let priceString = components[1].trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: ",", with: "")
-                                
-                                if let qty = Int(qtyString), let price = Int(priceString) {
-                                    if qty > 0 && price > 0 {
-                                        let item = Item(qty: qty, price: price, name: name)
-                                        items.append(item)
-                                    }
-                                }
-                            }
+                    recognize(model: text.joined(separator: " ")) { result in
+                        switch result {
+                        case .success(let response):
+                            completionHandler(response.data)
+                        case .failure(let error):
+                            print("KACO NI ERROR: ", error)
                         }
-                        
-                        index += 1
                     }
                 }
-                
-                completionHandler(items)
             }
         }
     }
 }
+
+func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>) -> Void) {
+    let endpoint = "http://192.168.18.50:8080/v1/recognize"
+    guard let url = URL(string: endpoint) else {
+        completion(.failure(HTTPError.invalidURL))
+        return
+    }
+    
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let body: [String: AnyHashable] = [
+        "model": model
+    ]
+    
+    request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
+    
+    let task = URLSession.shared.dataTask(with: request) { data, _, error in
+        guard let data = data, error == nil else {
+            completion(.failure(error ??  HTTPError.invalidData))
+            return
+        }
+        
+        print("MODELS",model)
+        
+        do {
+            let response = try JSONDecoder().decode(ItemResponse.self, from: data)
+            completion(.success(response))
+        }
+        catch {
+            completion(.failure(HTTPError.invalidResponse))
+        }
+    }
+    
+    task.resume()
+}
+
+enum HTTPError: Error {
+    case invalidURL
+    case invalidResponse
+    case invalidData
+}
+

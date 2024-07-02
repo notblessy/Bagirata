@@ -8,55 +8,91 @@
 import Foundation
 import SwiftUI
 
-struct AssignedFriend: Identifiable {
+struct AssignedFriend: Identifiable, Codable {
     var id = UUID()
     var friendId = UUID()
     let name: String
-    let accentColor: Color
+    let accentColor: String
     let qty: Int
     let subTotal: Int
     let createdAt: Date
     
-    init(friendId: UUID = UUID(), name: String, accentColor: Color, qty: Int, subTotal: Int, createdAt: Date) {
-        self.friendId = friendId
-        self.name = name
-        self.accentColor = accentColor
-        self.qty = qty
-        self.subTotal = subTotal
-        self.createdAt = createdAt
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.friendId = try container.decode(UUID.self, forKey: .friendId)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.accentColor = try container.decode(String.self, forKey: .accentColor)
+        self.qty = try container.decode(Int.self, forKey: .qty)
+        self.subTotal = try container.decode(Int.self, forKey: .subTotal)
+        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
     }
 }
 
-struct ItemSplit: Identifiable {
-    let id: UUID
+struct AssignedItem: Identifiable, Codable {
+    var id = UUID()
+    let name: String
     let qty: Int
     let price: Int
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        self.name = try container.decode(String.self, forKey: .name)
+        self.qty = try container.decode(Int.self, forKey: .qty)
+        self.price = try container.decode(Int.self, forKey: .price)
+    }
+}
+
+struct OtherItem: Identifiable, Codable {
+    var id = UUID()
     let name: String
-    let friends: [AssignedFriend]
+    let type: String
+    let amount: Int
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        self.name = try container.decode(String.self, forKey: .name)
+        self.type = try container.decode(String.self, forKey: .type)
+        self.amount = try container.decode(Int.self, forKey: .amount)
+    }
+}
+
+struct ItemSplit: Identifiable, Codable {
+    let id: UUID
+    var name: String
+    var friends: [AssignedFriend]
+    var items: [AssignedItem]
+    var otherPayments: [OtherItem]
     let createdAt: Date
     
-    init(id: UUID, qty: Int, price: Int, name: String, friends: [AssignedFriend], createdAt: Date) {
-        self.id = id
-        self.qty = qty
-        self.price = price
-        self.name = name
-        self.friends = friends
-        self.createdAt = createdAt
+    init() {
+        self.id = UUID()
+        self.name = ""
+        self.friends = []
+        self.items = []
+        self.otherPayments = []
+        self.createdAt = Date()
     }
     
-    static func createExamples() -> [ItemSplit] {
-        let friend1 = AssignedFriend(name: "Alice", accentColor: colorGen(), qty: 2, subTotal: 20, createdAt: Date())
-        let friend2 = AssignedFriend(name: "Bob", accentColor: colorGen(), qty: 1, subTotal: 10, createdAt: Date())
-        let friend3 = AssignedFriend(name: "Charlie", accentColor: colorGen(), qty: 3, subTotal: 30, createdAt: Date())
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.friends = try container.decodeIfPresent([AssignedFriend].self, forKey: .friends) ?? []
+        self.items = try container.decodeIfPresent([AssignedItem].self, forKey: .items) ?? []
+        self.otherPayments = try container.decodeIfPresent([OtherItem].self, forKey: .otherPayments) ?? []
         
-        let itemSplit1 = ItemSplit(id: UUID(), qty: 2, price: 15, name: "Indomaret", friends: [friend1, friend2], createdAt: Date())
-        let itemSplit2 = ItemSplit(id: UUID(), qty: 1, price: 20, name: "WFC Bareng", friends: [friend3], createdAt: Date())
-        let itemSplit3 = ItemSplit(id: UUID(), qty: 3, price: 10, name: "WFC jco", friends: [friend1, friend3], createdAt: Date())
-        let itemSplit4 = ItemSplit(id: UUID(), qty: 4, price: 25, name: "Nongki", friends: [friend2], createdAt: Date())
-        let itemSplit5 = ItemSplit(id: UUID(), qty: 2, price: 30, name: "Nongki jco", friends: [friend1, friend2, friend3], createdAt: Date())
-        let itemSplit6 = ItemSplit(id: UUID(), qty: 5, price: 5, name: "Fun times", friends: [], createdAt: Date())
+        let dateString = try container.decode(String.self, forKey: .createdAt)
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         
-        return [itemSplit1, itemSplit2, itemSplit3, itemSplit4, itemSplit5, itemSplit6]
+        guard let date = dateFormatter.date(from: dateString) else {
+            throw DecodingError.dataCorruptedError(forKey: .createdAt, in: container, debugDescription: "Date string does not match format expected by formatter.")
+        }
+        
+        self.createdAt = date
     }
     
     func friendNames() -> [String] {
@@ -68,5 +104,18 @@ struct ItemSplit: Identifiable {
         formatter.dateFormat = "d MMMM yyyy"
         
         return formatter.string(from: createdAt)
+    }
+}
+
+struct ItemResponse: Codable {
+    let message: String
+    let success: Bool
+    let data: ItemSplit
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.message = try container.decode(String.self, forKey: .message)
+        self.success = try container.decode(Bool.self, forKey: .success)
+        self.data = try container.decode(ItemSplit.self, forKey: .data)
     }
 }

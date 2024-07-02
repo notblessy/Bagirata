@@ -16,7 +16,7 @@ struct ContentView: View {
     
     @State private var texts: [Scan] = []
     
-    @State private var items: [Item] = []
+    @State private var split: ItemSplit = ItemSplit()
     
     var body: some View {
         NavigationStack {
@@ -29,7 +29,7 @@ struct ContentView: View {
                         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Friends")
                 }
             case .result:
-                ScanResultView(items: $items)
+                ScanResultView(splitItem: $split)
             }
         }
         .navigationTitle("Scan Result")
@@ -47,9 +47,7 @@ struct ContentView: View {
                 return
             }
             
-            if it?.count ?? 0 > 0 {
-                items = it ?? []
-            }
+            split = it ?? ItemSplit()
             
             selectedTab = .result
             showScanner = false

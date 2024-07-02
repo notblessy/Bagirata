@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct ScanResultView: View {
-    @Binding var items: [Item]
+    @Binding var splitItem: ItemSplit
     @State private var showSheet: Bool = false
     
     var body: some View {
         List {
-            ForEach(items) { item in
+            ForEach(splitItem.items) { item in
                 Button(action: {
                     showSheet.toggle()
                 }, label: {
@@ -46,10 +46,10 @@ struct ScanResultView: View {
     }
     
     private func delete(at offsets: IndexSet) {
-        items.remove(atOffsets: offsets)
+        splitItem.items.remove(atOffsets: offsets)
     }
 }
 
 #Preview {
-    ScanResultView(items: .constant([]))
+    ScanResultView(splitItem: .constant(ItemSplit()))
 }

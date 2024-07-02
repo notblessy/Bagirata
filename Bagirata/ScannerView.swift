@@ -15,9 +15,9 @@ struct ScannerView: UIViewControllerRepresentable {
     
     
     final class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
-        private let completionHandler: ([Item]?) -> Void
+        private let completionHandler: (ItemSplit?) -> Void
         
-        init(completionHandler: @escaping ([Item]?) -> Void) {
+        init(completionHandler: @escaping (ItemSplit?) -> Void) {
             self.completionHandler = completionHandler
         }
         
@@ -46,9 +46,9 @@ struct ScannerView: UIViewControllerRepresentable {
     
     typealias UIViewControllerType = VNDocumentCameraViewController
     
-    private let completionHandler: ([Item]?) -> Void
+    private let completionHandler: (ItemSplit?) -> Void
     
-    init(completionHandler: @escaping ([Item]?) -> Void) {
+    init(completionHandler: @escaping (ItemSplit?) -> Void) {
         self.completionHandler = completionHandler
     }
 }
