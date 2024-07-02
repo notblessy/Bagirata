@@ -18,7 +18,7 @@ final class TextRecognizer {
     
     private let queue = DispatchQueue(label: "scan-codes", qos: .default, attributes: [],autoreleaseFrequency: .workItem)
     
-    func recognizeText(withCompletionHandler completionHandler:@escaping (ItemSplit) -> Void) {
+    func recognizeText(withCompletionHandler completionHandler:@escaping (String) -> Void) {
         queue.async {
             let images = (0..<self.cameraScan.pageCount).compactMap({
                 self.cameraScan.imageOfPage(at: $0).cgImage
@@ -42,60 +42,10 @@ final class TextRecognizer {
             DispatchQueue.main.sync {
                 for text in texts {
                     print(text)
-                    recognize(model: text.joined(separator: " ")) { result in
-                        switch result {
-                        case .success(let response):
-                            completionHandler(response.data)
-                        case .failure(let error):
-                            print("KACO NI ERROR: ", error)
-                        }
-                    }
+                    completionHandler(text.joined(separator: " "))
                 }
             }
         }
     }
-}
-
-func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>) -> Void) {
-    let endpoint = "http://192.168.18.50:8080/v1/recognize"
-    guard let url = URL(string: endpoint) else {
-        completion(.failure(HTTPError.invalidURL))
-        return
-    }
-    
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    
-    let body: [String: AnyHashable] = [
-        "model": model
-    ]
-    
-    request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
-    
-    let task = URLSession.shared.dataTask(with: request) { data, _, error in
-        guard let data = data, error == nil else {
-            completion(.failure(error ??  HTTPError.invalidData))
-            return
-        }
-        
-        print("MODELS",model)
-        
-        do {
-            let response = try JSONDecoder().decode(ItemResponse.self, from: data)
-            completion(.success(response))
-        }
-        catch {
-            completion(.failure(HTTPError.invalidResponse))
-        }
-    }
-    
-    task.resume()
-}
-
-enum HTTPError: Error {
-    case invalidURL
-    case invalidResponse
-    case invalidData
 }
 

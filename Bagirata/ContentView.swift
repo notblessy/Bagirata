@@ -10,6 +10,10 @@ import SwiftData
 import Vision
 
 struct ContentView: View {
+    @State var isLoading: Bool = false
+    @State var showAlertRecognizer: Bool = false
+    @State var errMessage: String = ""
+    
     @State private var selectedTab: Tabs = .history
     @State private var showScanner: Bool = false
     @State private var search: String = ""
@@ -23,13 +27,21 @@ struct ContentView: View {
             switch selectedTab {
             case .history:
                 HistoryView()
+                    .alert(isPresented: $showAlertRecognizer) {
+                        Alert(title: Text("Scan Error"), message: Text(errMessage), dismissButton: .default(Text("OK")))
+                    }
             case .friend:
                 NavigationStack {
                     FriendView(search: search)
                         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Friends")
                 }
             case .result:
-                ScanResultView(splitItem: $split)
+                if isLoading {
+                    ProgressView("Scanning Text...")
+                        .progressViewStyle(.circular)
+                } else {
+                    ScanResultView(splitItem: $split)
+                }
             }
         }
         .navigationTitle("Scan Result")
@@ -41,15 +53,31 @@ struct ContentView: View {
     }
     
     private func makeScannerView() -> ScannerView {
-        ScannerView(completionHandler: { it in
-            if it == nil {
+        ScannerView(completionHandler: { result in
+            if result == nil {
                 showScanner = false
                 return
             }
             
-            split = it ?? ItemSplit()
+            isLoading = true
             
-            selectedTab = .result
+            recognize(model: result ?? "") { res in
+                switch res {
+                case .success(let response):
+                    split = response.data
+                    isLoading = false
+                    
+                    selectedTab = .result
+                case .failure(let error):
+                    errMessage = error.localizedDescription
+                    print("ERROR WOY: ",errMessage)
+                    isLoading = false
+                    showAlertRecognizer = true
+                    
+                    selectedTab = .history
+                }
+            }
+            
             showScanner = false
         })
     }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F9121EB82C346B4200AD0587 /* TextRecognizer.bak in Sources */ = {isa = PBXBuildFile; fileRef = F9121EB72C346B4200AD0587 /* TextRecognizer.bak */; };
+		F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */; };
 		F91E77512C2C794100AF877B /* BagirataApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77502C2C794100AF877B /* BagirataApp.swift */; };
 		F91E77532C2C794100AF877B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77522C2C794100AF877B /* ContentView.swift */; };
 		F91E77572C2C794300AF877B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F91E77562C2C794300AF877B /* Assets.xcassets */; };
@@ -35,6 +37,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F9121EB72C346B4200AD0587 /* TextRecognizer.bak */ = {isa = PBXFileReference; lastKnownFileType = text; path = TextRecognizer.bak; sourceTree = "<group>"; };
+		F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizeHTTP.swift; sourceTree = "<group>"; };
 		F91E774D2C2C794100AF877B /* Bagirata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bagirata.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F91E77502C2C794100AF877B /* BagirataApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagirataApp.swift; sourceTree = "<group>"; };
 		F91E77522C2C794100AF877B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -75,6 +79,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F9121EB92C346CF700AD0587 /* HTTP */ = {
+			isa = PBXGroup;
+			children = (
+				F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */,
+			);
+			path = HTTP;
+			sourceTree = "<group>";
+		};
 		F91E77442C2C794100AF877B = {
 			isa = PBXGroup;
 			children = (
@@ -98,11 +110,13 @@
 				F91E77652C2C896100AF877B /* Extension */,
 				F91E77602C2C7AE400AF877B /* Model */,
 				F96A0A992C2F143500A0EFA9 /* Sheet */,
+				F9121EB92C346CF700AD0587 /* HTTP */,
 				F91E77502C2C794100AF877B /* BagirataApp.swift */,
 				F91E77522C2C794100AF877B /* ContentView.swift */,
 				F9705BF72C2E5C650057D419 /* ScanResultView.swift */,
 				F9705BF12C2DBDBC0057D419 /* ScannerView.swift */,
 				F9705BF32C2DC0150057D419 /* TextRecognizer.swift */,
+				F9121EB72C346B4200AD0587 /* TextRecognizer.bak */,
 				F91E776A2C2C907000AF877B /* HistoryView.swift */,
 				F91E77682C2C8FA500AF877B /* FriendView.swift */,
 				F91E77562C2C794300AF877B /* Assets.xcassets */,
@@ -240,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F91E77532C2C794100AF877B /* ContentView.swift in Sources */,
+				F9121EB82C346B4200AD0587 /* TextRecognizer.bak in Sources */,
 				F9705BF22C2DBDBC0057D419 /* ScannerView.swift in Sources */,
 				F96A0A9B2C2F145800A0EFA9 /* AddFriend.swift in Sources */,
 				F9BCDA902C2D159400EE1E40 /* BagirataAvatar.swift in Sources */,
@@ -258,6 +273,7 @@
 				F9705BF02C2DBCBF0057D419 /* Scan.swift in Sources */,
 				F96A0A982C2EAEAD00A0EFA9 /* BagirataAvatarGroup.swift in Sources */,
 				F9705BF42C2DC0150057D419 /* TextRecognizer.swift in Sources */,
+				F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */,
 				F9BCDA972C2D49D800EE1E40 /* BagiratabButton.swift in Sources */,
 				F91E77622C2C7AF700AF877B /* Friend.swift in Sources */,
 				F9BCDA922C2D18D000EE1E40 /* ColorGen.swift in Sources */,
