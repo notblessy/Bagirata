@@ -41,7 +41,6 @@ final class TextRecognizer {
             
             DispatchQueue.main.sync {
                 for text in texts {
-                    print(text)
                     completionHandler(text.joined(separator: " "))
                 }
             }
