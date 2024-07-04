@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
 
 struct AssignedFriend: Identifiable, Codable {
     var id = UUID()
@@ -34,6 +35,21 @@ struct AssignedItem: Identifiable, Codable {
     let name: String
     let qty: Int
     let price: Int
+    var createdAt = Date()
+    
+    init(name: String, qty: Int, price: Int) {
+        self.name = name
+        self.qty = qty
+        self.price = price
+    }
+    
+    init(id: UUID, name: String, qty: Int, price: Int, createdAt: Date) {
+        self.id = id
+        self.name = name
+        self.qty = qty
+        self.price = price
+        self.createdAt = createdAt
+    }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -41,6 +57,18 @@ struct AssignedItem: Identifiable, Codable {
         self.name = try container.decode(String.self, forKey: .name)
         self.qty = try container.decode(Int.self, forKey: .qty)
         self.price = try container.decode(Int.self, forKey: .price)
+    }
+    
+    static func examples() -> [AssignedItem] {
+        return [
+            AssignedItem(id: UUID(uuidString: "B2391D93-80B3-444E-8B4F-81B09D8BF6AD") ?? UUID(),name: "Onigiri Tuna Mayo", qty: 2, price: 15000, createdAt: Date()),
+            AssignedItem(name: "UC1000 Lemon", qty: 2, price: 10000),
+            AssignedItem(name: "Double Tape Strong", qty: 3, price: 45000)
+        ]
+    }
+    
+    static func example() -> AssignedItem {
+        return AssignedItem(id: UUID(uuidString: "B2391D93-80B3-444E-8B4F-81B09D8BF6AD") ?? UUID(), name: "Onigiri Tuna Mayo", qty: 2, price: 15000,  createdAt: Date())
     }
 }
 
@@ -50,6 +78,12 @@ struct OtherItem: Identifiable, Codable {
     let type: String
     let amount: Int
     
+    init(name: String, type: String, amount: Int) {
+        self.name = name
+        self.type = type
+        self.amount = amount
+    }
+    
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
@@ -57,9 +91,16 @@ struct OtherItem: Identifiable, Codable {
         self.type = try container.decode(String.self, forKey: .type)
         self.amount = try container.decode(Int.self, forKey: .amount)
     }
+    
+    static func examples() -> [OtherItem] {
+        return [
+            OtherItem(name: "Discount", type: "deduction", amount: 40000),
+            OtherItem(name: "Tax", type: "addition", amount: 13000),
+        ]
+    }
 }
 
-struct ItemSplit: Identifiable, Codable {
+struct SplitItem: Identifiable, Codable {
     let id: UUID
     var name: String
     var friends: [AssignedFriend]
@@ -74,6 +115,15 @@ struct ItemSplit: Identifiable, Codable {
         self.items = []
         self.otherPayments = []
         self.createdAt = Date()
+    }
+    
+    init(id: UUID = UUID(), name: String, friends: [AssignedFriend] = [], items: [AssignedItem] = [], otherPayments: [OtherItem] = [], createdAt: Date) {
+        self.id = id
+        self.name = name
+        self.friends = friends
+        self.items = items
+        self.otherPayments = otherPayments
+        self.createdAt = createdAt
     }
     
     init(from decoder: any Decoder) throws {
@@ -95,6 +145,16 @@ struct ItemSplit: Identifiable, Codable {
         self.createdAt = date
     }
     
+    mutating func updateItem(_ updatedItem: AssignedItem) {
+        if let index = items.firstIndex(where: { $0.id == updatedItem.id }) {
+            items[index] = updatedItem
+        }
+    }
+    
+    func toData() -> Split {
+        return Split(id: self.id, name: self.name, friends: self.friends, items: self.items, otherPayments: self.otherPayments, createdAt: self.createdAt)
+    }
+    
     func friendNames() -> [String] {
         return friends.map { $0.name }
     }
@@ -105,17 +165,54 @@ struct ItemSplit: Identifiable, Codable {
         
         return formatter.string(from: createdAt)
     }
+    
+    static func example() -> SplitItem {
+        let items = AssignedItem.examples()
+        let otherPayments = OtherItem.examples()
+        
+        return SplitItem(name: "Lawson Time", friends: [], items: items, otherPayments: otherPayments, createdAt: Date())
+    }
 }
 
 struct ItemResponse: Codable {
     let message: String
     let success: Bool
-    let data: ItemSplit
+    let data: SplitItem
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.message = try container.decode(String.self, forKey: .message)
         self.success = try container.decode(Bool.self, forKey: .success)
-        self.data = try container.decode(ItemSplit.self, forKey: .data)
+        self.data = try container.decode(SplitItem.self, forKey: .data)
+    }
+}
+
+@Model
+class Split {
+    @Attribute(.unique) var id: UUID
+    var name: String
+    var friends: [AssignedFriend]
+    var items: [AssignedItem]
+    var otherPayments: [OtherItem]
+    let createdAt: Date
+    
+    init(id: UUID, name: String, friends: [AssignedFriend], items: [AssignedItem], otherPayments: [OtherItem], createdAt: Date) {
+        self.id = id
+        self.name = name
+        self.friends = friends
+        self.items = items
+        self.otherPayments = otherPayments
+        self.createdAt = createdAt
+    }
+    
+    func toItemSplit() -> SplitItem {
+        return SplitItem(id: self.id, name: self.name, friends: self.friends, items: self.items, otherPayments: self.otherPayments, createdAt: self.createdAt)
+    }
+    
+    func formatCreatedAt() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM yyyy"
+        
+        return formatter.string(from: createdAt)
     }
 }

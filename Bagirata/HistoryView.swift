@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HistoryView: View {
-    private var splits: [ItemSplit] = []
+    private var splits: [SplitItem] = []
     
     @State private var search: String = ""
     @State private var showSheet: Bool = false
@@ -53,6 +53,13 @@ struct HistoryView: View {
                     .presentationDetents([.medium])
             })
             .listStyle(.plain)
+        }
+        .overlay {
+            if splits.isEmpty {
+                Text("No Data")
+                    .font(.title2)
+                    .foregroundStyle(.gray)
+            }
         }
     }
 }

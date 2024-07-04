@@ -16,6 +16,7 @@ enum Tabs: Int {
 struct BagiraTab: View {
     @Binding var selectedTab: Tabs
     @Binding var showScanner: Bool
+    @Binding var scannerResultActive: Bool
     
     var body: some View {
         HStack(alignment: .center) {
@@ -27,19 +28,21 @@ struct BagiraTab: View {
             .tint(selectedTab == .history ? Color.blue : Color.gray)
             
             Button(action: {
-                showScanner.toggle()
+                if scannerResultActive {
+                    selectedTab = .result
+                } else {
+                    showScanner.toggle()
+                }
             }, label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 100)
                         .fill(Color.blue)
                         .frame(width: 60, height: 60)
                     VStack {
-                        Image(systemName: "doc.text.viewfinder")
+                        Image(systemName: scannerResultActive ? "doc.on.clipboard" : "doc.text.viewfinder")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 32, height: 32)
-    //                    Text("Create")
-    //                        .font(.system(size: 12))
                     }
                     .frame(width: 50)
                 }
@@ -70,5 +73,5 @@ struct BagiraTab: View {
 }
 
 #Preview {
-    BagiraTab(selectedTab: .constant(.friend), showScanner: .constant(false))
+    BagiraTab(selectedTab: .constant(.friend), showScanner: .constant(false), scannerResultActive: .constant(true))
 }

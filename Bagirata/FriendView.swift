@@ -74,11 +74,18 @@ struct FriendView: View {
         .navigationTitle("Friends")
         .sheet(isPresented: $showSheet, content: {
             AddFriend()
-                .presentationDetents([.medium])
+                .presentationDetents([.height(250)])
         })
         .sheet(item: $selected) { friend in
             EditFriend(friend: friend)
-                .presentationDetents([.medium])
+                .presentationDetents([.height(250)])
+        }
+        .overlay {
+            if friends.isEmpty {
+                Text("No Data")
+                    .font(.title2)
+                    .foregroundStyle(.gray)
+            }
         }
     }
 }

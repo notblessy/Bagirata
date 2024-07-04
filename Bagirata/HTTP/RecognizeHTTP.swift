@@ -8,7 +8,7 @@
 import Foundation
 
 func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>) -> Void) {
-    let endpoint = "http://192.168.1.110:8080/v1/recognize"
+    let endpoint = "http://192.168.1.25:8080/v1/recognize"
     guard let url = URL(string: endpoint) else {
         completion(.failure(HTTPError.invalidURL))
         return

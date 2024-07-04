@@ -12,6 +12,7 @@ import Vision
 struct ContentView: View {
     @State var isLoading: Bool = false
     @State var showAlertRecognizer: Bool = false
+    @State var scannerResultActive: Bool = false
     @State var errMessage: String = ""
     
     @State private var selectedTab: Tabs = .history
@@ -20,7 +21,7 @@ struct ContentView: View {
     
     @State private var texts: [Scan] = []
     
-    @State private var split: ItemSplit = ItemSplit()
+    @State private var split: SplitItem = SplitItem()
     
     var body: some View {
         NavigationStack {
@@ -33,14 +34,14 @@ struct ContentView: View {
             case .friend:
                 NavigationStack {
                     FriendView(search: search)
-                        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Friends")
+                        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Friends")
                 }
             case .result:
                 if isLoading {
                     ProgressView("Scanning Text...")
-                        .progressViewStyle(.circular)
+                        .progressViewStyle(.automatic)
                 } else {
-                    ScanResultView(splitItem: $split)
+                    ScanResultView(splitItem: split)
                 }
             }
         }
@@ -49,7 +50,7 @@ struct ContentView: View {
             makeScannerView()
         })
 
-        BagiraTab(selectedTab: $selectedTab, showScanner: $showScanner)
+        BagiraTab(selectedTab: $selectedTab, showScanner: $showScanner, scannerResultActive: $scannerResultActive)
     }
     
     private func makeScannerView() -> ScannerView {
@@ -59,18 +60,18 @@ struct ContentView: View {
                 return
             }
             
+            selectedTab = .result
             isLoading = true
             
             recognize(model: result ?? "") { res in
                 switch res {
                 case .success(let response):
                     split = response.data
-                    isLoading = false
+                    scannerResultActive = true
                     
-                    selectedTab = .result
+                    isLoading = false
                 case .failure(let error):
                     errMessage = error.localizedDescription
-                    print("ERROR WOY: ",errMessage)
                     isLoading = false
                     showAlertRecognizer = true
                     
