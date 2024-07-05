@@ -13,6 +13,7 @@ struct BagirataAvatar: View {
     let height: CGFloat
     let fontSize: CGFloat
     let background: Color
+    let style: AvatarStyle
     
     var initials: String {
         let nameComponents = name.split(separator: " ")
@@ -27,9 +28,28 @@ struct BagirataAvatar: View {
     
     var body: some View {
         ZStack {
-            Circle()
-                .fill(background)
-                .frame(width: width, height: height)
+            switch style {
+            case .plain:
+                Circle()
+                    .fill(background)
+                    .frame(width: width, height: height)
+            case .active:
+                Circle()
+                    .fill(background)
+                    .frame(width: width, height: height)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.blue, lineWidth: 2)
+                    )
+            case .inactive:
+                Circle()
+                    .fill(background)
+                    .frame(width: width, height: height)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.gray, lineWidth: 2)
+                    )
+            }
             
             Text(initials)
                 .font(.system(size: fontSize))
@@ -38,6 +58,15 @@ struct BagirataAvatar: View {
     }
 }
 
+enum AvatarStyle: String, CaseIterable, Identifiable {
+    case plain, active, inactive
+    var id: Self { self }
+    
+    var value: String {
+        return self.rawValue.capitalized
+    }
+}
+
 #Preview {
-    BagirataAvatar(name: "FR", width: 32, height: 32, fontSize: 16, background: colorGen())
+    BagirataAvatar(name: "FR", width: 32, height: 32, fontSize: 16, background: colorGen(), style: .active)
 }

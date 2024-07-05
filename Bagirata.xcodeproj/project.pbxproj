@@ -28,13 +28,16 @@
 		F9705BF42C2DC0150057D419 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF32C2DC0150057D419 /* TextRecognizer.swift */; };
 		F9705BF62C2E59420057D419 /* Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF52C2E59420057D419 /* Split.swift */; };
 		F9705BF82C2E5C650057D419 /* ScanResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF72C2E5C650057D419 /* ScanResultView.swift */; };
-		F9BCDA8E2C2D0FD100EE1E40 /* InitialsUI in Frameworks */ = {isa = PBXBuildFile; productRef = F9BCDA8D2C2D0FD100EE1E40 /* InitialsUI */; };
 		F9BCDA902C2D159400EE1E40 /* BagirataAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA8F2C2D159400EE1E40 /* BagirataAvatar.swift */; };
 		F9BCDA922C2D18D000EE1E40 /* ColorGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA912C2D18D000EE1E40 /* ColorGen.swift */; };
 		F9BCDA942C2D428C00EE1E40 /* BagiraTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA932C2D428C00EE1E40 /* BagiraTab.swift */; };
 		F9BCDA972C2D49D800EE1E40 /* BagiratabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA962C2D49D800EE1E40 /* BagiratabButton.swift */; };
 		F9BCDA9B2C2D5EE200EE1E40 /* Recognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA9A2C2D5EE200EE1E40 /* Recognizer.swift */; };
 		F9BCDA9D2C2D6F5300EE1E40 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA9C2C2D6F5300EE1E40 /* Item.swift */; };
+		F9C15BD02C378E5B002AD186 /* AddOtherItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BCF2C378E5B002AD186 /* AddOtherItem.swift */; };
+		F9C15BD22C3794DF002AD186 /* EditOtherItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */; };
+		F9C15BD42C379ECA002AD186 /* AssignView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD32C379ECA002AD186 /* AssignView.swift */; };
+		F9C15BD62C38036D002AD186 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD52C38036D002AD186 /* String.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +70,10 @@
 		F9BCDA962C2D49D800EE1E40 /* BagiratabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagiratabButton.swift; sourceTree = "<group>"; };
 		F9BCDA9A2C2D5EE200EE1E40 /* Recognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recognizer.swift; sourceTree = "<group>"; };
 		F9BCDA9C2C2D6F5300EE1E40 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		F9C15BCF2C378E5B002AD186 /* AddOtherItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOtherItem.swift; sourceTree = "<group>"; };
+		F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOtherItem.swift; sourceTree = "<group>"; };
+		F9C15BD32C379ECA002AD186 /* AssignView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignView.swift; sourceTree = "<group>"; };
+		F9C15BD52C38036D002AD186 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +81,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F9BCDA8E2C2D0FD100EE1E40 /* InitialsUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +121,7 @@
 				F9121EB92C346CF700AD0587 /* HTTP */,
 				F91E77502C2C794100AF877B /* BagirataApp.swift */,
 				F91E77522C2C794100AF877B /* ContentView.swift */,
+				F9C15BD32C379ECA002AD186 /* AssignView.swift */,
 				F9705BF72C2E5C650057D419 /* ScanResultView.swift */,
 				F9705BF12C2DBDBC0057D419 /* ScannerView.swift */,
 				F9705BF32C2DC0150057D419 /* TextRecognizer.swift */,
@@ -156,6 +163,7 @@
 				F9BCDA9A2C2D5EE200EE1E40 /* Recognizer.swift */,
 				F9705BED2C2D7F5E0057D419 /* Formatter.swift */,
 				F96A0A9C2C2F15FD00A0EFA9 /* Color.swift */,
+				F9C15BD52C38036D002AD186 /* String.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -165,6 +173,8 @@
 			children = (
 				F96905BA2C356C70003BEC5D /* AddItem.swift */,
 				F96905BE2C363D55003BEC5D /* EditItem.swift */,
+				F9C15BCF2C378E5B002AD186 /* AddOtherItem.swift */,
+				F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */,
 				F95BC2082C2F22B500A86CAE /* EditFriend.swift */,
 				F96A0A9A2C2F145800A0EFA9 /* AddFriend.swift */,
 			);
@@ -197,7 +207,6 @@
 			);
 			name = Bagirata;
 			packageProductDependencies = (
-				F9BCDA8D2C2D0FD100EE1E40 /* InitialsUI */,
 			);
 			productName = Bagirata;
 			productReference = F91E774D2C2C794100AF877B /* Bagirata.app */;
@@ -228,7 +237,6 @@
 			);
 			mainGroup = F91E77442C2C794100AF877B;
 			packageReferences = (
-				F9BCDA8C2C2D0FD100EE1E40 /* XCRemoteSwiftPackageReference "InitialsUI" */,
 			);
 			productRefGroup = F91E774E2C2C794100AF877B /* Products */;
 			projectDirPath = "";
@@ -256,9 +264,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9C15BD62C38036D002AD186 /* String.swift in Sources */,
 				F91E77532C2C794100AF877B /* ContentView.swift in Sources */,
 				F9705BF22C2DBDBC0057D419 /* ScannerView.swift in Sources */,
 				F96A0A9B2C2F145800A0EFA9 /* AddFriend.swift in Sources */,
+				F9C15BD42C379ECA002AD186 /* AssignView.swift in Sources */,
 				F9BCDA902C2D159400EE1E40 /* BagirataAvatar.swift in Sources */,
 				F91E77512C2C794100AF877B /* BagirataApp.swift in Sources */,
 				F9BCDA9B2C2D5EE200EE1E40 /* Recognizer.swift in Sources */,
@@ -276,7 +286,9 @@
 				F9705BF82C2E5C650057D419 /* ScanResultView.swift in Sources */,
 				F9705BF02C2DBCBF0057D419 /* Scan.swift in Sources */,
 				F96A0A982C2EAEAD00A0EFA9 /* BagirataAvatarGroup.swift in Sources */,
+				F9C15BD22C3794DF002AD186 /* EditOtherItem.swift in Sources */,
 				F9705BF42C2DC0150057D419 /* TextRecognizer.swift in Sources */,
+				F9C15BD02C378E5B002AD186 /* AddOtherItem.swift in Sources */,
 				F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */,
 				F9BCDA972C2D49D800EE1E40 /* BagiratabButton.swift in Sources */,
 				F91E77622C2C7AF700AF877B /* Friend.swift in Sources */,
@@ -496,25 +508,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		F9BCDA8C2C2D0FD100EE1E40 /* XCRemoteSwiftPackageReference "InitialsUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/lovetodream/InitialsUI";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		F9BCDA8D2C2D0FD100EE1E40 /* InitialsUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F9BCDA8C2C2D0FD100EE1E40 /* XCRemoteSwiftPackageReference "InitialsUI" */;
-			productName = InitialsUI;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F91E77452C2C794100AF877B /* Project object */;
 }

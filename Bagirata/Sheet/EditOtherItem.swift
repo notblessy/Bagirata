@@ -1,45 +1,46 @@
 //
-//  EditItem.swift
+//  EditOtherItem.swift
 //  Bagirata
 //
-//  Created by Frederich Blessy on 04/07/24.
+//  Created by Frederich Blessy on 05/07/24.
 //
 
 import SwiftUI
 
-struct EditItem: View {
+struct EditOtherItem: View {
     @Environment(\.dismiss) var dismiss
     
     @Binding var splitItem: SplitItem
     
     @State var id: UUID = UUID()
     @State var name: String = ""
-    @State var qty: String = ""
-    @State var price: String = ""
+    @State var type: PaymentType = .addition
+    @State var amount: String = ""
     @State var createdAt: Date = Date()
     
-    let item: AssignedItem
+    let item: OtherItem
     
     private var disabledButton: Bool {
-        name.isEmpty || Int(qty) == 0 || Int(price) == 0
+        name.isEmpty || type.rawValue.isEmpty || Int(amount) == 0
     }
     
     var body: some View {
         NavigationView {
             VStack {
-                Text("Edit Item")
+                Text("Add Other")
                     .font(.title2)
                     .fontWeight(.medium)
                 
+                Picker("Type", selection: $type) {
+                    Text("Addition").tag(PaymentType.addition)
+                    Text("Deduction").tag(PaymentType.deduction)
+                }
+                .pickerStyle(.palette)
+                
                 InputText(label: "Name", showLabel: false, borderStyle: "", value: $name)
                     .padding(.top)
-                HStack {
-                    InputText(label: "Qty", showLabel: false, borderStyle: "number", value: $qty)
-                        .frame(width: 100)
-                        .keyboardType(.numberPad)
-                    InputText(label: "Price", showLabel: false, borderStyle: "", value: $price)
-                        .keyboardType(.numberPad)
-                }
+                InputText(label: "Amount", showLabel: false, borderStyle: "", value: $amount)
+                    .keyboardType(.numberPad)
                 .padding(.top, 5)
 
                 HStack {
@@ -52,15 +53,15 @@ struct EditItem: View {
                     .buttonStyle(.bordered)
                     
                     Button(action: {
-                        if let qtyInt = Int(qty), let priceInt = Int(price) {
-                            let sp = AssignedItem(id: id, name: name, qty: qtyInt, price: priceInt, createdAt: createdAt)
-                            
-                            splitItem.updateItem(sp)
+                        if let amountInt = Int(amount) {
+                            let other = OtherItem(id: id, name: name, type: type.rawValue, amount: amountInt, createdAt: createdAt)
+                            splitItem.updateOtherItem(other)
                         }
+                        
                         
                         dismiss()
                     }, label: {
-                        Text("Save")
+                        Text("Edit Other")
                             .frame(maxWidth: .infinity, alignment: .center)
                     })
                     .disabled(disabledButton)
@@ -73,8 +74,8 @@ struct EditItem: View {
             .onAppear {
                 id = item.id
                 name = item.name
-                qty = String(item.qty)
-                price = String(item.price)
+                type = PaymentType.ID(rawValue: item.type)!
+                amount = String(item.amount)
                 createdAt = item.createdAt
             }
         }
@@ -82,5 +83,5 @@ struct EditItem: View {
 }
 
 #Preview {
-    EditItem(splitItem: .constant(SplitItem.example()), item: AssignedItem.example())
+    EditOtherItem(splitItem: .constant(SplitItem.example()), item: OtherItem.example())
 }

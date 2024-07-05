@@ -8,17 +8,26 @@
 import SwiftUI
 
 struct ScanResultView: View {
+    @Environment(\.modelContext) private var context
+    
+    @Binding var currentSubTab: SubTabs
+    @Binding var selectedTab: Tabs
+    
     @State var splitItem: SplitItem
     @State private var selectedItem: AssignedItem?
+    @State private var selectedOther: OtherItem?
     
     @State private var showSheet: Bool = false
+    @State private var showOtherSheet: Bool = false
     @State private var showConfirmation: Bool = false
+    @State private var showAddConfirmation: Bool = false
     
     var body: some View {
         NavigationStack {
             List {
                 VStack(alignment: .leading) {
-                    Text(splitItem.name)
+                    TextField("Split Title", text: $splitItem.name)
+                        .textFieldStyle(.plain)
                         .font(.title)
                         .bold()
                     Text(splitItem.formatCreatedAt())
@@ -54,7 +63,30 @@ struct ScanResultView: View {
                         })
                         .padding(.vertical, 10)
                     }
-                    .onDelete(perform: delete)
+                    .onDelete(perform: deleteItem)
+                }
+                Section("Other") {
+                    ForEach(splitItem.otherPayments.sorted(by: { $0.createdAt < $1.createdAt })) { item in
+                        Button(action: {
+                            selectedOther = item
+                        }, label: {
+                            HStack(alignment: .center, spacing: 10) {
+                                VStack(alignment: .leading) {
+                                    Text(item.name)
+                                        .font(.system(size: 18))
+                                        .foregroundStyle(.black)
+                                    Text(item.type.capitalized)
+                                        .font(.system(size: 16))
+                                        .foregroundStyle(.gray)
+                                }
+                                Spacer()
+                                Text(IDR(item.amount))
+                                    .foregroundStyle(.gray)
+                            }
+                        })
+                        .padding(.vertical, 10)
+                    }
+                    .onDelete(perform: deleteOther)
                 }
             }
             .listStyle(.plain)
@@ -69,10 +101,19 @@ struct ScanResultView: View {
                 
                 ToolbarItem {
                     Button(action: {
-                        showSheet.toggle()
+                        showAddConfirmation.toggle()
                     }, label: {
-                        Label("Add Item", systemImage: "plus")
+                        Label("New", systemImage: "plus")
                         
+                    })
+                    
+                }
+                
+                ToolbarItem {
+                    Button(action: {
+                        currentSubTab = .assign
+                    }, label: {
+                        Text("Continue")
                     })
                     
                 }
@@ -85,26 +126,53 @@ struct ScanResultView: View {
                 EditItem(splitItem: $splitItem, item: item)
                     .presentationDetents([.height(250)])
             }
+            .sheet(isPresented: $showOtherSheet, content: {
+                AddOtherItem(splitItem: $splitItem)
+                    .presentationDetents([.height(250)])
+            })
+            .sheet(item: $selectedOther) { item in
+                EditOtherItem(splitItem: $splitItem, item: item)
+                    .presentationDetents([.height(250)])
+            }
             .confirmationDialog("Are you sure want to cancel?", isPresented: $showConfirmation, titleVisibility: .visible) {
                 Button(action: {
-//                    save using swiftdata
+                    let split = Split(id: UUID(), name: splitItem.name, status: splitItem.status, items: splitItem.items, otherPayments: splitItem.otherPayments, createdAt: Date())
+                    
+                    context.insert(split)
                 }, label: {
                     Text("Save Draft")
                 })
                 Button(role: .destructive, action: {
-//                    delete itemSplit
+                    selectedTab = .history
+                    splitItem = SplitItem()
                 }, label: {
                     Text("Discard")
+                })
+            }
+            .confirmationDialog("What do you want to add?", isPresented: $showAddConfirmation, titleVisibility: .visible) {
+                Button(action: {
+                    showSheet.toggle()
+                }, label: {
+                    Text("New Item")
+                })
+                Button(action: {
+                    showOtherSheet.toggle()
+                }, label: {
+                    Text("Other")
                 })
             }
         }
     }
     
-    private func delete(at offsets: IndexSet) {
+    private func deleteItem(at offsets: IndexSet) {
         splitItem.items.remove(atOffsets: offsets)
+    }
+    
+    private func deleteOther(at offsets: IndexSet) {
+        splitItem.otherPayments.remove(atOffsets: offsets)
     }
 }
 
 #Preview {
-    ScanResultView(splitItem: SplitItem.example())
+    ScanResultView(currentSubTab: .constant(.assign), selectedTab: .constant(.result), splitItem: SplitItem.example())
 }

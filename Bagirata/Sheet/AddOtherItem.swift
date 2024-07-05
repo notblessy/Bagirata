@@ -1,45 +1,43 @@
 //
-//  EditItem.swift
+//  AddOtherItem.swift
 //  Bagirata
 //
-//  Created by Frederich Blessy on 04/07/24.
+//  Created by Frederich Blessy on 05/07/24.
 //
 
 import SwiftUI
 
-struct EditItem: View {
+struct AddOtherItem: View {
     @Environment(\.dismiss) var dismiss
+    
+    @State private var type: PaymentType = .addition
     
     @Binding var splitItem: SplitItem
     
-    @State var id: UUID = UUID()
     @State var name: String = ""
-    @State var qty: String = ""
-    @State var price: String = ""
-    @State var createdAt: Date = Date()
-    
-    let item: AssignedItem
+    @State var amount: String = ""
     
     private var disabledButton: Bool {
-        name.isEmpty || Int(qty) == 0 || Int(price) == 0
+        name.isEmpty || type.rawValue.isEmpty || Int(amount) == 0
     }
     
     var body: some View {
         NavigationView {
             VStack {
-                Text("Edit Item")
+                Text("Add Other")
                     .font(.title2)
                     .fontWeight(.medium)
                 
+                Picker("Type", selection: $type) {
+                    Text("Addition").tag(PaymentType.addition)
+                    Text("Deduction").tag(PaymentType.deduction)
+                }
+                .pickerStyle(.palette)
+                
                 InputText(label: "Name", showLabel: false, borderStyle: "", value: $name)
                     .padding(.top)
-                HStack {
-                    InputText(label: "Qty", showLabel: false, borderStyle: "number", value: $qty)
-                        .frame(width: 100)
-                        .keyboardType(.numberPad)
-                    InputText(label: "Price", showLabel: false, borderStyle: "", value: $price)
-                        .keyboardType(.numberPad)
-                }
+                InputText(label: "Amount", showLabel: false, borderStyle: "", value: $amount)
+                    .keyboardType(.numberPad)
                 .padding(.top, 5)
 
                 HStack {
@@ -52,15 +50,15 @@ struct EditItem: View {
                     .buttonStyle(.bordered)
                     
                     Button(action: {
-                        if let qtyInt = Int(qty), let priceInt = Int(price) {
-                            let sp = AssignedItem(id: id, name: name, qty: qtyInt, price: priceInt, createdAt: createdAt)
-                            
-                            splitItem.updateItem(sp)
+                        if let amountInt = Int(amount) {
+                            let other = OtherItem(name: name, type: type.rawValue, amount: amountInt)
+                            splitItem.otherPayments.append(other)
                         }
+                        
                         
                         dismiss()
                     }, label: {
-                        Text("Save")
+                        Text("Add Other")
                             .frame(maxWidth: .infinity, alignment: .center)
                     })
                     .disabled(disabledButton)
@@ -70,17 +68,10 @@ struct EditItem: View {
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .onAppear {
-                id = item.id
-                name = item.name
-                qty = String(item.qty)
-                price = String(item.price)
-                createdAt = item.createdAt
-            }
         }
     }
 }
 
 #Preview {
-    EditItem(splitItem: .constant(SplitItem.example()), item: AssignedItem.example())
+    AddOtherItem(splitItem: .constant(SplitItem.example()))
 }

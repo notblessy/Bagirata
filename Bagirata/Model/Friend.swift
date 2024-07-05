@@ -31,4 +31,11 @@ class Friend {
         
         return formatter.string(from: createdAt)
     }
+    
+    static func examples() -> [Friend] {
+        let f1 = Friend(id: UUID(), name: "John Doe", me: true, accentColor: colorGen().toHex(), createdAt: Date())
+        let f2 = Friend(id: UUID(), name: "Jenny Ruslan", me: false, accentColor: colorGen().toHex(), createdAt: Date())
+        
+        return [f1, f2]
+    }
 }

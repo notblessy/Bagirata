@@ -38,7 +38,7 @@ struct FriendView: View {
                     showUpdateSheet.toggle()
                 }, label: {
                     HStack {
-                        BagirataAvatar(name: friend.name, width: 32, height: 32, fontSize: 16, background: Color(hex: friend.accentColor))
+                        BagirataAvatar(name: friend.name, width: 32, height: 32, fontSize: 16, background: Color(hex: friend.accentColor), style: .plain)
                             .padding(.vertical, 2.3)
                         Text(friend.name)
                         Spacer()
@@ -54,12 +54,6 @@ struct FriendView: View {
                     context.delete(friend)
                 }
             })
-//            .sheet(isPresented: $showUpdateSheet, content: {
-//                if let friend = selected {
-//                    EditFriend(friend: friend)
-//                        .presentationDetents([.medium])
-//                }
-//            })
         }
         .listStyle(.plain)
         .toolbar {

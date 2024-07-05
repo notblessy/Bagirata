@@ -17,7 +17,7 @@ struct BagirataAvatarGroup: View {
     var body: some View {
         HStack(spacing: -overlapOffset) {
             ForEach(imageNames, id: \.self) { imageName in
-                BagirataAvatar(name: imageName, width: width, height: height, fontSize: fontSize, background: colorGen())
+                BagirataAvatar(name: imageName, width: width, height: height, fontSize: fontSize, background: colorGen(), style: .plain)
             }
         }
     }

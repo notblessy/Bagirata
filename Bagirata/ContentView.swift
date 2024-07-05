@@ -16,6 +16,7 @@ struct ContentView: View {
     @State var errMessage: String = ""
     
     @State private var selectedTab: Tabs = .history
+    @State private var currentSubTab: SubTabs = .review
     @State private var showScanner: Bool = false
     @State private var search: String = ""
     
@@ -41,7 +42,12 @@ struct ContentView: View {
                     ProgressView("Scanning Text...")
                         .progressViewStyle(.automatic)
                 } else {
-                    ScanResultView(splitItem: split)
+                    switch currentSubTab {
+                    case .review:
+                        ScanResultView(currentSubTab: $currentSubTab, selectedTab: $selectedTab, splitItem: split)
+                    case .assign:
+                        AssignView(currentSubTab: $currentSubTab, splitItem: split)
+                    }
                 }
             }
         }

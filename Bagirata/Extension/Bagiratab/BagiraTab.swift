@@ -13,6 +13,11 @@ enum Tabs: Int {
     case result = 2
 }
 
+enum SubTabs: Int {
+    case review = 10
+    case assign = 11
+}
+
 struct BagiraTab: View {
     @Binding var selectedTab: Tabs
     @Binding var showScanner: Bool
