@@ -46,4 +46,5 @@ extension Color {
     public static let bagirataSuccess = Color(hex: "D6E9B0")
     public static let bagirataError = Color(hex: "FADAD6")
     public static let bagirataDimmed = Color(hex: "CACED0")
+    public static let bagirataDimmedLight = Color(hex: "F4F4F4")
 }

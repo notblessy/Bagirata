@@ -25,6 +25,10 @@ class Friend {
         self.createdAt = createdAt
     }
     
+    func toAssignedFriend() -> AssignedFriend {
+        return AssignedFriend(friendId: id, name: name, me: me, accentColor: accentColor, qty: 0, subTotal: 0)
+    }
+    
     func formatCreatedAt() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMMM yyyy"

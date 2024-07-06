@@ -23,12 +23,13 @@ struct ContentView: View {
     @State private var texts: [Scan] = []
     
     @State private var split: SplitItem = SplitItem()
+    @State private var splitted: Splitted = Splitted.example()
     
     var body: some View {
         NavigationStack {
             switch selectedTab {
             case .history:
-                HistoryView()
+                HistoryView(search: search)
                     .alert(isPresented: $showAlertRecognizer) {
                         Alert(title: Text("Scan Error"), message: Text(errMessage), dismissButton: .default(Text("OK")))
                     }
@@ -44,9 +45,11 @@ struct ContentView: View {
                 } else {
                     switch currentSubTab {
                     case .review:
-                        ScanResultView(currentSubTab: $currentSubTab, selectedTab: $selectedTab, splitItem: split)
+                        ScanResultView(currentSubTab: $currentSubTab, selectedTab: $selectedTab, splitItem: $split, isActive: $scannerResultActive)
                     case .assign:
-                        AssignView(currentSubTab: $currentSubTab, splitItem: split)
+                        AssignView(currentSubTab: $currentSubTab, splitItem: $split, splittedData: $splitted)
+                    case .split:
+                        SplitView(selectedTab: $selectedTab, splitted: $splitted)
                     }
                 }
             }

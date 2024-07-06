@@ -18,8 +18,8 @@ struct FriendView: View {
         self.search = search
         
         _friends = Query(
-            filter: #Predicate<Friend> { book in
-                book.name.localizedStandardContains(search) || search.isEmpty
+            filter: #Predicate<Friend> { friend in
+                friend.name.localizedStandardContains(search) || search.isEmpty
             },
             sort: \Friend.createdAt,
             order: .reverse

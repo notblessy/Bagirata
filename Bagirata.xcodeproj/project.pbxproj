@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */; };
+		F91C6C692C384DA800206F52 /* FriendSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91C6C682C384DA800206F52 /* FriendSheet.swift */; };
+		F91C6C6B2C39114F00206F52 /* AddFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91C6C6A2C39114F00206F52 /* AddFriend.swift */; };
 		F91E77512C2C794100AF877B /* BagirataApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77502C2C794100AF877B /* BagirataApp.swift */; };
 		F91E77532C2C794100AF877B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77522C2C794100AF877B /* ContentView.swift */; };
 		F91E77572C2C794300AF877B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F91E77562C2C794300AF877B /* Assets.xcassets */; };
@@ -20,14 +22,12 @@
 		F96905BB2C356C70003BEC5D /* AddItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96905BA2C356C70003BEC5D /* AddItem.swift */; };
 		F96905BF2C363D55003BEC5D /* EditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96905BE2C363D55003BEC5D /* EditItem.swift */; };
 		F96A0A982C2EAEAD00A0EFA9 /* BagirataAvatarGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96A0A972C2EAEAD00A0EFA9 /* BagirataAvatarGroup.swift */; };
-		F96A0A9B2C2F145800A0EFA9 /* AddFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96A0A9A2C2F145800A0EFA9 /* AddFriend.swift */; };
 		F96A0A9D2C2F15FD00A0EFA9 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96A0A9C2C2F15FD00A0EFA9 /* Color.swift */; };
 		F9705BEE2C2D7F5E0057D419 /* Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BED2C2D7F5E0057D419 /* Formatter.swift */; };
 		F9705BF02C2DBCBF0057D419 /* Scan.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BEF2C2DBCBF0057D419 /* Scan.swift */; };
 		F9705BF22C2DBDBC0057D419 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF12C2DBDBC0057D419 /* ScannerView.swift */; };
 		F9705BF42C2DC0150057D419 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF32C2DC0150057D419 /* TextRecognizer.swift */; };
 		F9705BF62C2E59420057D419 /* Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF52C2E59420057D419 /* Split.swift */; };
-		F9705BF82C2E5C650057D419 /* ScanResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF72C2E5C650057D419 /* ScanResultView.swift */; };
 		F9BCDA902C2D159400EE1E40 /* BagirataAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA8F2C2D159400EE1E40 /* BagirataAvatar.swift */; };
 		F9BCDA922C2D18D000EE1E40 /* ColorGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA912C2D18D000EE1E40 /* ColorGen.swift */; };
 		F9BCDA942C2D428C00EE1E40 /* BagiraTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA932C2D428C00EE1E40 /* BagiraTab.swift */; };
@@ -38,10 +38,15 @@
 		F9C15BD22C3794DF002AD186 /* EditOtherItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */; };
 		F9C15BD42C379ECA002AD186 /* AssignView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD32C379ECA002AD186 /* AssignView.swift */; };
 		F9C15BD62C38036D002AD186 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD52C38036D002AD186 /* String.swift */; };
+		F9C8CCCA2C391435001204CF /* ScanResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C8CCC92C391435001204CF /* ScanResultView.swift */; };
+		F9C8CCCC2C391AFD001204CF /* Splitted.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C8CCCB2C391AFD001204CF /* Splitted.swift */; };
+		F9C8CCCE2C391DA3001204CF /* SplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C8CCCD2C391DA3001204CF /* SplitView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizeHTTP.swift; sourceTree = "<group>"; };
+		F91C6C682C384DA800206F52 /* FriendSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSheet.swift; sourceTree = "<group>"; };
+		F91C6C6A2C39114F00206F52 /* AddFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriend.swift; sourceTree = "<group>"; };
 		F91E774D2C2C794100AF877B /* Bagirata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bagirata.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F91E77502C2C794100AF877B /* BagirataApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagirataApp.swift; sourceTree = "<group>"; };
 		F91E77522C2C794100AF877B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -56,14 +61,12 @@
 		F96905BA2C356C70003BEC5D /* AddItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItem.swift; sourceTree = "<group>"; };
 		F96905BE2C363D55003BEC5D /* EditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditItem.swift; sourceTree = "<group>"; };
 		F96A0A972C2EAEAD00A0EFA9 /* BagirataAvatarGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagirataAvatarGroup.swift; sourceTree = "<group>"; };
-		F96A0A9A2C2F145800A0EFA9 /* AddFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriend.swift; sourceTree = "<group>"; };
 		F96A0A9C2C2F15FD00A0EFA9 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		F9705BED2C2D7F5E0057D419 /* Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
 		F9705BEF2C2DBCBF0057D419 /* Scan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scan.swift; sourceTree = "<group>"; };
 		F9705BF12C2DBDBC0057D419 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		F9705BF32C2DC0150057D419 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		F9705BF52C2E59420057D419 /* Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Split.swift; sourceTree = "<group>"; };
-		F9705BF72C2E5C650057D419 /* ScanResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResultView.swift; sourceTree = "<group>"; };
 		F9BCDA8F2C2D159400EE1E40 /* BagirataAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagirataAvatar.swift; sourceTree = "<group>"; };
 		F9BCDA912C2D18D000EE1E40 /* ColorGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorGen.swift; sourceTree = "<group>"; };
 		F9BCDA932C2D428C00EE1E40 /* BagiraTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagiraTab.swift; sourceTree = "<group>"; };
@@ -74,6 +77,9 @@
 		F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOtherItem.swift; sourceTree = "<group>"; };
 		F9C15BD32C379ECA002AD186 /* AssignView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignView.swift; sourceTree = "<group>"; };
 		F9C15BD52C38036D002AD186 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		F9C8CCC92C391435001204CF /* ScanResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResultView.swift; sourceTree = "<group>"; };
+		F9C8CCCB2C391AFD001204CF /* Splitted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Splitted.swift; sourceTree = "<group>"; };
+		F9C8CCCD2C391DA3001204CF /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,8 +127,9 @@
 				F9121EB92C346CF700AD0587 /* HTTP */,
 				F91E77502C2C794100AF877B /* BagirataApp.swift */,
 				F91E77522C2C794100AF877B /* ContentView.swift */,
+				F9C8CCCD2C391DA3001204CF /* SplitView.swift */,
 				F9C15BD32C379ECA002AD186 /* AssignView.swift */,
-				F9705BF72C2E5C650057D419 /* ScanResultView.swift */,
+				F9C8CCC92C391435001204CF /* ScanResultView.swift */,
 				F9705BF12C2DBDBC0057D419 /* ScannerView.swift */,
 				F9705BF32C2DC0150057D419 /* TextRecognizer.swift */,
 				F91E776A2C2C907000AF877B /* HistoryView.swift */,
@@ -148,6 +155,7 @@
 				F9BCDA9C2C2D6F5300EE1E40 /* Item.swift */,
 				F9705BEF2C2DBCBF0057D419 /* Scan.swift */,
 				F9705BF52C2E59420057D419 /* Split.swift */,
+				F9C8CCCB2C391AFD001204CF /* Splitted.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -176,7 +184,8 @@
 				F9C15BCF2C378E5B002AD186 /* AddOtherItem.swift */,
 				F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */,
 				F95BC2082C2F22B500A86CAE /* EditFriend.swift */,
-				F96A0A9A2C2F145800A0EFA9 /* AddFriend.swift */,
+				F91C6C682C384DA800206F52 /* FriendSheet.swift */,
+				F91C6C6A2C39114F00206F52 /* AddFriend.swift */,
 			);
 			path = Sheet;
 			sourceTree = "<group>";
@@ -267,7 +276,7 @@
 				F9C15BD62C38036D002AD186 /* String.swift in Sources */,
 				F91E77532C2C794100AF877B /* ContentView.swift in Sources */,
 				F9705BF22C2DBDBC0057D419 /* ScannerView.swift in Sources */,
-				F96A0A9B2C2F145800A0EFA9 /* AddFriend.swift in Sources */,
+				F91C6C692C384DA800206F52 /* FriendSheet.swift in Sources */,
 				F9C15BD42C379ECA002AD186 /* AssignView.swift in Sources */,
 				F9BCDA902C2D159400EE1E40 /* BagirataAvatar.swift in Sources */,
 				F91E77512C2C794100AF877B /* BagirataApp.swift in Sources */,
@@ -279,11 +288,14 @@
 				F91E776B2C2C907000AF877B /* HistoryView.swift in Sources */,
 				F95BC2092C2F22B500A86CAE /* EditFriend.swift in Sources */,
 				F9705BF62C2E59420057D419 /* Split.swift in Sources */,
+				F91C6C6B2C39114F00206F52 /* AddFriend.swift in Sources */,
+				F9C8CCCA2C391435001204CF /* ScanResultView.swift in Sources */,
+				F9C8CCCE2C391DA3001204CF /* SplitView.swift in Sources */,
 				F91E77692C2C8FA500AF877B /* FriendView.swift in Sources */,
 				F96905BF2C363D55003BEC5D /* EditItem.swift in Sources */,
 				F96A0A9D2C2F15FD00A0EFA9 /* Color.swift in Sources */,
 				F9705BEE2C2D7F5E0057D419 /* Formatter.swift in Sources */,
-				F9705BF82C2E5C650057D419 /* ScanResultView.swift in Sources */,
+				F9C8CCCC2C391AFD001204CF /* Splitted.swift in Sources */,
 				F9705BF02C2DBCBF0057D419 /* Scan.swift in Sources */,
 				F96A0A982C2EAEAD00A0EFA9 /* BagirataAvatarGroup.swift in Sources */,
 				F9C15BD22C3794DF002AD186 /* EditOtherItem.swift in Sources */,

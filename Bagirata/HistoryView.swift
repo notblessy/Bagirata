@@ -6,11 +6,26 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HistoryView: View {
-    private var splits: [SplitItem] = []
+    @Environment(\.modelContext) private var context
+    @Query private var splits: [Splitted]
     
-    @State private var search: String = ""
+    var search: String
+    
+    init(search: String) {
+        self.search = search
+        
+        _splits = Query(
+            filter: #Predicate<Splitted> { splitted in
+                splitted.name.localizedStandardContains(search) || search.isEmpty
+            },
+            sort: \Splitted.createdAt,
+            order: .reverse
+        )
+    }
+    
     @State private var showSheet: Bool = false
     
     var body: some View {
@@ -34,7 +49,7 @@ struct HistoryView: View {
                     }
                 }
             }
-            .searchable(text: $search,placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Splits")
+//            .searchable(text: $search,placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Splits")
             .toolbar {
                 ToolbarItem {
                     Button(action: {
@@ -65,5 +80,5 @@ struct HistoryView: View {
 }
 
 #Preview {
-    HistoryView()
+    HistoryView(search: "")
 }

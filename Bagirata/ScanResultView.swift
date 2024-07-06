@@ -12,31 +12,84 @@ struct ScanResultView: View {
     
     @Binding var currentSubTab: SubTabs
     @Binding var selectedTab: Tabs
+    @Binding var splitItem: SplitItem
+    @Binding var isActive: Bool
     
-    @State var splitItem: SplitItem
     @State private var selectedItem: AssignedItem?
     @State private var selectedOther: OtherItem?
     
     @State private var showSheet: Bool = false
     @State private var showOtherSheet: Bool = false
+    @State private var showFriendSheet: Bool = false
     @State private var showConfirmation: Bool = false
     @State private var showAddConfirmation: Bool = false
+    
+    @State private var search: String = ""
+    @State private var searchFriend: String = ""
     
     var body: some View {
         NavigationStack {
             List {
-                VStack(alignment: .leading) {
-                    TextField("Split Title", text: $splitItem.name)
-                        .textFieldStyle(.plain)
-                        .font(.title)
-                        .bold()
-                    Text(splitItem.formatCreatedAt())
-                        .font(.system(size: 16))
+                HStack {
+                    VStack(alignment: .leading) {
+                        TextField("Split Title", text: $splitItem.name)
+                            .textFieldStyle(.plain)
+                            .font(.title)
+                            .bold()
+                        Text(splitItem.formatCreatedAt())
+                            .font(.system(size: 16))
+                            .foregroundStyle(.gray)
+                    }
+                    
+                    Text(IDR(splitItem.grandTotal()))
+                        .font(.system(size: 20))
                         .foregroundStyle(.gray)
                 }
-                .listRowSeparator(.hidden)
                 .padding(.top, 10)
                 .padding(.bottom, 5)
+                .listRowSeparator(.hidden)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(splitItem.friends) { friend in
+                            VStack {
+                                BagirataAvatar(
+                                    name: friend.name,
+                                    width: 55,
+                                    height: 55,
+                                    fontSize: 30,
+                                    background: Color(hex: friend.accentColor),
+                                    style: .plain
+                                )
+                                .padding(1)
+                                
+                                Text(friend.name.truncate(length: 10))
+                                    .font(.system(size: 10))
+                                    .foregroundStyle(.gray)
+                            }
+                        }
+                            Button(action: {
+                                showFriendSheet.toggle()
+                            }, label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 100)
+                                        .fill(Color.gray.opacity(0.1))
+                                        .frame(width: 55, height: 55)
+                                    VStack {
+                                        Image(systemName: "plus")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 25, height: 25)
+                                    }
+                                    .frame(width: 50)
+                                }
+                            })
+                            .tint(Color.blue)
+                            .padding(.top, -12)
+                    }
+                }
+                .listRowSeparator(.hidden)
+                
                 Section("Items") {
                     ForEach(splitItem.items.sorted(by: { $0.createdAt < $1.createdAt })) { item in
                         Button(action: {
@@ -134,6 +187,26 @@ struct ScanResultView: View {
                 EditOtherItem(splitItem: $splitItem, item: item)
                     .presentationDetents([.height(250)])
             }
+            .sheet(isPresented: $showFriendSheet, content: {
+                VStack {
+                    Text("Friends")
+                        .font(.title2)
+                        .padding(.top, 15)
+                    TextField("Search", text: $searchFriend)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 11)
+                        .padding(.vertical, 7)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(5)
+                        .shadow(color: Color.black.opacity(0.2), radius: 0.2, x: 0.0, y: 1)
+                        .accentColor(Color.blue)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.horizontal)
+                    FriendSheet(search: searchFriend, splitItem: $splitItem)
+                        .presentationDetents([.medium])
+                }
+            })
             .confirmationDialog("Are you sure want to cancel?", isPresented: $showConfirmation, titleVisibility: .visible) {
                 Button(action: {
                     let split = Split(id: UUID(), name: splitItem.name, status: splitItem.status, items: splitItem.items, otherPayments: splitItem.otherPayments, createdAt: Date())
@@ -144,6 +217,7 @@ struct ScanResultView: View {
                 })
                 Button(role: .destructive, action: {
                     selectedTab = .history
+                    isActive = false
                     splitItem = SplitItem()
                 }, label: {
                     Text("Discard")
@@ -174,5 +248,5 @@ struct ScanResultView: View {
 }
 
 #Preview {
-    ScanResultView(currentSubTab: .constant(.assign), selectedTab: .constant(.result), splitItem: SplitItem.example())
+    ScanResultView(currentSubTab: .constant(.assign), selectedTab: .constant(.result), splitItem: .constant(SplitItem.example()), isActive: .constant(true))
 }

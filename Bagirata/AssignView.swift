@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct AssignView: View {
+    @Environment(\.modelContext) private var context
+    
     @Binding var currentSubTab: SubTabs
+    @Binding var splitItem: SplitItem
+    @Binding var splittedData: Splitted
     
-    var friends: [AssignedFriend] = AssignedFriend.examples()
-    
-    @State var splitItem: SplitItem
     @State private var selectedFriend: AssignedFriend?
     @State private var selectedItem: AssignedItem?
     @State private var selectedOther: OtherItem?
@@ -21,12 +22,20 @@ struct AssignView: View {
         NavigationStack {
             VStack {
                 List {
-                    VStack(alignment: .leading) {
-                        Text(splitItem.name)
-                            .font(.title)
-                            .bold()
-                        Text(splitItem.formatCreatedAt())
-                            .font(.system(size: 16))
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(splitItem.name)
+                                .font(.title)
+                                .bold()
+                            Text(splitItem.formatCreatedAt())
+                                .font(.system(size: 16))
+                                .foregroundStyle(.gray)
+                        }
+                        
+                        Spacer()
+                        
+                        Text(IDR(splitItem.grandTotal()))
+                            .font(.system(size: 20))
                             .foregroundStyle(.gray)
                     }
                     .listRowSeparator(.hidden)
@@ -35,7 +44,7 @@ struct AssignView: View {
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(friends) { friend in
+                            ForEach(splitItem.friends) { friend in
                                 VStack {
                                     Button(action: {
                                         selectedFriend = friend
@@ -166,13 +175,42 @@ struct AssignView: View {
                     
                     ToolbarItem {
                         Button(action: {
-    //                        let split = Split(id: UUID(), name: splitItem.name, status: splitItem.status, friends: [], items: splitItem.items, otherPayments: splitItem.otherPayments, createdAt: Date())
-    //
-    //                        context.insert(split)
+                            let transformedSplit = splitted(splitItem: splitItem)
+                            
+                            context.insert(transformedSplit)
+                            
+                            splittedData = transformedSplit
+                            currentSubTab = .split
+                            
+                            
+                            let encoder = JSONEncoder()
+                                encoder.dateEncodingStrategy = .iso8601
+                                encoder.outputFormatting = .prettyPrinted
+
+                                do {
+                                    let jsonData = try encoder.encode(transformedSplit)
+                                    if let jsonString = String(data: jsonData, encoding: .utf8) {
+                                        print(jsonString)
+                                    }
+                                } catch {
+                                    print("Failed to encode SplitItem to JSON: \(error)")
+                                }
                         }, label: {
                             Text("Continue")
                         })
                         
+                    }
+                }
+                .overlay {
+                    if selectedFriend == nil {
+                        VStack {
+                            Text("No Data")
+                                .font(.title2)
+                                .foregroundStyle(.gray)
+                            Text("Please select friend")
+                                .font(.system(size: 16))
+                                .foregroundStyle(.gray)
+                        }
                     }
                 }
             }
@@ -181,5 +219,5 @@ struct AssignView: View {
 }
 
 #Preview {
-    AssignView(currentSubTab: .constant(.assign), splitItem: SplitItem.example())
+    AssignView(currentSubTab: .constant(.assign), splitItem: .constant(SplitItem.example()), splittedData: .constant(Splitted.example()))
 }

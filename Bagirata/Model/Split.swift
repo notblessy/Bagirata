@@ -13,6 +13,7 @@ struct AssignedFriend: Identifiable, Codable {
     var id = UUID()
     var friendId: UUID
     let name: String
+    let me: Bool
     let accentColor: String
     var qty: Int
     var subTotal: Int
@@ -23,34 +24,60 @@ struct AssignedFriend: Identifiable, Codable {
         self.id = try container.decode(UUID.self, forKey: .id)
         self.friendId = try container.decode(UUID.self, forKey: .friendId)
         self.name = try container.decode(String.self, forKey: .name)
+        self.me = try container.decodeIfPresent(Bool.self, forKey: .me) ?? false
         self.accentColor = try container.decode(String.self, forKey: .accentColor)
         self.qty = try container.decode(Int.self, forKey: .qty)
         self.subTotal = try container.decode(Int.self, forKey: .subTotal)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
     }
     
-    init(friendId: UUID, name: String, accentColor: String, qty: Int, subTotal: Int) {
+    init(friendId: UUID, name: String, me: Bool, accentColor: String, qty: Int, subTotal: Int) {
         self.id = UUID()
         self.friendId = friendId
         self.name = name
+        self.me = me
         self.accentColor = accentColor
         self.qty = qty
         self.subTotal = subTotal
         self.createdAt = Date()
     }
     
+    func toData() -> Friend {
+        return Friend(id: friendId, name: name, me: me, accentColor: accentColor, createdAt: createdAt)
+    }
+    
     static func examples() -> [AssignedFriend] {
-        let f1 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!, name: "John Doe", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
-        let f2 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!, name: "Jeanny Ruslan", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
-        let f3 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!, name: "Samsul Riandi", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
-        let f4 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!, name: "Michael Backdoor", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
-        let f5 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!, name: "Valentino Simanjutak", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
-        let f6 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440005")!, name: "Sisilia Morgan", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
-        let f7 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!, name: "Revi Coki", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
-        let f8 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!, name: "Faeshal", accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f1 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!, name: "John Doe", me: true, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f2 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!, name: "Jeanny Ruslan", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f3 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!, name: "Samsul Riandi", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f4 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!, name: "Michael Backdoor", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f5 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!, name: "Valentino Simanjutak", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f6 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440005")!, name: "Sisilia Morgan", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f7 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!, name: "Revi Coki", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f8 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!, name: "Faeshal", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
 
         
         return [f1, f2, f3, f4, f5, f6, f7, f8]
+    }
+    
+    static func assignedExamples() -> [AssignedFriend] {
+        let f1 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!, name: "John Doe", me: true, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f2 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!, name: "Jeanny Ruslan", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+        let f3 = AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!, name: "Samsul Riandi", me: false, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
+
+        
+        return [f1, f2, f3]
+    }
+    
+    func formatCreatedAt() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM yyyy"
+        
+        return formatter.string(from: createdAt)
+    }
+    
+    static func example() -> AssignedFriend {
+        return AssignedFriend(friendId: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!, name: "John Doe", me: true, accentColor: colorGen().toHex(), qty: 0, subTotal: 0)
     }
 }
 
@@ -84,6 +111,10 @@ struct AssignedItem: Identifiable, Codable {
         self.price = try container.decode(Int.self, forKey: .price)
     }
     
+    func subTotal() -> Int {
+        return qty * price
+    }
+    
     func getTakenQty() -> Int {
         return friends.reduce(0) { $0 + $1.qty }
     }
@@ -91,7 +122,6 @@ struct AssignedItem: Identifiable, Codable {
     func getTakenQty(by friendId: String) -> Int {
         let results = friends.filter({ $0.friendId.uuidString == friendId })
         
-        print("FRIEND ID REQ: ",friendId)
         return results.reduce(0) { $0 + $1.qty }
     }
     
@@ -107,7 +137,7 @@ struct AssignedItem: Identifiable, Codable {
         } else {
             let subTotal = price + newQty
 
-            let newFriend = AssignedFriend(friendId: friend.friendId, name: friend.name, accentColor: friend.accentColor, qty: newQty, subTotal: subTotal)
+            let newFriend = AssignedFriend(friendId: friend.friendId, name: friend.name, me: friend.me, accentColor: friend.accentColor, qty: newQty, subTotal: subTotal)
             friends.append(newFriend)
         }
     }
@@ -154,6 +184,10 @@ struct OtherItem: Identifiable, Codable {
         self.amount = try container.decode(Int.self, forKey: .amount)
     }
     
+    func subTotal() -> Int {
+        return type == "deduction" ? -amount : amount
+    }
+    
     static func examples() -> [OtherItem] {
         return [
             OtherItem(name: "Discount", type: "deduction", amount: 40000),
@@ -170,6 +204,7 @@ struct SplitItem: Identifiable, Codable {
     let id: UUID
     var name: String
     var status: String
+    var friends: [AssignedFriend]
     var items: [AssignedItem]
     var otherPayments: [OtherItem]
     let createdAt: Date
@@ -178,15 +213,18 @@ struct SplitItem: Identifiable, Codable {
         self.id = UUID()
         self.status = ""
         self.name = ""
+        self.status = ""
+        self.friends = []
         self.items = []
         self.otherPayments = []
         self.createdAt = Date()
     }
     
-    init(id: UUID = UUID(), name: String, status: String, items: [AssignedItem] = [], otherPayments: [OtherItem] = [], createdAt: Date) {
+    init(id: UUID = UUID(), name: String, status: String, friends: [AssignedFriend] = [], items: [AssignedItem] = [], otherPayments: [OtherItem] = [], createdAt: Date) {
         self.id = id
         self.name = name
         self.status = status
+        self.friends = friends
         self.items = items
         self.otherPayments = otherPayments
         self.createdAt = createdAt
@@ -197,6 +235,7 @@ struct SplitItem: Identifiable, Codable {
         self.id = try container.decode(UUID.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.status = try container.decodeIfPresent(String.self, forKey: .status) ?? "draft"
+        self.friends = try container.decodeIfPresent([AssignedFriend].self, forKey: .friends) ?? []
         self.items = try container.decodeIfPresent([AssignedItem].self, forKey: .items) ?? []
         self.otherPayments = try container.decodeIfPresent([OtherItem].self, forKey: .otherPayments) ?? []
         
@@ -221,6 +260,33 @@ struct SplitItem: Identifiable, Codable {
         if let index = otherPayments.firstIndex(where: { $0.id == updatedItem.id }) {
             otherPayments[index] = updatedItem
         }
+    }
+    
+    mutating func toggleFriend(_ friend: AssignedFriend) {
+        if let index = friends.firstIndex(where: { $0.friendId == friend.friendId }) {
+            friends.remove(at: index)
+        } else {
+            friends.append(friend)
+        }
+    }
+    
+    func hasFriend(with friendId: UUID) -> Bool {
+        return friends.contains(where: { $0.friendId == friendId })
+    }
+    
+    func grandTotal() -> Int {
+        let itemsTotal = items.reduce(0) { $0 + $1.subTotal() }
+        let otherPaymentsTotal = otherPayments.reduce(0) { $0 + $1.subTotal() }
+        
+        return itemsTotal + otherPaymentsTotal
+    }
+    
+    func itemTotal() -> Int {
+        return items.reduce(0) { $0 + $1.subTotal() }
+    }
+    
+    func otherTotal() -> Int {
+        return otherPayments.reduce(0) { $0 + $1.subTotal() }
     }
     
     func toData() -> Split {
@@ -249,8 +315,9 @@ struct SplitItem: Identifiable, Codable {
     static func example() -> SplitItem {
         let items = AssignedItem.examples()
         let otherPayments = OtherItem.examples()
+        let friends = AssignedFriend.assignedExamples()
         
-        return SplitItem(name: "Lawson Time", status: "draft", items: items, otherPayments: otherPayments, createdAt: Date())
+        return SplitItem(name: "Lawson Time", status: "draft", friends: friends, items: items, otherPayments: otherPayments, createdAt: Date())
     }
 }
 

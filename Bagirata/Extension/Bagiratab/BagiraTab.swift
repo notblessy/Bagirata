@@ -16,6 +16,7 @@ enum Tabs: Int {
 enum SubTabs: Int {
     case review = 10
     case assign = 11
+    case split = 12
 }
 
 struct BagiraTab: View {
