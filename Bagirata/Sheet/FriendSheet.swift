@@ -31,23 +31,40 @@ struct FriendSheet: View {
     
     var body: some View {
         List {
-            ForEach(friends) { friend in
+            if friends.count == 0 && !search.isEmpty {
                 Button(action: {
-                    splitItem.toggleFriend(friend.toAssignedFriend())
+                    let friend = Friend(id: UUID(), name: search, me: false, accentColor: colorGen().toHex(), createdAt: Date())
+                    context.insert(friend)
                 }, label: {
                     HStack {
-                        BagirataAvatar(name: friend.name, width: 32, height: 32, fontSize: 16, background: Color(hex: friend.accentColor), style: .plain)
-                            .padding(.vertical, 2.3)
-                        Text(friend.name)
                         Spacer()
-                        Text(friend.formatCreatedAt())
-                            .font(.system(size: 12))
-                            .foregroundStyle(Color.gray)
-                        Image(systemName: splitItem.hasFriend(with: friend.id) ? "checkmark.circle.fill" : "circle")
-                            .padding(.leading)
-                            .foregroundColor(splitItem.hasFriend(with: friend.id) ? .blue : .primary)
+                        Image(systemName: "plus")
+                        Text("Add New Friend")
+                        Spacer()
                     }
+                    .frame(maxWidth: .infinity)
                 })
+                .listRowSeparator(.hidden)
+                .buttonStyle(.bordered)
+            } else {
+                ForEach(friends) { friend in
+                    Button(action: {
+                        splitItem.toggleFriend(friend.toAssignedFriend())
+                    }, label: {
+                        HStack {
+                            BagirataAvatar(name: friend.name, width: 32, height: 32, fontSize: 16, background: Color(hex: friend.accentColor), style: .plain)
+                                .padding(.vertical, 2.3)
+                            Text(friend.name)
+                            Spacer()
+                            Text(friend.formatCreatedAt())
+                                .font(.system(size: 12))
+                                .foregroundStyle(Color.gray)
+                            Image(systemName: splitItem.hasFriend(with: friend.id) ? "checkmark.circle.fill" : "circle")
+                                .padding(.leading)
+                                .foregroundColor(splitItem.hasFriend(with: friend.id) ? .blue : .primary)
+                        }
+                    })
+                }
             }
         }
         .listStyle(.plain)

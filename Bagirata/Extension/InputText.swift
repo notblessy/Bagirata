@@ -24,7 +24,6 @@ struct InputText: View {
             switch borderStyle {
             case "success":
                 TextField(label, text: $value)
-                    .textFieldStyle(.plain)
                     .padding(.horizontal, 11)
                     .padding(.vertical, 3)
                     .frame(maxWidth: .infinity)
@@ -32,10 +31,8 @@ struct InputText: View {
                     .cornerRadius(5)
                     .shadow(color: Color.black.opacity(0.2), radius: 0.2, x: 0.0, y: 1)
                     .accentColor(Color.blue)
-                    .textFieldStyle(.roundedBorder)
             case "error":
                 TextField(label, text: $value)
-                    .textFieldStyle(.plain)
                     .padding(.horizontal, 11)
                     .padding(.vertical, 3)
                     .frame(maxWidth: .infinity)
@@ -43,10 +40,8 @@ struct InputText: View {
                     .cornerRadius(5)
                     .shadow(color: Color.black.opacity(0.2), radius: 0.2, x: 0.0, y: 1)
                     .accentColor(Color.red)
-                    .textFieldStyle(.roundedBorder)
             default:
                 TextField(label, text: $value)
-                    .textFieldStyle(.plain)
                     .padding(.horizontal, 11)
                     .padding(.vertical, 10)
                     .frame(maxWidth: .infinity)
@@ -54,7 +49,6 @@ struct InputText: View {
                     .cornerRadius(5)
                     .shadow(color: Color.black.opacity(0.2), radius: 0.2, x: 0.0, y: 1)
                     .accentColor(Color.blue)
-                    .textFieldStyle(.roundedBorder)
             }
             
             

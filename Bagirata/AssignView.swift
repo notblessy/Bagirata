@@ -54,7 +54,7 @@ struct AssignView: View {
                                             width: 55,
                                             height: 55,
                                             fontSize: 30,
-                                            background: colorGen(),
+                                            background: Color(hex: friend.accentColor),
                                             style: selectedFriend?.id == friend.id ? .active : .plain
                                         )
                                     })

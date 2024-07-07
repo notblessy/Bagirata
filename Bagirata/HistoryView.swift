@@ -56,8 +56,7 @@ struct HistoryView: View {
                         showSheet.toggle()
                     }, label: {
                         HStack {
-                            Image(systemName: "plus")
-                            Text("Manual Split")
+                            Label("Setting", systemImage: "line.horizontal.3.decrease.circle")
                         }
                     })
                 }

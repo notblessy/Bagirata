@@ -14,7 +14,7 @@ struct BagirataApp: App {
         
     init() {
         do {
-            modelContainer = try ModelContainer(for: Friend.self, Splitted.self)
+            modelContainer = try ModelContainer(for: Bank.self, Friend.self, Splitted.self)
         } catch {
             fatalError("Could not initialize ModelContainer")
         }

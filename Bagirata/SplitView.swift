@@ -50,13 +50,14 @@ struct SplitView: View {
                                         
                                         ForEach(friend.items) { item in
                                             HStack {
-                                                Text("x\(item.qty)")
-                                                    .font(.system(size: 12))
-                                                    .foregroundStyle(.gray)
+                                                
                                                 Text(item.name.truncate(length: 22))
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Spacer()
+                                                Text("x\(item.qty)")
+                                                    .font(.system(size: 12))
+                                                    .foregroundStyle(.gray)
                                                 Text(IDR(item.price))
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)

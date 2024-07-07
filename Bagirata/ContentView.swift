@@ -10,6 +10,15 @@ import SwiftData
 import Vision
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var context
+    @Query(
+        filter: #Predicate<Friend> { friend in
+            friend.me
+        }
+    ) var me: [Friend]
+    
+    var profile: Friend? { me.first }
+    
     @State var isLoading: Bool = false
     @State var showAlertRecognizer: Bool = false
     @State var scannerResultActive: Bool = false
@@ -24,6 +33,9 @@ struct ContentView: View {
     
     @State private var split: SplitItem = SplitItem()
     @State private var splitted: Splitted = Splitted.example()
+    
+    @State private var hasUser: Bool = false
+    @State private var showUserSheet: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -55,8 +67,17 @@ struct ContentView: View {
             }
         }
         .navigationTitle("Scan Result")
+        .onAppear {
+            hasUser = profile?.me ?? false
+            showUserSheet = !hasUser
+        }
         .sheet(isPresented: $showScanner, content: {
             makeScannerView()
+        })
+        .sheet(isPresented: $showUserSheet, content: {
+            Me()
+                .presentationDetents([.height(500)])
+                .interactiveDismissDisabled()
         })
 
         BagiraTab(selectedTab: $selectedTab, showScanner: $showScanner, scannerResultActive: $scannerResultActive)

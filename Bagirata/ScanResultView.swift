@@ -99,7 +99,6 @@ struct ScanResultView: View {
                                 VStack(alignment: .leading) {
                                     Text(item.name)
                                         .font(.system(size: 18))
-                                        .foregroundStyle(.black)
                                     HStack {
                                         Text(qty(item.qty))
                                             .font(.system(size: 16))
@@ -127,7 +126,6 @@ struct ScanResultView: View {
                                 VStack(alignment: .leading) {
                                     Text(item.name)
                                         .font(.system(size: 18))
-                                        .foregroundStyle(.black)
                                     Text(item.type.capitalized)
                                         .font(.system(size: 16))
                                         .foregroundStyle(.gray)
@@ -192,17 +190,28 @@ struct ScanResultView: View {
                     Text("Friends")
                         .font(.title2)
                         .padding(.top, 15)
-                    TextField("Search", text: $searchFriend)
-                        .textFieldStyle(.plain)
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 7)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(5)
-                        .shadow(color: Color.black.opacity(0.2), radius: 0.2, x: 0.0, y: 1)
-                        .accentColor(Color.blue)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal)
+                    ZStack(alignment: .trailing) {
+                        TextField("Search", text: $searchFriend)
+                            .padding(.horizontal, 11)
+                            .padding(.vertical, 10)
+                            .padding(.trailing, 30)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(5)
+                            .shadow(color: Color.black.opacity(0.2), radius: 0.2, x: 0.0, y: 1)
+                            .accentColor(Color.blue)
+                            .padding(.horizontal)
+                        
+                        if !searchFriend.isEmpty {
+                            Button(action: {
+                                searchFriend = ""
+                            }, label: {
+                                Image(systemName: "xmark.circle.fill")
+                            })
+                            .offset(x: -30)
+                            .tint(.gray)
+                        }
+                    }
                     FriendSheet(search: searchFriend, splitItem: $splitItem)
                         .presentationDetents([.medium])
                 }
