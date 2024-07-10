@@ -17,38 +17,47 @@ struct AddFriend: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Add Friend")
-                    .font(.title2)
-                    .fontWeight(.medium)
-                
-                InputText(label: "Name", showLabel: false, borderStyle: "", value: $name)
-                    .padding(.top)
-
-                HStack {
-                    Button(action: {
-                        dismiss()
-                    }, label: {
-                        Text("Dismiss")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    })
-                    .buttonStyle(.bordered)
+            ZStack {
+                Color(UIColor.systemGroupedBackground)
+                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    Text("Add Friend")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .padding(.top, 20)
                     
-                    Button(action: {
-                        let friend = Friend(id: UUID(), name: name, me: false, accentColor: color.toHex(), createdAt: Date())
-                        context.insert(friend)
-                        dismiss()
-                    }, label: {
-                        Text("Add Friend")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    })
-                    .disabled(name.isEmpty)
-                    .buttonStyle(.borderedProminent)
+                    Form {
+                        TextField("Name", text: $name)
+                    }
+                    .background(Color.clear)
+                    .scrollContentBackground(.hidden)
+
+                    HStack {
+                        Button(action: {
+                            dismiss()
+                        }, label: {
+                            Text("Dismiss")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(5)
+                        })
+                        .buttonStyle(.bordered)
+                        
+                        Button(action: {
+                            let friend = Friend(id: UUID(), name: name, me: false, accentColor: color.toHex(), createdAt: Date())
+                            context.insert(friend)
+                            dismiss()
+                        }, label: {
+                            Text("Add Friend")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(5)
+                        })
+                        .disabled(name.isEmpty)
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .padding()
                 }
-                .padding(.top, 5)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
 }

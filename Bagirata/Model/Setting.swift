@@ -30,4 +30,8 @@ class Bank {
         
         return formatter.string(from: createdAt)
     }
+    
+    static func example() -> Bank {
+        return Bank(id: UUID(), name: "BCA", number: 4350280184, accountName: "I Komang Frederich Bless", createdAt: Date())
+    }
 }

@@ -21,7 +21,7 @@ struct FriendSheet: View {
         
         _friends = Query(
             filter: #Predicate<Friend> { friend in
-                friend.name.localizedStandardContains(search) || search.isEmpty
+                (friend.name.localizedStandardContains(search) || search.isEmpty ) && !friend.me
             },
             sort: \Friend.createdAt,
             order: .reverse
@@ -42,6 +42,7 @@ struct FriendSheet: View {
                         Text("Add New Friend")
                         Spacer()
                     }
+                    .padding(5)
                     .frame(maxWidth: .infinity)
                 })
                 .listRowSeparator(.hidden)

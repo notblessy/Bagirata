@@ -100,6 +100,14 @@ class Splitted: Identifiable, Codable {
         case id, name, createdAt, grandTotal, friends
     }
     
+    init() {
+        self.id = UUID()
+        self.name = ""
+        self.createdAt = Date()
+        self.grandTotal = 0
+        self.friends = []
+    }
+    
     init(id: UUID, name: String, createdAt: Date, grandTotal: Int, friends: [SplittedFriend]) {
         self.id = id
         self.name = name
@@ -279,7 +287,7 @@ func splitted(splitItem: SplitItem) -> Splitted {
                 let amountPerFriend = payment.amount / transformedFriends.count
                 
                 for friendId in transformedFriends.keys {
-                    if var friend = transformedFriends[friendId] {
+                    if let friend = transformedFriends[friendId] {
                         friend.total += amountPerFriend
                         let otherItem = FriendOther(id: UUID(), name: payment.name, price: amountPerFriend)
                         friend.others.append(otherItem)

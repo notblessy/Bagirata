@@ -23,51 +23,61 @@ struct AddOtherItem: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Add Other")
-                    .font(.title2)
-                    .fontWeight(.medium)
-                
-                Picker("Type", selection: $type) {
-                    Text("Addition").tag(PaymentType.addition)
-                    Text("Deduction").tag(PaymentType.deduction)
-                }
-                .pickerStyle(.palette)
-                
-                InputText(label: "Name", showLabel: false, borderStyle: "", value: $name)
-                    .padding(.top)
-                InputText(label: "Amount", showLabel: false, borderStyle: "", value: $amount)
-                    .keyboardType(.numberPad)
-                .padding(.top, 5)
-
-                HStack {
-                    Button(action: {
-                        dismiss()
-                    }, label: {
-                        Text("Dismiss")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    })
-                    .buttonStyle(.bordered)
+            ZStack {
+                Color(UIColor.systemGroupedBackground)
+                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    Text("Add Other")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .padding(.top, 20)
                     
-                    Button(action: {
-                        if let amountInt = Int(amount) {
-                            let other = OtherItem(name: name, type: type.rawValue, amount: amountInt)
-                            splitItem.otherPayments.append(other)
-                        }
+                    Picker("Type", selection: $type) {
+                        Text("Addition").tag(PaymentType.addition)
+                        Text("Deduction").tag(PaymentType.deduction)
+                    }
+                    .pickerStyle(.palette)
+                    .padding(.horizontal)
+                    
+                    Form {
+                        TextField("Name", text: $name)
+                        TextField("Amount", text: $amount)
+                            .keyboardType(.numberPad)
+                    }
+                    .padding(.top, -15)
+                    .background(Color.clear)
+                    .scrollContentBackground(.hidden)
+
+                    HStack {
+                        Button(action: {
+                            dismiss()
+                        }, label: {
+                            Text("Dismiss")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(5)
+                        })
+                        .buttonStyle(.bordered)
                         
-                        
-                        dismiss()
-                    }, label: {
-                        Text("Add Other")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    })
-                    .disabled(disabledButton)
-                    .buttonStyle(.borderedProminent)
+                        Button(action: {
+                            if let amountInt = Int(amount) {
+                                let other = OtherItem(name: name, type: type.rawValue, amount: amountInt)
+                                splitItem.otherPayments.append(other)
+                            }
+                            
+                            
+                            dismiss()
+                        }, label: {
+                            Text("Add Other")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(5)
+                        })
+                        .disabled(disabledButton)
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .padding()
                 }
-                .padding(.top, 10)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
 }

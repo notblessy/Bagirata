@@ -6,10 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SplitView: View {
+    @Environment(\.modelContext) private var context
+    @Query() var banks: [Bank]
+    
+    var bank: Bank? { banks.first }
+    
+    private let pasteboard = UIPasteboard.general
+    
     @Binding var selectedTab: Tabs
+    @Binding var scannerResultActive: Bool
     @Binding var splitted: Splitted
+    
+    @State var copied: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -35,7 +46,45 @@ struct SplitView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top)
                     
-                    Section("Split") {
+                    if let bankName = bank?.name, let bankNumber = bank?.number, let accountName = bank?.accountName {
+                        Section("Transfer Information") {
+                            Button(action: {
+                                pasteboard.string = String(bank?.number ?? 0)
+                                copied = true
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                    copied = false
+                                }
+                            }, label: {
+                                VStack(alignment: .leading) {
+                                    Text(bankName)
+                                        .fontWeight(.bold)
+                                    HStack {
+                                        if !copied {
+                                            Text(String(bankNumber))
+                                            Image(systemName: "doc.on.doc.fill")
+                                                .resizable()
+                                                .frame(width: 15, height: 18)
+                                        } else {
+                                            Text("Number Copied!")
+                                                .foregroundColor(.blue)
+                                            Image(systemName: "doc.on.doc.fill")
+                                                .resizable()
+                                                .frame(width: 15, height: 18)
+                                                .foregroundStyle(.blue)
+                                        }
+                                    }
+                                    .padding(.top, -8)
+                                    Text(accountName)
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.gray)
+                                }
+                            })
+                            .listRowSeparator(.hidden)
+                        }
+                    }
+                    
+                    Section("Bagirata Split") {
                         ForEach(splitted.friends.sorted(by: { $0.me && !$1.me })) { friend in
                             VStack(alignment: .leading) {
                                 HStack(alignment: .top) {
@@ -49,18 +98,19 @@ struct SplitView: View {
                                         }
                                         
                                         ForEach(friend.items) { item in
-                                            HStack {
-                                                
-                                                Text(item.name.truncate(length: 22))
-                                                    .font(.system(size: 12))
-                                                    .foregroundStyle(.gray)
-                                                Spacer()
-                                                Text("x\(item.qty)")
-                                                    .font(.system(size: 12))
-                                                    .foregroundStyle(.gray)
-                                                Text(IDR(item.price))
-                                                    .font(.system(size: 12))
-                                                    .foregroundStyle(.gray)
+                                            if item.qty > 0 {
+                                                HStack {
+                                                    Text(item.name.truncate(length: 22))
+                                                        .font(.system(size: 12))
+                                                        .foregroundStyle(.gray)
+                                                    Spacer()
+                                                    Text("x\(item.qty)")
+                                                        .font(.system(size: 12))
+                                                        .foregroundStyle(.gray)
+                                                    Text(IDR(item.price))
+                                                        .font(.system(size: 12))
+                                                        .foregroundStyle(.gray)
+                                                }
                                             }
                                         }
                                         
@@ -87,9 +137,11 @@ struct SplitView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
-                        
+                        selectedTab = .history
+                        scannerResultActive = false
+                        splitted = Splitted()
                     }, label: {
-                        Label("Back", systemImage: "chevron.left")
+                        Label("History", systemImage: "chevron.left")
                     })
                 }
                 
@@ -107,5 +159,5 @@ struct SplitView: View {
 }
 
 #Preview {
-    SplitView(selectedTab: .constant(.result), splitted: .constant(Splitted.example()))
+    SplitView(selectedTab: .constant(.result), scannerResultActive: .constant(true), splitted: .constant(Splitted.example()))
 }

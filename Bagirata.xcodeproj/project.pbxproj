@@ -18,6 +18,7 @@
 		F91E77672C2C897400AF877B /* InputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77662C2C897400AF877B /* InputText.swift */; };
 		F91E77692C2C8FA500AF877B /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77682C2C8FA500AF877B /* FriendView.swift */; };
 		F91E776B2C2C907000AF877B /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E776A2C2C907000AF877B /* HistoryView.swift */; };
+		F93F71892C3D9F8C005CC0A8 /* EditMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93F71882C3D9F8C005CC0A8 /* EditMe.swift */; };
 		F95BC2092C2F22B500A86CAE /* EditFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95BC2082C2F22B500A86CAE /* EditFriend.swift */; };
 		F96905BB2C356C70003BEC5D /* AddItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96905BA2C356C70003BEC5D /* AddItem.swift */; };
 		F96905BF2C363D55003BEC5D /* EditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96905BE2C363D55003BEC5D /* EditItem.swift */; };
@@ -58,6 +59,7 @@
 		F91E77662C2C897400AF877B /* InputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputText.swift; sourceTree = "<group>"; };
 		F91E77682C2C8FA500AF877B /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
 		F91E776A2C2C907000AF877B /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		F93F71882C3D9F8C005CC0A8 /* EditMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMe.swift; sourceTree = "<group>"; };
 		F94B5FB22C330D3D00919C04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F95BC2082C2F22B500A86CAE /* EditFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriend.swift; sourceTree = "<group>"; };
 		F96905BA2C356C70003BEC5D /* AddItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItem.swift; sourceTree = "<group>"; };
@@ -188,10 +190,11 @@
 				F96905BE2C363D55003BEC5D /* EditItem.swift */,
 				F9C15BCF2C378E5B002AD186 /* AddOtherItem.swift */,
 				F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */,
-				F95BC2082C2F22B500A86CAE /* EditFriend.swift */,
 				F91C6C682C384DA800206F52 /* FriendSheet.swift */,
 				F91C6C6A2C39114F00206F52 /* AddFriend.swift */,
+				F95BC2082C2F22B500A86CAE /* EditFriend.swift */,
 				F9C8CCD32C3AF912001204CF /* Me.swift */,
+				F93F71882C3D9F8C005CC0A8 /* EditMe.swift */,
 			);
 			path = Sheet;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 				F9C15BD02C378E5B002AD186 /* AddOtherItem.swift in Sources */,
 				F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */,
 				F9BCDA972C2D49D800EE1E40 /* BagiratabButton.swift in Sources */,
+				F93F71892C3D9F8C005CC0A8 /* EditMe.swift in Sources */,
 				F91E77622C2C7AF700AF877B /* Friend.swift in Sources */,
 				F9BCDA922C2D18D000EE1E40 /* ColorGen.swift in Sources */,
 			);
@@ -443,6 +447,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Bagirata/Preview Content\"";
@@ -450,7 +455,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bagirata/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = bagirata;
+				INFOPLIST_KEY_CFBundleDisplayName = Bagirata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Bagirata would like to use your camera to scan document. ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -477,6 +482,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Bagirata/Preview Content\"";
@@ -484,7 +490,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bagirata/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = bagirata;
+				INFOPLIST_KEY_CFBundleDisplayName = Bagirata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Bagirata would like to use your camera to scan document. ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -108,19 +108,7 @@ struct AssignView: View {
                                     }
                                 }
                                 .padding(.vertical, 10)
-                                .swipeActions(allowsFullSwipe: false) {
-                                    Button {
-                                        var it = item
-                                        if let fr = selectedFriend {
-                                            it.assignFriend(friend: fr, newQty: 1)
-                                            splitItem.updateItem(it)
-                                        }
-                                    } label: {
-                                        Label("Add", systemImage: "plus")
-                                    }
-                                    .tint(item.getTakenQty() >= item.qty ? .bagirataDimmed : .indigo)
-                                    .disabled(item.getTakenQty() >= item.qty)
-
+                                .swipeActions(edge: .leading) {
                                     Button() {
                                         var it = item
                                         if let fr = selectedFriend {
@@ -135,6 +123,19 @@ struct AssignView: View {
                                         (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 ? .bagirataDimmed : .teal)
                                     .disabled(
                                         (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0)
+                                }
+                                .swipeActions() {
+                                    Button {
+                                        var it = item
+                                        if let fr = selectedFriend {
+                                            it.assignFriend(friend: fr, newQty: 1)
+                                            splitItem.updateItem(it)
+                                        }
+                                    } label: {
+                                        Label("Add", systemImage: "plus")
+                                    }
+                                    .tint(item.getTakenQty() >= item.qty ? .bagirataDimmed : .indigo)
+                                    .disabled(item.getTakenQty() >= item.qty)
                                 }
                             }
                         }
@@ -181,20 +182,6 @@ struct AssignView: View {
                             
                             splittedData = transformedSplit
                             currentSubTab = .split
-                            
-                            
-                            let encoder = JSONEncoder()
-                                encoder.dateEncodingStrategy = .iso8601
-                                encoder.outputFormatting = .prettyPrinted
-
-                                do {
-                                    let jsonData = try encoder.encode(transformedSplit)
-                                    if let jsonString = String(data: jsonData, encoding: .utf8) {
-                                        print(jsonString)
-                                    }
-                                } catch {
-                                    print("Failed to encode SplitItem to JSON: \(error)")
-                                }
                         }, label: {
                             Text("Continue")
                         })

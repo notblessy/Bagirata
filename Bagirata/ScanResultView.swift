@@ -6,9 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ScanResultView: View {
     @Environment(\.modelContext) private var context
+    @Query(
+        filter: #Predicate<Friend> { friend in
+            friend.me
+        }
+    ) var me: [Friend]
+    
+    var profile: Friend? { me.first }
     
     @Binding var currentSubTab: SubTabs
     @Binding var selectedTab: Tabs
@@ -17,6 +25,8 @@ struct ScanResultView: View {
     
     @State private var selectedItem: AssignedItem?
     @State private var selectedOther: OtherItem?
+    
+    @State private var hasMe: Bool = false
     
     @State private var showSheet: Bool = false
     @State private var showOtherSheet: Bool = false
@@ -141,6 +151,7 @@ struct ScanResultView: View {
                 }
             }
             .listStyle(.plain)
+            .ignoresSafeArea(edges: .bottom)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(role: .destructive,action: {
@@ -171,19 +182,19 @@ struct ScanResultView: View {
             }
             .sheet(isPresented: $showSheet, content: {
                 AddItem(splitItem: $splitItem)
-                    .presentationDetents([.height(250)])
+                    .presentationDetents([.height(300)])
             })
             .sheet(item: $selectedItem) { item in
                 EditItem(splitItem: $splitItem, item: item)
-                    .presentationDetents([.height(250)])
+                    .presentationDetents([.height(300)])
             }
             .sheet(isPresented: $showOtherSheet, content: {
                 AddOtherItem(splitItem: $splitItem)
-                    .presentationDetents([.height(250)])
+                    .presentationDetents([.height(300)])
             })
             .sheet(item: $selectedOther) { item in
                 EditOtherItem(splitItem: $splitItem, item: item)
-                    .presentationDetents([.height(250)])
+                    .presentationDetents([.height(300)])
             }
             .sheet(isPresented: $showFriendSheet, content: {
                 VStack {
@@ -193,11 +204,11 @@ struct ScanResultView: View {
                     ZStack(alignment: .trailing) {
                         TextField("Search", text: $searchFriend)
                             .padding(.horizontal, 11)
-                            .padding(.vertical, 10)
+                            .padding(.vertical, 11)
                             .padding(.trailing, 30)
                             .frame(maxWidth: .infinity)
                             .background(Color.gray.opacity(0.2))
-                            .cornerRadius(5)
+                            .cornerRadius(8)
                             .shadow(color: Color.black.opacity(0.2), radius: 0.2, x: 0.0, y: 1)
                             .accentColor(Color.blue)
                             .padding(.horizontal)
@@ -212,18 +223,12 @@ struct ScanResultView: View {
                             .tint(.gray)
                         }
                     }
+                    .padding(.horizontal, 5)
                     FriendSheet(search: searchFriend, splitItem: $splitItem)
                         .presentationDetents([.medium])
                 }
             })
-            .confirmationDialog("Are you sure want to cancel?", isPresented: $showConfirmation, titleVisibility: .visible) {
-                Button(action: {
-                    let split = Split(id: UUID(), name: splitItem.name, status: splitItem.status, items: splitItem.items, otherPayments: splitItem.otherPayments, createdAt: Date())
-                    
-                    context.insert(split)
-                }, label: {
-                    Text("Save Draft")
-                })
+            .confirmationDialog("Are you sure want to discard?", isPresented: $showConfirmation, titleVisibility: .visible) {
                 Button(role: .destructive, action: {
                     selectedTab = .history
                     isActive = false
@@ -243,6 +248,14 @@ struct ScanResultView: View {
                 }, label: {
                     Text("Other")
                 })
+            }
+        }
+        .onAppear {
+            if splitItem.friends.count == 0 {
+                if let pf = profile {
+                    hasMe = pf.me
+                    splitItem.toggleFriend(pf.toAssignedFriend())
+                }
             }
         }
     }

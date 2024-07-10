@@ -36,7 +36,7 @@ struct HistoryView: View {
                         VStack(alignment: .leading) {
                             Text(split.name)
                                 .font(.system(size: 20))
-                            BagirataAvatarGroup(imageNames: split.friendNames(), width: 26, height: 26, overlapOffset: 15, fontSize: 12)
+                            BagirataAvatarGroup(friends: split.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
                         }
                     
                         Spacer()
@@ -48,6 +48,12 @@ struct HistoryView: View {
                         }
                     }
                 }
+                .onDelete(perform: { indexSet in
+                    indexSet.forEach { index in
+                        let split = splits[index]
+                        context.delete(split)
+                    }
+                })
             }
 //            .searchable(text: $search,placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Splits")
             .toolbar {
@@ -63,7 +69,7 @@ struct HistoryView: View {
             }
             .navigationTitle("History")
             .sheet(isPresented: $showSheet, content: {
-                AddFriend()
+                EditMe()
                     .presentationDetents([.medium])
             })
             .listStyle(.plain)

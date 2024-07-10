@@ -22,49 +22,57 @@ struct AddItem: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Add Item")
-                    .font(.title2)
-                    .fontWeight(.medium)
-                
-                InputText(label: "Name", showLabel: false, borderStyle: "", value: $name)
-                    .padding(.top)
-                HStack {
-                    InputText(label: "Qty", showLabel: false, borderStyle: "number", value: $qty)
-                        .frame(width: 100)
-                        .keyboardType(.numberPad)
-                    InputText(label: "Price", showLabel: false, borderStyle: "", value: $price)
-                        .keyboardType(.numberPad)
-                }
-                .padding(.top, 5)
-
-                HStack {
-                    Button(action: {
-                        dismiss()
-                    }, label: {
-                        Text("Dismiss")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    })
-                    .buttonStyle(.bordered)
+            ZStack {
+                Color(UIColor.systemGroupedBackground)
+                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    Text("Add Item")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .padding(.top, 20)
                     
-                    Button(action: {
-                        if let qtyInt = Int(qty), let priceInt = Int(price) {
-                            let sp = AssignedItem(name: name, qty: qtyInt, price: priceInt)
-                            splitItem.items.append(sp)
+                    Form {
+                        TextField("Name", text: $name)
+                        HStack {
+                            TextField("Qty", text: $qty)
+                                .frame(width: 100)
+                                .keyboardType(.numberPad)
+                            TextField("Price", text: $price)
+                                .keyboardType(.numberPad)
                         }
+                    }
+                    .background(Color.clear)
+                    .scrollContentBackground(.hidden)
+
+                    HStack {
+                        Button(action: {
+                            dismiss()
+                        }, label: {
+                            Text("Dismiss")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(5)
+                        })
+                        .buttonStyle(.bordered)
                         
-                        dismiss()
-                    }, label: {
-                        Text("Add Item")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    })
-                    .disabled(disabledButton)
-                    .buttonStyle(.borderedProminent)
+                        Button(action: {
+                            if let qtyInt = Int(qty), let priceInt = Int(price) {
+                                let sp = AssignedItem(name: name, qty: qtyInt, price: priceInt)
+                                splitItem.items.append(sp)
+                            }
+                            
+                            dismiss()
+                        }, label: {
+                            Text("Add Item")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(5)
+                        })
+                        .disabled(disabledButton)
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .padding()
                 }
-                .padding(.top, 10)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
 }

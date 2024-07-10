@@ -61,12 +61,13 @@ struct ContentView: View {
                     case .assign:
                         AssignView(currentSubTab: $currentSubTab, splitItem: $split, splittedData: $splitted)
                     case .split:
-                        SplitView(selectedTab: $selectedTab, splitted: $splitted)
+                        SplitView(selectedTab: $selectedTab, scannerResultActive: $scannerResultActive, splitted: $splitted)
                     }
                 }
             }
         }
-        .navigationTitle("Scan Result")
+        .padding(.bottom, -8)
+        .background(Color.red)
         .onAppear {
             hasUser = profile?.me ?? false
             showUserSheet = !hasUser
