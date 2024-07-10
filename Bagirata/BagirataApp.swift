@@ -23,6 +23,7 @@ struct BagirataApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .tint(Color(hex: "4A93CF"))
         }
         .modelContainer(modelContainer)
     }

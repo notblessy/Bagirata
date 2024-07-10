@@ -31,7 +31,7 @@ struct BagiraTab: View {
             }, label: {
                 BagiratabButton(label: "History", image: "book.pages", isActive: selectedTab == .history)
             })
-            .tint(selectedTab == .history ? Color.blue : Color.gray)
+            .tint(selectedTab == .history ? Color.bagirataOk : Color.gray)
             
             Button(action: {
                 if scannerResultActive {
@@ -42,7 +42,7 @@ struct BagiraTab: View {
             }, label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 100)
-                        .fill(Color.blue)
+                        .fill(Color.bagirataOk)
                         .frame(width: 60, height: 60)
                     VStack {
                         Image(systemName: scannerResultActive ? "doc.on.clipboard" : "doc.text.viewfinder")
@@ -60,7 +60,7 @@ struct BagiraTab: View {
             }, label: {
                 BagiratabButton(label: "Friends", image: "person", isActive: selectedTab == .friend)
             })
-            .tint(selectedTab == .friend ? Color.blue : Color.gray)
+            .tint(selectedTab == .friend ? Color.bagirataOk : Color.gray)
         }
         .frame(height: 82)
         .overlay(

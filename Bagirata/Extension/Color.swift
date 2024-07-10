@@ -43,7 +43,7 @@ extension Color {
 extension Color {
     public static let bagirataPrimary = Color(hex: "FFAB09")
     public static let bagirataWhite = Color(hex: "F9F9F9")
-    public static let bagirataSuccess = Color(hex: "D6E9B0")
+    public static let bagirataOk = Color(hex: "4A93CF")
     public static let bagirataError = Color(hex: "FADAD6")
     public static let bagirataDimmed = Color(hex: "CACED0")
     public static let bagirataDimmedLight = Color(hex: "F4F4F4")

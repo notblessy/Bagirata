@@ -16,7 +16,7 @@ struct BagiratabButton: View {
         GeometryReader { geo in
             if isActive {
                 Rectangle()
-                    .foregroundColor(.blue)
+                    .foregroundColor(.bagirataOk)
                     .frame(width: geo.size.width/2, height: 5)
                     .padding(.leading, geo.size.width/4)
             }
