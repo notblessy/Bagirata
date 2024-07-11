@@ -42,7 +42,7 @@ struct ContentView: View {
             switch selectedTab {
             case .history:
                 HistoryView(search: search)
-                    .alert(isPresented: $showAlertRecognizer) {
+                .alert(isPresented: $showAlertRecognizer) {
                         Alert(title: Text("Scan Error"), message: Text(errMessage), dismissButton: .default(Text("OK")))
                     }
             case .friend:
@@ -99,6 +99,7 @@ struct ContentView: View {
                 case .success(let response):
                     split = response.data
                     scannerResultActive = true
+                    currentSubTab = .review
                     
                     isLoading = false
                 case .failure(let error):

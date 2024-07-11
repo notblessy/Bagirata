@@ -79,7 +79,6 @@ struct AssignView: View {
                                             ZStack(alignment: .topTrailing) {
                                                 Text(item.name)
                                                     .font(.system(size: 18))
-                                                    .foregroundStyle(.black)
                                                 
                                                 if item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") > 0 {
                                                     Text(String(item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "")))
@@ -149,7 +148,6 @@ struct AssignView: View {
                                         VStack(alignment: .leading) {
                                             Text(item.name)
                                                 .font(.system(size: 18))
-                                                .foregroundStyle(.black)
                                             Text(item.type.capitalized)
                                                 .font(.system(size: 16))
                                                 .foregroundStyle(.gray)

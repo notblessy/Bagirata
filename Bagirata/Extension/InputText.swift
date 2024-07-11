@@ -25,7 +25,7 @@ struct InputText: View {
             case "success":
                 TextField(label, text: $value)
                     .padding(.horizontal, 11)
-                    .padding(.vertical, 3)
+                    .padding(.vertical, 18)
                     .frame(maxWidth: .infinity)
                     .background(Color.blue)
                     .cornerRadius(5)
@@ -34,7 +34,7 @@ struct InputText: View {
             case "error":
                 TextField(label, text: $value)
                     .padding(.horizontal, 11)
-                    .padding(.vertical, 3)
+                    .padding(.vertical, 18)
                     .frame(maxWidth: .infinity)
                     .background(Color.blue)
                     .cornerRadius(5)
@@ -43,7 +43,7 @@ struct InputText: View {
             default:
                 TextField(label, text: $value)
                     .padding(.horizontal, 11)
-                    .padding(.vertical, 10)
+                    .padding(.vertical, 18)
                     .frame(maxWidth: .infinity)
                     .background(Color.bagirataDimmedLight.opacity(0.2))
                     .cornerRadius(5)

@@ -1,14 +1,14 @@
 //
-//  RecognizeHTTP.swift
+//  SaveSplitHTTP.swift
 //  Bagirata
 //
-//  Created by Frederich Blessy on 03/07/24.
+//  Created by Frederich Blessy on 10/07/24.
 //
 
 import Foundation
 
-func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>) -> Void) {
-    let endpoint = "http://172.20.10.2:3200/v1/recognize"
+func saveSplit(payload: Splitted, completion: @escaping (Result<SaveSplitResponse, Error>) -> Void) {
+    let endpoint = "http://172.20.10.2:3200/v1/splits"
     guard let url = URL(string: endpoint) else {
         completion(.failure(HTTPError.invalidURL))
         return
@@ -18,11 +18,14 @@ func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    let body: [String: AnyHashable] = [
-        "model": model
-    ]
-    
-    request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
+    do {
+        let body = try JSONEncoder().encode(payload)
+        
+        request.httpBody = body
+    } catch {
+        completion(.failure(error))
+        return
+    }
     
     let task = URLSession.shared.dataTask(with: request) { data, _, error in
         guard let data = data, error == nil else {
@@ -31,7 +34,7 @@ func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>
         }
         
         do {
-            let response = try JSONDecoder().decode(ItemResponse.self, from: data)
+            let response = try JSONDecoder().decode(SaveSplitResponse.self, from: data)
             completion(.success(response))
         }
         catch {
@@ -40,10 +43,4 @@ func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>
     }
     
     task.resume()
-}
-
-enum HTTPError: Error {
-    case invalidURL
-    case invalidResponse
-    case invalidData
 }

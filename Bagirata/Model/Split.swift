@@ -334,6 +334,19 @@ struct ItemResponse: Codable {
     }
 }
 
+struct SaveSplitResponse: Codable {
+    let message: String
+    let success: Bool
+    let data: String
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.message = try container.decode(String.self, forKey: .message)
+        self.success = try container.decode(Bool.self, forKey: .success)
+        self.data = try container.decode(String.self, forKey: .data)
+    }
+}
+
 enum PaymentType: String, CaseIterable, Identifiable {
     case addition, deduction
     var id: Self { self }

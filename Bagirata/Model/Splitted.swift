@@ -29,9 +29,9 @@ class SplittedFriend: Identifiable, Codable {
     let items: [FriendItem]
     var others: [FriendOther]
     let me: Bool
-    let createdAt: Date
+    let createdAt: String
 
-    init(id: UUID, friendId: UUID, name: String, accentColor: String, total: Int, items: [FriendItem], others: [FriendOther], me: Bool, createdAt: Date) {
+    init(id: UUID, friendId: UUID, name: String, accentColor: String, total: Int, items: [FriendItem], others: [FriendOther], me: Bool, createdAt: String) {
         self.id = id
         self.friendId = friendId
         self.name = name
@@ -70,7 +70,7 @@ class SplittedFriend: Identifiable, Codable {
         items = try container.decode([FriendItem].self, forKey: .items)
         others = try container.decode([FriendOther].self, forKey: .others)
         me = try container.decode(Bool.self, forKey: .me)
-        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        createdAt = try container.decode(String.self, forKey: .createdAt)
     }
 }
 
@@ -91,27 +91,30 @@ class FriendItem: Identifiable, Codable {
 @Model
 class Splitted: Identifiable, Codable {
     let id: UUID
+    let slug: String
     let name: String
-    let createdAt: Date
+    let createdAt: String
     var grandTotal: Int
     var friends: [SplittedFriend]
     
     private enum CodingKeys: String, CodingKey {
-        case id, name, createdAt, grandTotal, friends
+        case id, name, slug, createdAt, grandTotal, friends
     }
     
     init() {
         self.id = UUID()
+        self.slug = ""
         self.name = ""
-        self.createdAt = Date()
+        self.createdAt = ""
         self.grandTotal = 0
         self.friends = []
     }
     
-    init(id: UUID, name: String, createdAt: Date, grandTotal: Int, friends: [SplittedFriend]) {
+    init(id: UUID, slug: String, name: String, createdAt: Date, grandTotal: Int, friends: [SplittedFriend]) {
         self.id = id
+        self.slug = slug
         self.name = name
-        self.createdAt = createdAt
+        self.createdAt = dateToString(d: createdAt)
         self.grandTotal = grandTotal
         self.friends = friends
     }
@@ -119,6 +122,7 @@ class Splitted: Identifiable, Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
+        try container.encode(slug, forKey: .slug)
         try container.encode(name, forKey: .name)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(grandTotal, forKey: .grandTotal)
@@ -128,8 +132,9 @@ class Splitted: Identifiable, Codable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
+        slug = try container.decode(String.self, forKey: .slug)
         name = try container.decode(String.self, forKey: .name)
-        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        createdAt = try container.decode(String.self, forKey: .createdAt)
         grandTotal = try container.decode(Int.self, forKey: .grandTotal)
         friends = try container.decode([SplittedFriend].self, forKey: .friends)
     }
@@ -145,10 +150,19 @@ class Splitted: Identifiable, Codable {
     }
     
     func formatCreatedAt() -> String {
+        let parser = DateFormatter()
+        parser.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        parser.timeZone = TimeZone(secondsFromGMT: 7)
+
+        guard let date = parser.date(from: self.createdAt) else {
+            return ""
+        }
+
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMMM yyyy"
+        formatter.locale = Locale(identifier: "en_US")
         
-        return formatter.string(from: createdAt)
+        return formatter.string(from: date)
     }
     
     static func example() -> Splitted {
@@ -203,7 +217,7 @@ class Splitted: Identifiable, Codable {
                 items: items1,
                 others: [other1],
                 me: true,
-                createdAt: formatter.date(from: "2024-07-06T06:32:57Z")!
+                createdAt: "2024-07-06T06:32:57Z"
             ),
             SplittedFriend(
                 id: UUID(uuidString: "7B8E2D55-A8F9-44EB-9DA4-5326BDF42FBD")!,
@@ -214,7 +228,7 @@ class Splitted: Identifiable, Codable {
                 items: items2,
                 others: [other1],
                 me: false,
-                createdAt: formatter.date(from: "2024-07-06T06:33:00Z")!
+                createdAt: "2024-07-06T06:32:57Z"
             ),
             SplittedFriend(
                 id: UUID(uuidString: "EB489A69-1C8A-4551-9BA7-5E1FDAF1E697")!,
@@ -225,12 +239,13 @@ class Splitted: Identifiable, Codable {
                 items: items3,
                 others: [other1],
                 me: false,
-                createdAt: formatter.date(from: "2024-07-06T06:32:58Z")!
+                createdAt: "2024-07-06T06:32:57Z"
             )
         ]
         
         return Splitted(
             id: UUID(uuidString: "44D88F40-303C-43C8-BF92-2E4E38CF3817")!,
+            slug: generateSlug(length: 5),
             name: "1CO Food Centrum sunter",
             createdAt: formatter.date(from: "2024-07-06T06:32:23Z")!,
             grandTotal: 122000,
@@ -274,7 +289,7 @@ func splitted(splitItem: SplitItem) -> Splitted {
                     items: [friendItem],
                     others: [],
                     me: friend.me,
-                    createdAt: friend.createdAt
+                    createdAt: dateToString(d: friend.createdAt)
                 )
                 transformedFriends[friendId] = newFriend
             }
@@ -300,9 +315,18 @@ func splitted(splitItem: SplitItem) -> Splitted {
     
     return Splitted(
         id: splitItem.id,
+        slug: generateSlug(length: 10),
         name: splitItem.name,
         createdAt: splitItem.createdAt,
         grandTotal: grandTotal,
         friends: Array(transformedFriends.values)
     )
+}
+
+func dateToString(d: Date) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    dateFormatter.timeZone = TimeZone(secondsFromGMT: 7)
+
+    return dateFormatter.string(from: d)
 }

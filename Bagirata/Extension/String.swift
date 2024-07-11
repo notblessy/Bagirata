@@ -16,3 +16,16 @@ extension String {
         }
     }
 }
+
+let charset = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+func generateSlug(length: Int) -> String {
+    var result = ""
+    for _ in 0..<length {
+        let randomIndex = Int(arc4random_uniform(UInt32(charset.count)))
+        let randomCharacter = charset[randomIndex]
+        
+        result.append(randomCharacter)
+    }
+    return result
+}

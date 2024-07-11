@@ -16,6 +16,12 @@ struct SplitView: View {
     
     private let pasteboard = UIPasteboard.general
     
+    @State var isLoading: Bool = false
+    @State var showAlertSave: Bool = false
+    @State var showAlertShare: Bool = false
+    @State var errMessage: String = ""
+    @State var link: String = ""
+    
     @Binding var selectedTab: Tabs
     @Binding var scannerResultActive: Bool
     @Binding var splitted: Splitted
@@ -146,15 +152,48 @@ struct SplitView: View {
                 }
                 
                 ToolbarItem {
-                    Button(action: {
-                        
-                    }, label: {
-                        Text("Share")
-                    })
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .padding()
+                    } else {
+                        Button(action: {
+                            isLoading = true
+                            
+                            saveSplit(payload: splitted) { res in
+                                switch res {
+                                case .success(let response):
+                                    if response.success {
+                                        scannerResultActive = false
+                                        
+                                        isLoading = false
+                                        
+                                        pasteboard.string = "http://bagirata.co/\(response.data)"
+                                        showAlertShare = true
+                                    }
+                                case .failure(let error):
+                                    errMessage = error.localizedDescription
+                                    isLoading = false
+                                    showAlertShare = true
+                                }
+                            }
+                        }, label: {
+                            Text("Share")
+                        })
+                    }
                     
                 }
             }
-            }
+        }
+        .alert(isPresented: $showAlertSave) {
+            Alert(title: Text("Error Saving Split"), message: Text(errMessage), dismissButton: .default(Text("OK")))
+        }
+        .alert(isPresented: $showAlertShare) {
+            Alert(title: Text("Share Success"), message: Text("Link copied to clipboard!"), dismissButton: .default(Text("OK"), action: {
+                    selectedTab = .history
+                    splitted = Splitted()
+            }))
+        }
     }
 }
 

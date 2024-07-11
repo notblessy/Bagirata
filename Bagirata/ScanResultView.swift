@@ -32,7 +32,6 @@ struct ScanResultView: View {
     @State private var showOtherSheet: Bool = false
     @State private var showFriendSheet: Bool = false
     @State private var showConfirmation: Bool = false
-    @State private var showAddConfirmation: Bool = false
     
     @State private var search: String = ""
     @State private var searchFriend: String = ""
@@ -126,6 +125,20 @@ struct ScanResultView: View {
                         .padding(.vertical, 10)
                     }
                     .onDelete(perform: deleteItem)
+                    
+                    HStack(alignment: .center) {
+                        Button(action: {
+                            showSheet.toggle()
+                        }, label: {
+                            Text("Add Item")
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        })
+                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.bordered)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .listRowSeparator(.hidden)
                 }
                 Section("Other") {
                     ForEach(splitItem.otherPayments.sorted(by: { $0.createdAt < $1.createdAt })) { item in
@@ -148,6 +161,20 @@ struct ScanResultView: View {
                         .padding(.vertical, 10)
                     }
                     .onDelete(perform: deleteOther)
+                    
+                    HStack(alignment: .center) {
+                        Button(action: {
+                            showOtherSheet.toggle()
+                        }, label: {
+                            Text("Add Other Payment")
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        })
+                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.bordered)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .listRowSeparator(.hidden)
                 }
             }
             .listStyle(.plain)
@@ -159,16 +186,6 @@ struct ScanResultView: View {
                     }, label: {
                         Label("Delete", systemImage: "trash")
                     })
-                }
-                
-                ToolbarItem {
-                    Button(action: {
-                        showAddConfirmation.toggle()
-                    }, label: {
-                        Label("New", systemImage: "plus")
-                        
-                    })
-                    
                 }
                 
                 ToolbarItem {
@@ -223,7 +240,6 @@ struct ScanResultView: View {
                             .tint(.gray)
                         }
                     }
-                    .padding(.horizontal, 5)
                     FriendSheet(search: searchFriend, splitItem: $splitItem)
                         .presentationDetents([.medium])
                 }
@@ -235,18 +251,6 @@ struct ScanResultView: View {
                     splitItem = SplitItem()
                 }, label: {
                     Text("Discard")
-                })
-            }
-            .confirmationDialog("What do you want to add?", isPresented: $showAddConfirmation, titleVisibility: .visible) {
-                Button(action: {
-                    showSheet.toggle()
-                }, label: {
-                    Text("New Item")
-                })
-                Button(action: {
-                    showOtherSheet.toggle()
-                }, label: {
-                    Text("Other")
                 })
             }
         }
