@@ -15,56 +15,43 @@ struct HistoryView: View {
     @State private var page: Int = 0
     @State private var search: String = ""
     
-    init(search: String) {
-        self.search = search
-        
-//        _splits = Query(
-//            filter: #Predicate<Splitted> { splitted in
-//                splitted.name.localizedStandardContains(search) || search.isEmpty
-//            },
-//            sort: \Splitted.createdAt,
-//            order: .reverse
-//        )
-    }
-    
     @State private var showSheet: Bool = false
+    @State private var selectedSplit: Splitted?
     
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(splits) { split in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(split.name.truncate(length: 20))
-                                .font(.system(size: 18))
-                            HStack {
-                                BagirataAvatarGroup(friends: split.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
-                                Text(IDR(split.grandTotal))
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(.gray)
+        NavigationSplitView(sidebar: {
+            List(selection: $selectedSplit) {
+                ForEach(splits, id: \.id) { split in
+                    Button(action: {
+                        selectedSplit = split
+                    }, label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(split.name.truncate(length: 20))
+                                    .font(.system(size: 18))
+                                HStack {
+                                    BagirataAvatarGroup(friends: split.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
+                                    Text(IDR(split.grandTotal))
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .leading) {
+                                Text(split.formatCreatedAt())
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(Color.gray)
                             }
                         }
-                        
-                        Spacer()
-                        
-                        VStack(alignment: .leading) {
-                            Text(split.formatCreatedAt())
-                                .font(.system(size: 12))
-                                .foregroundStyle(Color.gray)
+                        .onAppear {
+                            fetchIfNecessary(split: split)
                         }
-                    }
-                    .onAppear {
-                        fetchIfNecessary(split: split)
-                    }
+                    })
                 }
-                .onDelete(perform: { indexSet in
-                    indexSet.forEach { index in
-                        let split = splits[index]
-                        context.delete(split)
-                    }
-                })
+                .onDelete(perform: deleteSplit)
             }
-            //            .searchable(text: $search,placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Splits")
             .toolbar {
                 ToolbarItem {
                     Button(action: {
@@ -82,23 +69,26 @@ struct HistoryView: View {
                     .presentationDetents([.medium])
             })
             .listStyle(.plain)
-            .onAppear {
-                fetchHistories(search: search)
+        }, detail: {
+            if let sp = selectedSplit {
+                HistoryDetailView(split: sp)
             }
-            .overlay {
-                if splits.isEmpty {
-                    Text("No Data")
-                        .font(.title2)
-                        .foregroundStyle(.gray)
-                }
-            }
-            .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Histories")
-            .onChange(of: search) { oldValue, newValue in
-                fetchHistories(currentPage: 0, search: newValue)
+        })
+        .onAppear {
+            fetchHistories(search: search)
+        }
+        .overlay {
+            if splits.isEmpty {
+                Text("No Data")
+                    .font(.title2)
+                    .foregroundStyle(.gray)
             }
         }
+        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Histories")
+        .onChange(of: search) { oldValue, newValue in
+            fetchHistories(currentPage: 0, search: newValue)
+        }
     }
-        
     
     private func fetchHistories(currentPage: Int = 0, search: String = "", loadMore: Bool = false) {
         if !loadMore {
@@ -131,8 +121,13 @@ struct HistoryView: View {
             fetchHistories(currentPage: page, search: search, loadMore: true)
         }
     }
+    
+    private func deleteSplit(at offsets: IndexSet) {
+        splits.remove(atOffsets: offsets)
+    }
 }
 
 #Preview {
-    HistoryView(search: "")
+    HistoryView()
+        .modelContainer(previewContainer)
 }

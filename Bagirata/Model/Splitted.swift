@@ -252,6 +252,105 @@ class Splitted: Identifiable, Codable {
             friends: friends
         )
     }
+    
+    static func examples() -> [Splitted] {
+        let formatter = ISO8601DateFormatter()
+        
+        let items1 = [
+            FriendItem(
+                id: UUID(uuidString: "3FCEA1EE-1033-420B-9024-B875E6D0FA8B")!,
+                name: "Iced Thai Tea D Glazy",
+                price: 29000,
+                qty: 1
+            )
+        ]
+        
+        let items2 = [
+            FriendItem(
+                id: UUID(uuidString: "3FCEA1EE-1033-420B-9024-B875E6D0FA8B")!,
+                name: "Iced Thai Tea D Glazy",
+                price: 29000,
+                qty: 1
+            ),
+            FriendItem(
+                id: UUID(uuidString: "D62F87D3-3445-4C96-96BA-07D3829BE5E6")!,
+                name: "Jcoccino",
+                price: 32000,
+                qty: 1
+            )
+        ]
+        
+        let items3 = [
+            FriendItem(
+                id: UUID(uuidString: "D62F87D3-3445-4C96-96BA-07D3829BE5E6")!,
+                name: "Jcoccino",
+                price: 32000,
+                qty: 1
+            )
+        ]
+        
+        let other1 = FriendOther(
+            id: UUID(uuidString: "D62F87D3-3445-4C96-96BA-07D3829BE5E6")!,
+            name: "Tax",
+            price: 12000
+        )
+        
+        let friends = [
+            SplittedFriend(
+                id: UUID(uuidString: "5C503B3A-6713-45C6-B70E-3CCE2A2E3A36")!,
+                friendId: UUID(uuidString: "550E8400-E29B-41D4-A716-446655440000")!,
+                name: "John Doe",
+                accentColor: "#6662B1",
+                total: 29000,
+                items: items1,
+                others: [other1],
+                me: true,
+                createdAt: "2024-07-06T06:32:57Z"
+            ),
+            SplittedFriend(
+                id: UUID(uuidString: "7B8E2D55-A8F9-44EB-9DA4-5326BDF42FBD")!,
+                friendId: UUID(uuidString: "550E8400-E29B-41D4-A716-446655440002")!,
+                name: "Samsul Riandi",
+                accentColor: "#6C6CBC",
+                total: 61000,
+                items: items2,
+                others: [other1],
+                me: false,
+                createdAt: "2024-07-06T06:32:57Z"
+            ),
+            SplittedFriend(
+                id: UUID(uuidString: "EB489A69-1C8A-4551-9BA7-5E1FDAF1E697")!,
+                friendId: UUID(uuidString: "550E8400-E29B-41D4-A716-446655440001")!,
+                name: "Jeanny Ruslan",
+                accentColor: "#A6BB66",
+                total: 32000,
+                items: items3,
+                others: [other1],
+                me: false,
+                createdAt: "2024-07-06T06:32:57Z"
+            )
+        ]
+        
+        let splitted1 = Splitted(
+            id: UUID(uuidString: "44D88F40-303C-43C8-BF92-2E4E38CF3817")!,
+            slug: generateSlug(length: 5),
+            name: "1CO Food Centrum sunter",
+            createdAt: formatter.date(from: "2024-07-06T06:32:23Z")!,
+            grandTotal: 122000,
+            friends: friends
+        )
+        
+        let splitted2 = Splitted(
+            id: UUID(uuidString: "44D88F40-303C-43C8-BF92-2E4E38CF3816")!,
+            slug: generateSlug(length: 5),
+            name: "Coffee beans and tea leaf",
+            createdAt: formatter.date(from: "2024-07-06T06:32:23Z")!,
+            grandTotal: 550000,
+            friends: friends
+        )
+        
+        return [splitted1, splitted2]
+    }
 }
 
 

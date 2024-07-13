@@ -17,7 +17,7 @@ struct SplitView: View {
     private let pasteboard = UIPasteboard.general
     
     @State var isLoading: Bool = false
-    @State var showAlertSave: Bool = false
+    @State var showAlertError: Bool = false
     @State var showAlertShare: Bool = false
     @State var errMessage: String = ""
     @State var link: String = ""
@@ -174,22 +174,21 @@ struct SplitView: View {
                                 case .failure(let error):
                                     errMessage = error.localizedDescription
                                     isLoading = false
-                                    showAlertShare = true
+                                    showAlertError = true
                                 }
                             }
                         }, label: {
                             Text("Share")
                         })
                     }
-                    
                 }
             }
         }
-        .alert(isPresented: $showAlertSave) {
-            Alert(title: Text("Error Saving Split"), message: Text(errMessage), dismissButton: .default(Text("OK")))
+        .alert(isPresented: $showAlertError) {
+            Alert(title: Text("Error Saving Split"), message: Text(errMessage), dismissButton: .default(Text("Dismiss")))
         }
         .alert(isPresented: $showAlertShare) {
-            Alert(title: Text("Share Success"), message: Text("Link copied to clipboard!"), dismissButton: .default(Text("OK"), action: {
+            Alert(title: Text("Share Success"), message: Text("Link copied to clipboard!"), dismissButton: .default(Text("Dismiss"), action: {
                     selectedTab = .history
                     splitted = Splitted()
             }))

@@ -30,6 +30,8 @@
 		F9705BF22C2DBDBC0057D419 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF12C2DBDBC0057D419 /* ScannerView.swift */; };
 		F9705BF42C2DC0150057D419 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF32C2DC0150057D419 /* TextRecognizer.swift */; };
 		F9705BF62C2E59420057D419 /* Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9705BF52C2E59420057D419 /* Split.swift */; };
+		F98685EF2C41793400F852D6 /* PreviewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98685EE2C41793400F852D6 /* PreviewContainer.swift */; };
+		F98685F12C417BAA00F852D6 /* HistoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98685F02C417BAA00F852D6 /* HistoryDetailView.swift */; };
 		F9AC58052C3ED46100D8F836 /* SaveSplitHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AC58042C3ED46100D8F836 /* SaveSplitHTTP.swift */; };
 		F9BCDA902C2D159400EE1E40 /* BagirataAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA8F2C2D159400EE1E40 /* BagirataAvatar.swift */; };
 		F9BCDA922C2D18D000EE1E40 /* ColorGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA912C2D18D000EE1E40 /* ColorGen.swift */; };
@@ -74,6 +76,8 @@
 		F9705BF12C2DBDBC0057D419 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		F9705BF32C2DC0150057D419 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		F9705BF52C2E59420057D419 /* Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Split.swift; sourceTree = "<group>"; };
+		F98685EE2C41793400F852D6 /* PreviewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContainer.swift; sourceTree = "<group>"; };
+		F98685F02C417BAA00F852D6 /* HistoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryDetailView.swift; sourceTree = "<group>"; };
 		F9AC58042C3ED46100D8F836 /* SaveSplitHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveSplitHTTP.swift; sourceTree = "<group>"; };
 		F9BCDA8F2C2D159400EE1E40 /* BagirataAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagirataAvatar.swift; sourceTree = "<group>"; };
 		F9BCDA912C2D18D000EE1E40 /* ColorGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorGen.swift; sourceTree = "<group>"; };
@@ -145,6 +149,7 @@
 				F9705BF12C2DBDBC0057D419 /* ScannerView.swift */,
 				F9705BF32C2DC0150057D419 /* TextRecognizer.swift */,
 				F91E776A2C2C907000AF877B /* HistoryView.swift */,
+				F98685F02C417BAA00F852D6 /* HistoryDetailView.swift */,
 				F91E77682C2C8FA500AF877B /* FriendView.swift */,
 				F91E77562C2C794300AF877B /* Assets.xcassets */,
 				F91E77582C2C794300AF877B /* Preview Content */,
@@ -156,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				F91E77592C2C794300AF877B /* Preview Assets.xcassets */,
+				F98685EE2C41793400F852D6 /* PreviewContainer.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -295,6 +301,7 @@
 				F9705BF22C2DBDBC0057D419 /* ScannerView.swift in Sources */,
 				F91C6C692C384DA800206F52 /* FriendSheet.swift in Sources */,
 				F9C15BD42C379ECA002AD186 /* AssignView.swift in Sources */,
+				F98685F12C417BAA00F852D6 /* HistoryDetailView.swift in Sources */,
 				F9BCDA902C2D159400EE1E40 /* BagirataAvatar.swift in Sources */,
 				F91E77512C2C794100AF877B /* BagirataApp.swift in Sources */,
 				F9BCDA9B2C2D5EE200EE1E40 /* Recognizer.swift in Sources */,
@@ -306,6 +313,7 @@
 				F91E776B2C2C907000AF877B /* HistoryView.swift in Sources */,
 				F95BC2092C2F22B500A86CAE /* EditFriend.swift in Sources */,
 				F9C8CCD02C3AF061001204CF /* ScanResultView.swift in Sources */,
+				F98685EF2C41793400F852D6 /* PreviewContainer.swift in Sources */,
 				F9705BF62C2E59420057D419 /* Split.swift in Sources */,
 				F91C6C6B2C39114F00206F52 /* AddFriend.swift in Sources */,
 				F9C8CCD22C3AF2DE001204CF /* Setting.swift in Sources */,
