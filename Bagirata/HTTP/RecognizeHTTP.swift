@@ -31,6 +31,7 @@ func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>
         }
         
         do {
+            print(data)
             let response = try JSONDecoder().decode(ItemResponse.self, from: data)
             completion(.success(response))
         }

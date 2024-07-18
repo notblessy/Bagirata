@@ -10,17 +10,13 @@ import SwiftData
 
 struct HistoryDetailView: View {
     @Environment(\.modelContext) private var context
-    @Query() var banks: [Bank]
-    
-    var bank: Bank? { banks.first }
     
     let split: Splitted
     
     private let pasteboard = UIPasteboard.general
     
     @State private var isLoading: Bool = false
-    @State private var showAlertShare: Bool = false
-    @State private var showAlertError: Bool = false
+    @State private var showAlert: Bool = false
     @State private var errMessage: String = ""
     
     @State var copied: Bool = false
@@ -48,10 +44,10 @@ struct HistoryDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top)
                 
-                if let bankName = bank?.name, let bankNumber = bank?.number, let accountName = bank?.accountName {
+                if !split.bankName.isEmpty, !split.bankNumber.isEmpty, !split.bankAccount.isEmpty {
                     Section("Transfer Information") {
                         Button(action: {
-                            pasteboard.string = String(bank?.number ?? 0)
+                            pasteboard.string = split.bankNumber
                             copied = true
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -59,11 +55,11 @@ struct HistoryDetailView: View {
                             }
                         }, label: {
                             VStack(alignment: .leading) {
-                                Text(bankName)
+                                Text(split.bankName)
                                     .fontWeight(.bold)
                                 HStack {
                                     if !copied {
-                                        Text(String(bankNumber))
+                                        Text(split.bankNumber)
                                         Image(systemName: "doc.on.doc.fill")
                                             .resizable()
                                             .frame(width: 15, height: 18)
@@ -77,7 +73,7 @@ struct HistoryDetailView: View {
                                     }
                                 }
                                 .padding(.top, -8)
-                                Text(accountName)
+                                Text(split.bankAccount)
                                     .font(.system(size: 14))
                                     .foregroundStyle(.gray)
                             }
@@ -106,7 +102,7 @@ struct HistoryDetailView: View {
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Spacer()
-                                                Text("x\(item.qty)")
+                                                Text(!item.equal ? "x\(item.qty)" : "\(item.qty)/\(split.friends.count)")
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Text(IDR(item.price))
@@ -122,7 +118,7 @@ struct HistoryDetailView: View {
                                                 .font(.system(size: 12))
                                                 .foregroundStyle(.gray)
                                             Spacer()
-                                            Text(IDR(item.price))
+                                            Text(item.type == "addition" ? IDR(item.price) : "-\(IDR(item.price))")
                                                 .font(.system(size: 12))
                                                 .foregroundStyle(.gray)
                                         }
@@ -153,12 +149,12 @@ struct HistoryDetailView: View {
                                         isLoading = false
 
                                         pasteboard.string = "http://bagirata.co/\(response.data)"
-                                        showAlertShare = true
+                                        showAlert.toggle()
                                     }
                                 case .failure(let error):
                                     errMessage = error.localizedDescription
                                     isLoading = false
-                                    showAlertError = true
+                                    showAlert.toggle()
                                 }
                             }
                         }, label: {
@@ -168,11 +164,12 @@ struct HistoryDetailView: View {
                 }
             }
         }
-        .alert(isPresented: $showAlertShare) {
-            Alert(title: Text("Share Success"), message: Text("Link copied to clipboard!"), dismissButton: .default(Text("Dismiss")))
-        }
-        .alert(isPresented: $showAlertError) {
-            Alert(title: Text("Share Error"), message: Text(errMessage), dismissButton: .default(Text("Dismiss")))
+        .alert(isPresented: $showAlert) {
+            if errMessage.isEmpty {
+                Alert(title: Text("Share Success"), message: Text("Link copied to clipboard!"), dismissButton: .default(Text("Dismiss")))
+            } else {
+                Alert(title: Text("Share Error"), message: Text(errMessage), dismissButton: .default(Text("Dismiss")))
+            }
         }
     }
 }

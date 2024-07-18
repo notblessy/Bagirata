@@ -6,9 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AssignView: View {
     @Environment(\.modelContext) private var context
+    @Query() var banks: [Bank]
+    
+    var bank: Bank? { banks.first }
     
     @Binding var currentSubTab: SubTabs
     @Binding var splitItem: SplitItem
@@ -135,6 +139,20 @@ struct AssignView: View {
                                     }
                                     .tint(item.getTakenQty() >= item.qty ? .bagirataDimmed : .indigo)
                                     .disabled(item.getTakenQty() >= item.qty)
+                                    
+                                    Button() {
+                                        var it = item
+                                        if it.equal {
+                                            it.unEqualAssign()
+                                            splitItem.updateItem(it)
+                                        } else {
+                                            it.equalAssign(assignedFriends: splitItem.friends)
+                                            splitItem.updateItem(it)
+                                        }
+                                    } label: {
+                                        Label("Equal", systemImage: !item.equal ? "equal" : "chevron.left.slash.chevron.right")
+                                    }
+                                    .tint(!item.equal ? .blue.opacity(0.3) : .red.opacity(0.3))
                                 }
                             }
                         }
@@ -174,12 +192,14 @@ struct AssignView: View {
                     
                     ToolbarItem {
                         Button(action: {
-                            let transformedSplit = splitted(splitItem: splitItem)
-                            
-                            context.insert(transformedSplit)
-                            
-                            splittedData = transformedSplit
-                            currentSubTab = .split
+                            if let bank {
+                                let transformedSplit = splitted(splitItem: splitItem, bank: bank)
+                                
+                                context.insert(transformedSplit)
+                                
+                                splittedData = transformedSplit
+                                currentSubTab = .split
+                            }
                         }, label: {
                             Text("Continue")
                         })

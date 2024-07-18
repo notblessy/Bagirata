@@ -10,15 +10,11 @@ import SwiftData
 
 struct SplitView: View {
     @Environment(\.modelContext) private var context
-    @Query() var banks: [Bank]
-    
-    var bank: Bank? { banks.first }
     
     private let pasteboard = UIPasteboard.general
     
     @State var isLoading: Bool = false
-    @State var showAlertError: Bool = false
-    @State var showAlertShare: Bool = false
+    @State var showAlert: Bool = false
     @State var errMessage: String = ""
     @State var link: String = ""
     
@@ -52,10 +48,10 @@ struct SplitView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top)
                     
-                    if let bankName = bank?.name, let bankNumber = bank?.number, let accountName = bank?.accountName {
+                    if !splitted.bankName.isEmpty,!splitted.bankNumber.isEmpty, !splitted.bankAccount.isEmpty {
                         Section("Transfer Information") {
                             Button(action: {
-                                pasteboard.string = String(bank?.number ?? 0)
+                                pasteboard.string = splitted.bankNumber
                                 copied = true
                                 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -63,11 +59,11 @@ struct SplitView: View {
                                 }
                             }, label: {
                                 VStack(alignment: .leading) {
-                                    Text(bankName)
+                                    Text(splitted.bankName)
                                         .fontWeight(.bold)
                                     HStack {
                                         if !copied {
-                                            Text(String(bankNumber))
+                                            Text(splitted.bankNumber)
                                             Image(systemName: "doc.on.doc.fill")
                                                 .resizable()
                                                 .frame(width: 15, height: 18)
@@ -81,7 +77,7 @@ struct SplitView: View {
                                         }
                                     }
                                     .padding(.top, -8)
-                                    Text(accountName)
+                                    Text(splitted.bankAccount)
                                         .font(.system(size: 14))
                                         .foregroundStyle(.gray)
                                 }
@@ -110,7 +106,7 @@ struct SplitView: View {
                                                         .font(.system(size: 12))
                                                         .foregroundStyle(.gray)
                                                     Spacer()
-                                                    Text("x\(item.qty)")
+                                                    Text(!item.equal ? "x\(item.qty)" : "\(item.qty)/\(splitted.friends.count)")
                                                         .font(.system(size: 12))
                                                         .foregroundStyle(.gray)
                                                     Text(IDR(item.price))
@@ -126,7 +122,7 @@ struct SplitView: View {
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Spacer()
-                                                Text(IDR(item.price))
+                                                Text(item.type == "addition" ? IDR(item.price) : "-\(IDR(item.price))")
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                             }
@@ -169,12 +165,12 @@ struct SplitView: View {
                                         isLoading = false
                                         
                                         pasteboard.string = "http://bagirata.co/\(response.data)"
-                                        showAlertShare = true
+                                        showAlert = true
                                     }
                                 case .failure(let error):
                                     errMessage = error.localizedDescription
                                     isLoading = false
-                                    showAlertError = true
+                                    showAlert = true
                                 }
                             }
                         }, label: {
@@ -184,14 +180,15 @@ struct SplitView: View {
                 }
             }
         }
-        .alert(isPresented: $showAlertError) {
-            Alert(title: Text("Error Saving Split"), message: Text(errMessage), dismissButton: .default(Text("Dismiss")))
-        }
-        .alert(isPresented: $showAlertShare) {
-            Alert(title: Text("Share Success"), message: Text("Link copied to clipboard!"), dismissButton: .default(Text("Dismiss"), action: {
-                    selectedTab = .history
-                    splitted = Splitted()
-            }))
+        .alert(isPresented: $showAlert) {
+            if errMessage.isEmpty {
+                Alert(title: Text("Share Success"), message: Text("Link copied to clipboard!"), dismissButton: .default(Text("Dismiss"), action: {
+                        selectedTab = .history
+                        splitted = Splitted()
+                }))
+            } else {
+                Alert(title: Text("Error Saving Split"), message: Text(errMessage), dismissButton: .default(Text("Dismiss")))
+            }
         }
     }
 }

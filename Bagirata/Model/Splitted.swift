@@ -12,11 +12,13 @@ class FriendOther: Identifiable, Codable {
     let id: UUID
     let name: String
     let price: Int
+    let type: String
 
-    init(id: UUID, name: String, price: Int) {
+    init(id: UUID, name: String, price: Int, type: String) {
         self.id = id
         self.name = name
         self.price = price
+        self.type = type
     }
 }
 
@@ -78,13 +80,15 @@ class FriendItem: Identifiable, Codable {
     let id: UUID
     let name: String
     let price: Int
+    let equal: Bool
     let qty: Int
 
-    init(id: UUID, name: String, price: Int, qty: Int) {
+    init(id: UUID, name: String, price: Int, qty: Int, equal: Bool = false) {
         self.id = id
         self.name = name
         self.price = price
         self.qty = qty
+        self.equal = equal
     }
 }
 
@@ -93,12 +97,15 @@ class Splitted: Identifiable, Codable {
     let id: UUID
     let slug: String
     let name: String
+    let bankName: String
+    let bankAccount: String
+    let bankNumber: String
     let createdAt: String
     var grandTotal: Int
     var friends: [SplittedFriend]
     
     private enum CodingKeys: String, CodingKey {
-        case id, name, slug, createdAt, grandTotal, friends
+        case id, name, slug, createdAt, grandTotal, friends, bankName, bankAccount, bankNumber
     }
     
     init() {
@@ -108,15 +115,21 @@ class Splitted: Identifiable, Codable {
         self.createdAt = ""
         self.grandTotal = 0
         self.friends = []
+        self.bankName = ""
+        self.bankAccount = ""
+        self.bankNumber = ""
     }
     
-    init(id: UUID, slug: String, name: String, createdAt: Date, grandTotal: Int, friends: [SplittedFriend]) {
+    init(id: UUID, slug: String, name: String, createdAt: Date, grandTotal: Int, friends: [SplittedFriend], bankName: String, bankAccount: String, bankNumber: String) {
         self.id = id
         self.slug = slug
         self.name = name
         self.createdAt = dateToString(d: createdAt)
         self.grandTotal = grandTotal
         self.friends = friends
+        self.bankName = bankName
+        self.bankAccount = bankAccount
+        self.bankNumber = bankNumber
     }
     
     func encode(to encoder: Encoder) throws {
@@ -127,6 +140,9 @@ class Splitted: Identifiable, Codable {
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(grandTotal, forKey: .grandTotal)
         try container.encode(friends, forKey: .friends)
+        try container.encode(bankName, forKey: .bankName)
+        try container.encode(bankAccount, forKey: .bankAccount)
+        try container.encode(bankNumber, forKey: .bankNumber)
     }
         
     required init(from decoder: Decoder) throws {
@@ -137,6 +153,9 @@ class Splitted: Identifiable, Codable {
         createdAt = try container.decode(String.self, forKey: .createdAt)
         grandTotal = try container.decode(Int.self, forKey: .grandTotal)
         friends = try container.decode([SplittedFriend].self, forKey: .friends)
+        bankName = try container.decodeIfPresent(String.self, forKey: .bankName) ?? ""
+        bankAccount = try container.decodeIfPresent(String.self, forKey: .bankAccount) ?? ""
+        bankNumber = try container.decodeIfPresent(String.self, forKey: .bankNumber) ?? ""
     }
     
     func friendNames() -> [String] {
@@ -204,7 +223,8 @@ class Splitted: Identifiable, Codable {
         let other1 = FriendOther(
             id: UUID(uuidString: "D62F87D3-3445-4C96-96BA-07D3829BE5E6")!,
             name: "Tax",
-            price: 12000
+            price: 12000,
+            type: "addition"
         )
         
         let friends = [
@@ -249,7 +269,10 @@ class Splitted: Identifiable, Codable {
             name: "1CO Food Centrum sunter",
             createdAt: formatter.date(from: "2024-07-06T06:32:23Z")!,
             grandTotal: 122000,
-            friends: friends
+            friends: friends,
+            bankName: "BCA",
+            bankAccount: "John Doe",
+            bankNumber: "0284756389993"
         )
     }
     
@@ -292,7 +315,8 @@ class Splitted: Identifiable, Codable {
         let other1 = FriendOther(
             id: UUID(uuidString: "D62F87D3-3445-4C96-96BA-07D3829BE5E6")!,
             name: "Tax",
-            price: 12000
+            price: 12000,
+            type: "addition"
         )
         
         let friends = [
@@ -337,7 +361,10 @@ class Splitted: Identifiable, Codable {
             name: "1CO Food Centrum sunter",
             createdAt: formatter.date(from: "2024-07-06T06:32:23Z")!,
             grandTotal: 122000,
-            friends: friends
+            friends: friends,
+            bankName: "BCA",
+            bankAccount: "John Doe",
+            bankNumber: "0284756389993"
         )
         
         let splitted2 = Splitted(
@@ -346,27 +373,35 @@ class Splitted: Identifiable, Codable {
             name: "Coffee beans and tea leaf",
             createdAt: formatter.date(from: "2024-07-06T06:32:23Z")!,
             grandTotal: 550000,
-            friends: friends
+            friends: friends,
+            bankName: "BCA",
+            bankAccount: "John Doe",
+            bankNumber: "0284756389993"
         )
         
         return [splitted1, splitted2]
     }
 }
 
-
-func splitted(splitItem: SplitItem) -> Splitted {
+func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
     var transformedFriends: [UUID: SplittedFriend] = [:]
-    var grandTotal = 0
     
     for item in splitItem.items {
         for friend in item.friends {
             let friendId = friend.friendId
-            let friendItem = FriendItem(id: item.id, name: item.name, price: item.price, qty: friend.qty)
+            let friendItem = FriendItem(id: item.id, name: item.name, price: item.price, qty: friend.qty, equal: item.equal)
             
             if let existingFriend = transformedFriends[friendId] {
                 var updatedItems = existingFriend.items
-                updatedItems.append(friendItem)
-                let updatedTotal = existingFriend.total + (friend.qty * item.price)
+                
+                if let index = updatedItems.firstIndex(where: { $0.id == friendItem.id }) {
+                    updatedItems[index] = friendItem
+                } else {
+                    updatedItems.append(friendItem)
+                }
+                
+                let updatedTotal = item.equal ? existingFriend.total + (item.price / item.friends.count) : existingFriend.total + (friend.qty * item.price)
+                
                 transformedFriends[friendId] = SplittedFriend(
                     id: existingFriend.id,
                     friendId: existingFriend.friendId,
@@ -384,7 +419,7 @@ func splitted(splitItem: SplitItem) -> Splitted {
                     friendId: friend.friendId,
                     name: friend.name,
                     accentColor: friend.accentColor,
-                    total: friend.qty * item.price,
+                    total: item.equal ? item.price / item.friends.count : friend.qty * item.price,
                     items: [friendItem],
                     others: [],
                     me: friend.me,
@@ -392,22 +427,31 @@ func splitted(splitItem: SplitItem) -> Splitted {
                 )
                 transformedFriends[friendId] = newFriend
             }
-            
-            grandTotal += friend.qty * item.price
         }
+    }
+    
+    for payment in splitItem.otherPayments {
+        let amountPerFriend = payment.amount / splitItem.friends.count
         
-        for payment in splitItem.otherPayments {
-            if payment.type == "addition" {
-                let amountPerFriend = payment.amount / transformedFriends.count
-                
-                for friendId in transformedFriends.keys {
-                    if let friend = transformedFriends[friendId] {
-                        friend.total += amountPerFriend
-                        let otherItem = FriendOther(id: UUID(), name: payment.name, price: amountPerFriend)
-                        friend.others.append(otherItem)
-                        transformedFriends[friendId] = friend
-                    }
+        for friendId in transformedFriends.keys {
+            if let friend = transformedFriends[friendId] {
+                if payment.type == "addition" {
+                    friend.total += amountPerFriend
+                } else {
+                    friend.total -= amountPerFriend
                 }
+                
+                let otherItem = FriendOther(id: payment.id, name: payment.name, price: amountPerFriend, type: payment.type)
+                
+                var updatedOthers = friend.others
+                if let index = updatedOthers.firstIndex(where: { $0.id == otherItem.id }) {
+                    updatedOthers[index] = otherItem
+                } else {
+                    updatedOthers.append(otherItem)
+                }
+                
+                friend.others = updatedOthers
+                transformedFriends[friendId] = friend
             }
         }
     }
@@ -417,8 +461,11 @@ func splitted(splitItem: SplitItem) -> Splitted {
         slug: generateSlug(length: 10),
         name: splitItem.name,
         createdAt: splitItem.createdAt,
-        grandTotal: grandTotal,
-        friends: Array(transformedFriends.values)
+        grandTotal: splitItem.grandTotal(),
+        friends: Array(transformedFriends.values),
+        bankName: bank.name,
+        bankAccount: bank.accountName,
+        bankNumber: String(bank.number)
     )
 }
 

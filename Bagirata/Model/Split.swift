@@ -86,6 +86,7 @@ struct AssignedItem: Identifiable, Codable {
     let name: String
     let qty: Int
     let price: Int
+    var equal: Bool
     var friends: [AssignedFriend] = []
     var createdAt = Date()
     
@@ -93,12 +94,14 @@ struct AssignedItem: Identifiable, Codable {
         self.name = name
         self.qty = qty
         self.price = price
+        self.equal = false
     }
     
-    init(id: UUID, name: String, qty: Int, price: Int, createdAt: Date) {
+    init(id: UUID, name: String, qty: Int, equal: Bool = false, price: Int, createdAt: Date) {
         self.id = id
         self.name = name
         self.qty = qty
+        self.equal = equal
         self.price = price
         self.createdAt = createdAt
     }
@@ -108,6 +111,7 @@ struct AssignedItem: Identifiable, Codable {
         self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         self.name = try container.decode(String.self, forKey: .name)
         self.qty = try container.decode(Int.self, forKey: .qty)
+        self.equal = try container.decodeIfPresent(Bool.self, forKey: .equal) ?? false
         self.price = try container.decode(Int.self, forKey: .price)
     }
     
@@ -140,6 +144,30 @@ struct AssignedItem: Identifiable, Codable {
             let newFriend = AssignedFriend(friendId: friend.friendId, name: friend.name, me: friend.me, accentColor: friend.accentColor, qty: newQty, subTotal: subTotal)
             friends.append(newFriend)
         }
+    }
+    
+    mutating func unEqualAssign() {
+        if equal {
+            friends = []
+            equal = false
+        }
+    }
+    
+    mutating func equalAssign(assignedFriends: [AssignedFriend]) {
+        let totalPrice = price * qty
+        let eachPrice = totalPrice / assignedFriends.count
+        
+        for friend in assignedFriends {
+            if let index = friends.firstIndex(where: { $0.friendId == friend.friendId }) {
+                friends[index].qty = qty
+                friends[index].subTotal = eachPrice
+            } else {
+                let newFriend = AssignedFriend(friendId: friend.friendId, name: friend.name, me: friend.me, accentColor: friend.accentColor, qty: qty, subTotal: eachPrice)
+                friends.append(newFriend)
+            }
+        }
+        
+        equal = true
     }
     
     static func examples() -> [AssignedItem] {

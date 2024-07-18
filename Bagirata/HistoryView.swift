@@ -50,7 +50,12 @@ struct HistoryView: View {
                         }
                     })
                 }
-                .onDelete(perform: deleteSplit)
+                .onDelete(perform: { indexSet in
+                    indexSet.forEach { index in
+                        let split = splits[index]
+                        context.delete(split)
+                    }
+                })
             }
             .toolbar {
                 ToolbarItem {
@@ -120,10 +125,6 @@ struct HistoryView: View {
             
             fetchHistories(currentPage: page, search: search, loadMore: true)
         }
-    }
-    
-    private func deleteSplit(at offsets: IndexSet) {
-        splits.remove(atOffsets: offsets)
     }
 }
 
