@@ -18,6 +18,11 @@ struct HistoryView: View {
     @State private var showSheet: Bool = false
     @State private var selectedSplit: Splitted?
     
+    @Binding var split: SplitItem
+    @Binding var selectedTab: Tabs
+    @Binding var scannerResultActive: Bool
+    @Binding var currentSubTab: SubTabs
+    
     var body: some View {
         NavigationSplitView(sidebar: {
             List(selection: $selectedSplit) {
@@ -58,6 +63,19 @@ struct HistoryView: View {
                 })
             }
             .toolbar {
+                ToolbarItem {
+                    Button(action: {
+                        split.name = "untitled"
+                        
+                        scannerResultActive = true
+                        selectedTab = .result
+                        currentSubTab = .review
+                    }, label: {
+                        HStack {
+                            Label("Manual Add", systemImage: "plus")
+                        }
+                    })
+                }
                 ToolbarItem {
                     Button(action: {
                         showSheet.toggle()
@@ -129,6 +147,6 @@ struct HistoryView: View {
 }
 
 #Preview {
-    HistoryView()
+    HistoryView(split: .constant(SplitItem.example()), selectedTab: .constant(.history), scannerResultActive: .constant(false), currentSubTab: .constant(.review))
         .modelContainer(previewContainer)
 }

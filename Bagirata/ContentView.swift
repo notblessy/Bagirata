@@ -41,7 +41,7 @@ struct ContentView: View {
         NavigationStack {
             switch selectedTab {
             case .history:
-                HistoryView()
+                HistoryView(split: $split, selectedTab: $selectedTab, scannerResultActive: $scannerResultActive, currentSubTab: $currentSubTab)
                 .alert(isPresented: $showAlertRecognizer) {
                         Alert(title: Text("Scan Error"), message: Text(errMessage), dismissButton: .default(Text("OK")))
                     }
@@ -118,5 +118,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(previewContainer)
 }

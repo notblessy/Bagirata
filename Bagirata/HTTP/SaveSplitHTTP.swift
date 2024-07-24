@@ -8,7 +8,7 @@
 import Foundation
 
 func saveSplit(payload: Splitted, completion: @escaping (Result<SaveSplitResponse, Error>) -> Void) {
-    let endpoint = "http://172.20.10.2:3200/v1/splits"
+    let endpoint = "https://bagirata.co/v1/splits"
     guard let url = URL(string: endpoint) else {
         completion(.failure(HTTPError.invalidURL))
         return
