@@ -148,5 +148,4 @@ struct HistoryView: View {
 
 #Preview {
     HistoryView(split: .constant(SplitItem.example()), selectedTab: .constant(.history), scannerResultActive: .constant(false), currentSubTab: .constant(.review))
-        .modelContainer(previewContainer)
 }

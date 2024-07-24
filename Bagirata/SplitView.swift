@@ -106,7 +106,7 @@ struct SplitView: View {
                                                         .font(.system(size: 12))
                                                         .foregroundStyle(.gray)
                                                     Spacer()
-                                                    Text(!item.equal ? "x\(item.qty)" : "\(item.qty)/\(splitted.friends.count)")
+                                                    Text(!item.equal ? "x\(item.qty)" : "x1/\(splitted.friends.count)")
                                                         .font(.system(size: 12))
                                                         .foregroundStyle(.gray)
                                                     Text(IDR(item.price))

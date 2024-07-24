@@ -321,6 +321,16 @@ struct SplitItem: Identifiable, Codable {
         return Split(id: self.id, name: self.name, status: self.status, items: self.items, otherPayments: self.otherPayments, createdAt: self.createdAt)
     }
     
+    func hasUnassignedItem() -> Bool {
+        for item in items {
+            if item.friends.isEmpty {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     func friendNames() -> [String] {
         var nameSet = Set<String>()
         

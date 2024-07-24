@@ -102,7 +102,7 @@ struct HistoryDetailView: View {
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Spacer()
-                                                Text(!item.equal ? "x\(item.qty)" : "\(item.qty)/\(split.friends.count)")
+                                                Text(!item.equal ? "x\(item.qty)" : "x1/\(split.friends.count)")
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Text(IDR(item.price))

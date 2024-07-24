@@ -85,7 +85,7 @@ struct AssignView: View {
                                                     .font(.system(size: 18))
                                                 
                                                 if item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") > 0 {
-                                                    Text(String(item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "")))
+                                                    Text(item.equal ? "=" : String(item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "")))
                                                         .font(.system(size: 10))
                                                         .fontWeight(.bold)
                                                         .padding(7)
@@ -199,11 +199,13 @@ struct AssignView: View {
                                 
                                 splittedData = transformedSplit
                                 currentSubTab = .split
+                                
+                                splitItem = SplitItem()
                             }
                         }, label: {
                             Text("Continue")
                         })
-                        
+                        .disabled(splitItem.hasUnassignedItem())
                     }
                 }
                 .overlay {
