@@ -62,11 +62,9 @@ struct EditMe: View {
                     .scrollContentBackground(.hidden)
                     
                     Button(action: {
-                        if let number = Int(bankNumber) {
-                            bank?.name = bankName
-                            bank?.number = number
-                            bank?.accountName = bankAccount
-                        }
+                        bank?.name = bankName
+                        bank?.number = bankNumber
+                        bank?.accountName = bankAccount
                         
                         me?.name = name
                         

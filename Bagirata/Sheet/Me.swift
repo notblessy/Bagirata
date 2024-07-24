@@ -51,11 +51,9 @@ struct Me: View {
                     .scrollContentBackground(.hidden)
                     
                     Button(action: {
-                        if let number = Int(bankNumber) {
-                            let bankInfo = Bank(id: UUID(), name: bankName, number: number, accountName: bankAccount, createdAt: Date())
-                            
-                            context.insert(bankInfo)
-                        }
+                        let bankInfo = Bank(id: UUID(), name: bankName, number: bankNumber, accountName: bankAccount, createdAt: Date())
+                        
+                        context.insert(bankInfo)
                         
                         let me = Friend(id: UUID(), name: name, me: true, accentColor: colorGen().toHex(), createdAt: Date())
                         

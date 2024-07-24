@@ -12,11 +12,11 @@ import SwiftData
 class Bank {
     @Attribute(.unique) var id: UUID
     var name: String
-    var number: Int
+    var number: String
     var accountName: String
     let createdAt: Date
     
-    init(id: UUID, name: String, number: Int, accountName: String, createdAt: Date) {
+    init(id: UUID, name: String, number: String, accountName: String, createdAt: Date) {
         self.id = id
         self.name = name
         self.number = number
@@ -32,6 +32,6 @@ class Bank {
     }
     
     static func example() -> Bank {
-        return Bank(id: UUID(), name: "BCA", number: 4350280184, accountName: "I Komang Frederich Bless", createdAt: Date())
+        return Bank(id: UUID(), name: "BCA", number: "04350280184", accountName: "I Komang Frederich Bless", createdAt: Date())
     }
 }
