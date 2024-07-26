@@ -17,7 +17,7 @@ struct AddItem: View {
     @State var price: String = ""
     
     private var disabledButton: Bool {
-        name.isEmpty || Int(qty) == 0 || Int(price) == 0
+        name.isEmpty || qty.isEmpty || price.isEmpty || Int(qty) == 0 || Int(price) == 0
     }
     
     var body: some View {

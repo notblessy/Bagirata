@@ -21,7 +21,7 @@ struct EditOtherItem: View {
     let item: OtherItem
     
     private var disabledButton: Bool {
-        name.isEmpty || type.rawValue.isEmpty || Int(amount) == 0
+        name.isEmpty || type.rawValue.isEmpty || amount.isEmpty || Int(amount) == 0
     }
     
     var body: some View {
