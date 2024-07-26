@@ -15,8 +15,8 @@ struct AssignedFriend: Identifiable, Codable {
     let name: String
     let me: Bool
     let accentColor: String
-    var qty: Int
-    var subTotal: Int
+    var qty: Double
+    var subTotal: Double
     let createdAt: Date
     
     init(from decoder: any Decoder) throws {
@@ -26,12 +26,12 @@ struct AssignedFriend: Identifiable, Codable {
         self.name = try container.decode(String.self, forKey: .name)
         self.me = try container.decodeIfPresent(Bool.self, forKey: .me) ?? false
         self.accentColor = try container.decode(String.self, forKey: .accentColor)
-        self.qty = try container.decode(Int.self, forKey: .qty)
-        self.subTotal = try container.decode(Int.self, forKey: .subTotal)
+        self.qty = try container.decode(Double.self, forKey: .qty)
+        self.subTotal = try container.decode(Double.self, forKey: .subTotal)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
     }
     
-    init(friendId: UUID, name: String, me: Bool, accentColor: String, qty: Int, subTotal: Int) {
+    init(friendId: UUID, name: String, me: Bool, accentColor: String, qty: Double, subTotal: Double) {
         self.id = UUID()
         self.friendId = friendId
         self.name = name
@@ -84,20 +84,20 @@ struct AssignedFriend: Identifiable, Codable {
 struct AssignedItem: Identifiable, Codable {
     var id = UUID()
     let name: String
-    let qty: Int
-    let price: Int
+    let qty: Double
+    let price: Double
     var equal: Bool
     var friends: [AssignedFriend] = []
     var createdAt = Date()
     
-    init(name: String, qty: Int, price: Int) {
+    init(name: String, qty: Double, price: Double) {
         self.name = name
         self.qty = qty
         self.price = price
         self.equal = false
     }
     
-    init(id: UUID, name: String, qty: Int, equal: Bool = false, price: Int, createdAt: Date) {
+    init(id: UUID, name: String, qty: Double, equal: Bool = false, price: Double, createdAt: Date) {
         self.id = id
         self.name = name
         self.qty = qty
@@ -110,20 +110,20 @@ struct AssignedItem: Identifiable, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         self.name = try container.decode(String.self, forKey: .name)
-        self.qty = try container.decode(Int.self, forKey: .qty)
+        self.qty = try container.decode(Double.self, forKey: .qty)
         self.equal = try container.decodeIfPresent(Bool.self, forKey: .equal) ?? false
-        self.price = try container.decode(Int.self, forKey: .price)
+        self.price = try container.decode(Double.self, forKey: .price)
     }
     
-    func subTotal() -> Int {
+    func subTotal() -> Double {
         return qty * price
     }
     
-    func getTakenQty() -> Int {
+    func getTakenQty() -> Double {
         return friends.reduce(0) { $0 + $1.qty }
     }
     
-    func getTakenQty(by friendId: String) -> Int {
+    func getTakenQty(by friendId: String) -> Double {
         let results = friends.filter({ $0.friendId.uuidString == friendId })
         
         return results.reduce(0) { $0 + $1.qty }
@@ -134,7 +134,7 @@ struct AssignedItem: Identifiable, Codable {
         return String(takenQty)
     }
     
-    mutating func assignFriend(friend: AssignedFriend, newQty: Int) {
+    mutating func assignFriend(friend: AssignedFriend, newQty: Double) {
         if let index = friends.firstIndex(where: { $0.friendId == friend.friendId }) {
             friends[index].qty += newQty
             friends[index].subTotal = price * friends[index].qty
@@ -155,7 +155,7 @@ struct AssignedItem: Identifiable, Codable {
     
     mutating func equalAssign(assignedFriends: [AssignedFriend]) {
         let totalPrice = price * qty
-        let eachPrice = totalPrice / assignedFriends.count
+        let eachPrice = totalPrice / Double(assignedFriends.count)
         
         for friend in assignedFriends {
             if let index = friends.firstIndex(where: { $0.friendId == friend.friendId }) {
@@ -187,16 +187,16 @@ struct OtherItem: Identifiable, Codable {
     var id = UUID()
     let name: String
     let type: String
-    let amount: Int
+    let amount: Double
     var createdAt = Date()
     
-    init(name: String, type: String, amount: Int) {
+    init(name: String, type: String, amount: Double) {
         self.name = name
         self.type = type
         self.amount = amount
     }
     
-    init(id: UUID, name: String, type: String, amount: Int, createdAt: Date) {
+    init(id: UUID, name: String, type: String, amount: Double, createdAt: Date) {
         self.id = id
         self.name = name
         self.type = type
@@ -209,17 +209,29 @@ struct OtherItem: Identifiable, Codable {
         self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         self.name = try container.decode(String.self, forKey: .name)
         self.type = try container.decode(String.self, forKey: .type)
-        self.amount = try container.decode(Int.self, forKey: .amount)
+        self.amount = try container.decode(Double.self, forKey: .amount)
     }
     
-    func subTotal() -> Int {
-        return type == "deduction" ? -amount : amount
+    func subTotal() -> Double {
+        return isDeduction() ? -amount : amount
+    }
+    
+    func isDeduction() -> Bool {
+        return type == "deduction"
+    }
+    
+    func isTax() -> Bool {
+        return type == "tax"
+    }
+    
+    func isDiscount() -> Bool {
+        return type == "discount"
     }
     
     static func examples() -> [OtherItem] {
         return [
-            OtherItem(name: "Discount", type: "deduction", amount: 40000),
-            OtherItem(name: "Tax", type: "addition", amount: 13000),
+            OtherItem(name: "Discount", type: "discount", amount: 22),
+            OtherItem(name: "Tax", type: "tax", amount: 12),
         ]
     }
     
@@ -302,18 +314,58 @@ struct SplitItem: Identifiable, Codable {
         return friends.contains(where: { $0.friendId == friendId })
     }
     
-    func grandTotal() -> Int {
-        let itemsTotal = items.reduce(0) { $0 + $1.subTotal() }
-        let otherPaymentsTotal = otherPayments.reduce(0) { $0 + $1.subTotal() }
+    func subTotal() -> Double {
+        let itemsTotal = items.reduce(Double(0)) { $0 + $1.subTotal() }
+        
+        let otherPaymentsTotal = otherPayments.reduce(Double(0)) {
+            if $1.isTax() || $1.isDiscount() {
+                return $0
+            }
+            
+            if $1.isDeduction() {
+                return $0 - $1.subTotal()
+            }
+            
+            return $0 + $1.subTotal()
+        }
         
         return itemsTotal + otherPaymentsTotal
     }
     
-    func itemTotal() -> Int {
+    func grandTotal() -> Double {
+        let itemsTotal = items.reduce(0) { $0 + $1.subTotal() }
+        let otherPaymentsTotal = otherPayments.reduce(0) {
+            if $1.isTax() || $1.isDiscount() {
+                return $0
+            }
+            
+            return $0 + $1.subTotal()
+        }
+        
+        var total = itemsTotal + otherPaymentsTotal
+
+        for payment in otherPayments {
+            if payment.isDiscount() {
+                let disc = payment.amount / 100 * total
+                total -= disc
+            }
+        }
+        
+        for payment in otherPayments {
+            if payment.isTax() {
+                let tax = payment.amount / 100 * total
+                total += tax
+            }
+        }
+        
+        return total
+    }
+    
+    func itemTotal() -> Double {
         return items.reduce(0) { $0 + $1.subTotal() }
     }
     
-    func otherTotal() -> Int {
+    func otherTotal() -> Double {
         return otherPayments.reduce(0) { $0 + $1.subTotal() }
     }
     
@@ -386,7 +438,7 @@ struct SaveSplitResponse: Codable {
 }
 
 enum PaymentType: String, CaseIterable, Identifiable {
-    case addition, deduction
+    case addition, deduction, tax, discount
     var id: Self { self }
     
     var value: String {

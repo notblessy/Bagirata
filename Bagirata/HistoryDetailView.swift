@@ -102,7 +102,7 @@ struct HistoryDetailView: View {
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Spacer()
-                                                Text(!item.equal ? "x\(item.qty)" : "x1/\(split.friends.count)")
+                                                Text(!item.equal ? "x\(Int(item.qty))" : "x1/\(split.friends.count)")
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Text(IDR(item.price))
@@ -118,7 +118,12 @@ struct HistoryDetailView: View {
                                                 .font(.system(size: 12))
                                                 .foregroundStyle(.gray)
                                             Spacer()
-                                            Text(item.type == "addition" ? IDR(item.price) : "-\(IDR(item.price))")
+                                            if item.hasFormula() {
+                                                Text(item.getFormula(friend.subTotal))
+                                                    .font(.system(size: 12))
+                                                    .foregroundStyle(.gray)
+                                            }
+                                            Text(item.getPrice())
                                                 .font(.system(size: 12))
                                                 .foregroundStyle(.gray)
                                         }

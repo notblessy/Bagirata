@@ -7,7 +7,7 @@
 
 import Foundation
 
-func IDR(_ price: Int) -> String {
+func IDR(_ price: Double) -> String {
     let numberFormatter = NumberFormatter()
     numberFormatter.numberStyle = .currency
     numberFormatter.currencySymbol = "IDR"
@@ -20,8 +20,12 @@ func IDR(_ price: Int) -> String {
     }
 }
 
-func qty(_ qty: Int) -> String {
-    return "\(qty)x"
+func Percent(_ amount: Double) -> String {
+    return "\(Int(amount))%"
+}
+
+func qty(_ qty: Double) -> String {
+    return "\(Int(qty))x"
 }
 
 func isNumber(_ string: String) -> Bool {

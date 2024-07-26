@@ -38,14 +38,33 @@ struct EditOtherItem: View {
                     Picker("Type", selection: $type) {
                         Text("Addition").tag(PaymentType.addition)
                         Text("Deduction").tag(PaymentType.deduction)
+                        Text("Tax").tag(PaymentType.tax)
+                        Text("Discount").tag(PaymentType.discount)
                     }
-                    .pickerStyle(.palette)
+                    .pickerStyle(.menu)
                     .padding(.horizontal)
+                    .buttonStyle(.bordered)
                     
                     Form {
                         TextField("Name", text: $name)
-                        TextField("Amount", text: $amount)
-                            .keyboardType(.numberPad)
+                        switch type {
+                        case .addition, .deduction:
+                            ZStack(alignment: .leading) {
+                                Text("IDR")
+                                    .foregroundStyle(.gray)
+                                TextField("Price", text: $amount)
+                                    .keyboardType(.numberPad)
+                                    .padding(.leading, 35)
+                            }
+                        default:
+                            ZStack(alignment: .trailing) {
+                                TextField("Amount", text: $amount)
+                                    .keyboardType(.numberPad)
+                                    .padding(.trailing, 25)
+                                Text("%")
+                                    .foregroundStyle(.gray)
+                            }
+                        }
                     }
                     .padding(.top, -15)
                     .background(Color.clear)
@@ -62,7 +81,7 @@ struct EditOtherItem: View {
                         .buttonStyle(.bordered)
                         
                         Button(action: {
-                            if let amountInt = Int(amount) {
+                            if let amountInt = Double(amount) {
                                 let other = OtherItem(id: id, name: name, type: type.rawValue, amount: amountInt, createdAt: createdAt)
                                 splitItem.updateOtherItem(other)
                             }
@@ -84,7 +103,7 @@ struct EditOtherItem: View {
                     id = item.id
                     name = item.name
                     type = PaymentType.ID(rawValue: item.type)!
-                    amount = String(item.amount)
+                    amount = String(Int(item.amount))
                     createdAt = item.createdAt
                 }
             }

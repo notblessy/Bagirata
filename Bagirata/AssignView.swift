@@ -85,7 +85,7 @@ struct AssignView: View {
                                                     .font(.system(size: 18))
                                                 
                                                 if item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") > 0 {
-                                                    Text(item.equal ? "=" : String(item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "")))
+                                                    Text(item.equal ? "=" : String(Int(item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? ""))))
                                                         .font(.system(size: 10))
                                                         .fontWeight(.bold)
                                                         .padding(7)
@@ -171,8 +171,14 @@ struct AssignView: View {
                                                 .foregroundStyle(.gray)
                                         }
                                         Spacer()
-                                        Text(IDR(item.amount))
-                                            .foregroundStyle(.gray)
+                                        switch item.type {
+                                        case "addition", "deduction":
+                                            Text(IDR(item.amount))
+                                                .foregroundColor(.gray)
+                                        default:
+                                            Text(Percent(item.amount))
+                                                .foregroundColor(.gray)
+                                        }
                                     }
                                 })
                                 .padding(.vertical, 10)

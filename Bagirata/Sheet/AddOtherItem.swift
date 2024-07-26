@@ -35,14 +35,33 @@ struct AddOtherItem: View {
                     Picker("Type", selection: $type) {
                         Text("Addition").tag(PaymentType.addition)
                         Text("Deduction").tag(PaymentType.deduction)
+                        Text("Tax").tag(PaymentType.tax)
+                        Text("Discount").tag(PaymentType.discount)
                     }
-                    .pickerStyle(.palette)
+                    .pickerStyle(.menu)
                     .padding(.horizontal)
+                    .buttonStyle(.bordered)
                     
                     Form {
                         TextField("Name", text: $name)
-                        TextField("Amount", text: $amount)
-                            .keyboardType(.numberPad)
+                        switch type {
+                        case .addition, .deduction:
+                            ZStack(alignment: .leading) {
+                                Text("IDR")
+                                    .foregroundStyle(.gray)
+                                TextField("Price", text: $amount)
+                                    .keyboardType(.numberPad)
+                                    .padding(.leading, 35)
+                            }
+                        default:
+                            ZStack(alignment: .trailing) {
+                                TextField("Amount", text: $amount)
+                                    .keyboardType(.numberPad)
+                                    .padding(.trailing, 25)
+                                Text("%")
+                                    .foregroundStyle(.gray)
+                            }
+                        }
                     }
                     .padding(.top, -15)
                     .background(Color.clear)
@@ -59,7 +78,7 @@ struct AddOtherItem: View {
                         .buttonStyle(.bordered)
                         
                         Button(action: {
-                            if let amountInt = Int(amount) {
+                            if let amountInt = Double(amount) {
                                 let other = OtherItem(name: name, type: type.rawValue, amount: amountInt)
                                 splitItem.otherPayments.append(other)
                             }

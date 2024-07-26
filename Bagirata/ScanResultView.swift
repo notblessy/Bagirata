@@ -154,8 +154,13 @@ struct ScanResultView: View {
                                         .foregroundStyle(.gray)
                                 }
                                 Spacer()
-                                Text(IDR(item.amount))
-                                    .foregroundStyle(.gray)
+                                if item.isTax() || item.isDiscount() {
+                                    Text(Percent(item.amount))
+                                        .foregroundStyle(.gray)
+                                } else {
+                                    Text(IDR(item.amount))
+                                        .foregroundStyle(.gray)
+                                }
                             }
                         })
                         .padding(.vertical, 10)

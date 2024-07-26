@@ -9,11 +9,11 @@ import Foundation
 
 struct Item: Codable, Identifiable {
     var id = UUID()
-    var qty: Int
-    var price: Int
+    var qty: Double
+    var price: Double
     var name: String
     
-    init(id: UUID = UUID(), qty: Int, price: Int, name: String) {
+    init(id: UUID = UUID(), qty: Double, price: Double, name: String) {
         self.id = id
         self.qty = qty
         self.price = price

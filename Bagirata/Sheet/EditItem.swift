@@ -41,8 +41,13 @@ struct EditItem: View {
                             TextField("Qty", text: $qty)
                                 .frame(width: 100)
                                 .keyboardType(.numberPad)
-                            TextField("Price", text: $price)
-                                .keyboardType(.numberPad)
+                            ZStack(alignment: .leading) {
+                                Text("IDR")
+                                    .foregroundStyle(.gray)
+                                TextField("Price", text: $price)
+                                    .keyboardType(.numberPad)
+                                    .padding(.leading, 35)
+                            }
                         }
                     }
                     .background(Color.clear)
@@ -59,7 +64,7 @@ struct EditItem: View {
                         .buttonStyle(.bordered)
                         
                         Button(action: {
-                            if let qtyInt = Int(qty), let priceInt = Int(price) {
+                            if let qtyInt = Double(qty), let priceInt = Double(price) {
                                 let sp = AssignedItem(id: id, name: name, qty: qtyInt, price: priceInt, createdAt: createdAt)
                                 
                                 splitItem.updateItem(sp)
@@ -80,8 +85,8 @@ struct EditItem: View {
                 .onAppear {
                     id = item.id
                     name = item.name
-                    qty = String(item.qty)
-                    price = String(item.price)
+                    qty = String(Int(item.qty))
+                    price = String(Int(item.price))
                     createdAt = item.createdAt
                 }
             }

@@ -37,8 +37,13 @@ struct AddItem: View {
                             TextField("Qty", text: $qty)
                                 .frame(width: 100)
                                 .keyboardType(.numberPad)
-                            TextField("Price", text: $price)
-                                .keyboardType(.numberPad)
+                            ZStack(alignment: .leading) {
+                                Text("IDR")
+                                    .foregroundStyle(.gray)
+                                TextField("Price", text: $price)
+                                    .keyboardType(.numberPad)
+                                    .padding(.leading, 35)
+                            }
                         }
                     }
                     .background(Color.clear)
@@ -55,7 +60,7 @@ struct AddItem: View {
                         .buttonStyle(.bordered)
                         
                         Button(action: {
-                            if let qtyInt = Int(qty), let priceInt = Int(price) {
+                            if let qtyInt = Double(qty), let priceInt = Double(price) {
                                 let sp = AssignedItem(name: name, qty: qtyInt, price: priceInt)
                                 splitItem.items.append(sp)
                             }
