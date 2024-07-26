@@ -21,12 +21,6 @@ func saveSplit(payload: Splitted, completion: @escaping (Result<SaveSplitRespons
     do {
         let body = try JSONEncoder().encode(payload)
         
-        if let jsonString = String(data: body, encoding: .utf8) {
-            print(jsonString)
-        } else {
-            print("Failed to convert JSON data to string.")
-        }
-        
         request.httpBody = body
     } catch {
         completion(.failure(error))
