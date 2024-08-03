@@ -63,7 +63,7 @@ struct HistoryView: View {
                 })
             }
             .toolbar {
-                ToolbarItem {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         split.name = "untitled"
                         
@@ -72,11 +72,12 @@ struct HistoryView: View {
                         currentSubTab = .review
                     }, label: {
                         HStack {
-                            Label("Manual Add", systemImage: "plus")
+                            Image(systemName: "plus")
+                            Text("New Split")
                         }
                     })
                 }
-                ToolbarItem {
+                ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
                         showSheet.toggle()
                     }, label: {
@@ -148,4 +149,5 @@ struct HistoryView: View {
 
 #Preview {
     HistoryView(split: .constant(SplitItem.example()), selectedTab: .constant(.history), scannerResultActive: .constant(false), currentSubTab: .constant(.review))
+        .modelContainer(previewContainer)
 }

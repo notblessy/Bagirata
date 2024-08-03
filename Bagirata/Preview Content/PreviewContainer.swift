@@ -19,6 +19,8 @@ let previewContainer: ModelContainer = {
             container.mainContext.insert(split)
         }
         
+        container.mainContext.insert(Bank.example())
+        
         return container
     } catch {
         fatalError("Could not initialize ModelContainer")

@@ -17,7 +17,7 @@ struct Me: View {
     @State private var bankAccount: String = ""
     
     private var disabledButton: Bool {
-        name.isEmpty || bankNumber.isEmpty || bankName.isEmpty || bankAccount.isEmpty
+        name.isEmpty
     }
     
     var body: some View {
@@ -36,14 +36,14 @@ struct Me: View {
                     .padding(.top, 20)
                     
                     Form {
-                        Section(header: Text("What is your name?")) {
+                        Section(header: Text("What is your name? *")) {
                             TextField("Name", text: $name)
                         }
                         
                         Section(header: Text("Bank Information")) {
-                            TextField("Bank Name", text: $bankName)
-                            TextField("Account Name", text: $bankAccount)
-                            TextField("Account Number", text: $bankNumber)
+                            TextField("Bank Name (optional)", text: $bankName)
+                            TextField("Account Name (optional)", text: $bankAccount)
+                            TextField("Account Number (optional)", text: $bankNumber)
                                 .keyboardType(.numberPad)
                         }
                     }
@@ -51,9 +51,11 @@ struct Me: View {
                     .scrollContentBackground(.hidden)
                     
                     Button(action: {
-                        let bankInfo = Bank(id: UUID(), name: bankName, number: bankNumber, accountName: bankAccount, createdAt: Date())
-                        
-                        context.insert(bankInfo)
+                        if !bankName.isEmpty && !bankAccount.isEmpty && !bankNumber.isEmpty {
+                            let bankInfo = Bank(id: UUID(), name: bankName, number: bankNumber, accountName: bankAccount, createdAt: Date())
+                            
+                            context.insert(bankInfo)
+                        }
                         
                         let me = Friend(id: UUID(), name: name, me: true, accentColor: colorGen().toHex(), createdAt: Date())
                         

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */; };
+		F9143BD82C5D494B008A54AA /* AddBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9143BD72C5D494B008A54AA /* AddBank.swift */; };
 		F91C6C692C384DA800206F52 /* FriendSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91C6C682C384DA800206F52 /* FriendSheet.swift */; };
 		F91C6C6B2C39114F00206F52 /* AddFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91C6C6A2C39114F00206F52 /* AddFriend.swift */; };
 		F91E77512C2C794100AF877B /* BagirataApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77502C2C794100AF877B /* BagirataApp.swift */; };
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizeHTTP.swift; sourceTree = "<group>"; };
+		F9143BD72C5D494B008A54AA /* AddBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBank.swift; sourceTree = "<group>"; };
 		F91C6C682C384DA800206F52 /* FriendSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSheet.swift; sourceTree = "<group>"; };
 		F91C6C6A2C39114F00206F52 /* AddFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriend.swift; sourceTree = "<group>"; };
 		F91E774D2C2C794100AF877B /* Bagirata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bagirata.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -207,6 +209,7 @@
 				F95BC2082C2F22B500A86CAE /* EditFriend.swift */,
 				F9C8CCD32C3AF912001204CF /* Me.swift */,
 				F93F71882C3D9F8C005CC0A8 /* EditMe.swift */,
+				F9143BD72C5D494B008A54AA /* AddBank.swift */,
 			);
 			path = Sheet;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				F9705BF42C2DC0150057D419 /* TextRecognizer.swift in Sources */,
 				F9C15BD02C378E5B002AD186 /* AddOtherItem.swift in Sources */,
 				F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */,
+				F9143BD82C5D494B008A54AA /* AddBank.swift in Sources */,
 				F9BCDA972C2D49D800EE1E40 /* BagiratabButton.swift in Sources */,
 				F93F71892C3D9F8C005CC0A8 /* EditMe.swift in Sources */,
 				F91E77622C2C7AF700AF877B /* Friend.swift in Sources */,
@@ -465,7 +469,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Bagirata/Preview Content\"";
 				DEVELOPMENT_TEAM = V8532TS6AU;
 				ENABLE_PREVIEWS = YES;
@@ -480,16 +484,21 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = keepgoing.Bagirata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -500,7 +509,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Bagirata/Preview Content\"";
 				DEVELOPMENT_TEAM = V8532TS6AU;
 				ENABLE_PREVIEWS = YES;
@@ -515,16 +524,21 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = keepgoing.Bagirata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

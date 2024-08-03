@@ -21,10 +21,9 @@ struct FriendSheet: View {
         
         _friends = Query(
             filter: #Predicate<Friend> { friend in
-                (friend.name.localizedStandardContains(search) || search.isEmpty ) && !friend.me
+                friend.name.localizedStandardContains(search) || search.isEmpty
             },
-            sort: \Friend.createdAt,
-            order: .reverse
+            sort: \Friend.createdAt
         )
     }
     
@@ -56,6 +55,10 @@ struct FriendSheet: View {
                             BagirataAvatar(name: friend.name, width: 32, height: 32, fontSize: 16, background: Color(hex: friend.accentColor), style: .plain)
                                 .padding(.vertical, 2.3)
                             Text(friend.name)
+                            if friend.me {
+                                Text("(You)")
+                                    .foregroundStyle(.gray)
+                            }
                             Spacer()
                             Text(friend.formatCreatedAt())
                                 .font(.system(size: 12))

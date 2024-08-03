@@ -21,6 +21,9 @@ struct AssignView: View {
     @State private var selectedFriend: AssignedFriend?
     @State private var selectedItem: AssignedItem?
     @State private var selectedOther: OtherItem?
+    @State private var showBankSheet: Bool = false
+    
+    @State var bankForm: Bank = Bank()
     
     var body: some View {
         NavigationStack {
@@ -46,32 +49,80 @@ struct AssignView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top)
                     
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(splitItem.friends) { friend in
-                                VStack {
-                                    Button(action: {
-                                        selectedFriend = friend
-                                    }, label: {
-                                        BagirataAvatar(
-                                            name: friend.name,
-                                            width: 55,
-                                            height: 55,
-                                            fontSize: 30,
-                                            background: Color(hex: friend.accentColor),
-                                            style: selectedFriend?.id == friend.id ? .active : .plain
-                                        )
-                                    })
-                                    .padding(1)
-                                    
-                                    Text(friend.name.truncate(length: 10))
-                                        .font(.system(size: 10))
-                                        .foregroundStyle(.gray)
+                    Section("Friends") {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(splitItem.friends) { friend in
+                                    VStack {
+                                        Button(action: {
+                                            selectedFriend = friend
+                                        }, label: {
+                                            BagirataAvatar(
+                                                name: friend.name,
+                                                width: 55,
+                                                height: 55,
+                                                fontSize: 30,
+                                                background: Color(hex: friend.accentColor),
+                                                style: selectedFriend?.id == friend.id ? .active : .plain
+                                            )
+                                        })
+                                        .padding(1)
+                                        
+                                        Text(friend.name.truncate(length: 10))
+                                            .font(.system(size: 10))
+                                            .foregroundStyle(.gray)
+                                    }
                                 }
                             }
                         }
+                        .listRowSeparator(.hidden)
                     }
-                    .listRowSeparator(.hidden)
+                    
+                    if bankForm.isEmpty() {
+                        HStack {
+                            Text("Transfer")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.gray)
+                                .font(.system(size: 15))
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                showBankSheet.toggle()
+                            }, label: {
+                                HStack {
+                                    Image(systemName: "plus")
+                                        .font(.system(size: 15))
+                                        .foregroundColor(.bagirataOk)
+                                    Text("Add Bank")
+                                        .font(.system(size: 15))
+                                        .foregroundColor(.bagirataOk)
+                                }
+                            })
+                        }
+                        .listRowSeparator(.hidden)
+                    } else {
+                        VStack(alignment: .leading) {
+                            Text("Transfer")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.gray)
+                                .font(.system(size: 15))
+                                .padding(.bottom, 3)
+                            Button(action: {
+                                showBankSheet.toggle()
+                            }, label: {
+                                VStack(alignment: .leading) {
+                                    Text(bankForm.name)
+                                        .fontWeight(.bold)
+                                    Text(bankForm.number)
+                                    Text(bankForm.accountName)
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.gray)
+                                }
+                            })
+                        }
+                        .listRowSeparator(.hidden)
+                    }
                     
                     if selectedFriend != nil {
                         Section("Item") {
@@ -120,7 +171,7 @@ struct AssignView: View {
                                             splitItem.updateItem(it)
                                         }
                                     } label: {
-                                        Label("Sub", systemImage: "minus")
+                                        Text("Drop")
                                     }
                                     .tint(
                                         (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 ? .bagirataDimmed : .teal)
@@ -135,7 +186,7 @@ struct AssignView: View {
                                             splitItem.updateItem(it)
                                         }
                                     } label: {
-                                        Label("Add", systemImage: "plus")
+                                        Text("Add")
                                     }
                                     .tint(item.getTakenQty() >= item.qty ? .bagirataDimmed : .indigo)
                                     .disabled(item.getTakenQty() >= item.qty)
@@ -150,7 +201,7 @@ struct AssignView: View {
                                             splitItem.updateItem(it)
                                         }
                                     } label: {
-                                        Label("Equal", systemImage: !item.equal ? "equal" : "chevron.left.slash.chevron.right")
+                                        Text(!item.equal ? "Equal" : "Unequal")
                                     }
                                     .tint(!item.equal ? .blue.opacity(0.3) : .red.opacity(0.3))
                                 }
@@ -198,16 +249,14 @@ struct AssignView: View {
                     
                     ToolbarItem {
                         Button(action: {
-                            if let bank {
-                                let transformedSplit = splitted(splitItem: splitItem, bank: bank)
-                                
-                                context.insert(transformedSplit)
-                                
-                                splittedData = transformedSplit
-                                currentSubTab = .split
-                                
-                                splitItem = SplitItem()
-                            }
+                            let transformedSplit = splitted(splitItem: splitItem, bank: bankForm)
+                            
+                            context.insert(transformedSplit)
+                            
+                            splittedData = transformedSplit
+                            currentSubTab = .split
+                            
+                            splitItem = SplitItem()
                         }, label: {
                             Text("Continue")
                         })
@@ -224,8 +273,13 @@ struct AssignView: View {
                                 .font(.system(size: 16))
                                 .foregroundStyle(.gray)
                         }
+                        .padding(.top, 200)
                     }
                 }
+                .sheet(isPresented: $showBankSheet, content: {
+                    AddBank(edit: !bankForm.isEmpty(), userBank: bank, bank: $bankForm)
+                    .presentationDetents([.height(400)])
+                })
             }
         }
     }
@@ -233,4 +287,5 @@ struct AssignView: View {
 
 #Preview {
     AssignView(currentSubTab: .constant(.assign), splitItem: .constant(SplitItem.example()), splittedData: .constant(Splitted.example()))
+        .modelContainer(previewContainer)
 }

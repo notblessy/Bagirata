@@ -16,6 +16,14 @@ class Bank {
     var accountName: String
     let createdAt: Date
     
+    init() {
+        self.id = UUID()
+        self.name = ""
+        self.number = ""
+        self.accountName = ""
+        self.createdAt = Date()
+    }
+    
     init(id: UUID, name: String, number: String, accountName: String, createdAt: Date) {
         self.id = id
         self.name = name
@@ -29,6 +37,10 @@ class Bank {
         formatter.dateFormat = "d MMMM yyyy"
         
         return formatter.string(from: createdAt)
+    }
+    
+    func isEmpty() -> Bool {
+        return name.isEmpty || accountName.isEmpty || number.isEmpty
     }
     
     static func example() -> Bank {

@@ -10,13 +10,6 @@ import SwiftData
 
 struct ScanResultView: View {
     @Environment(\.modelContext) private var context
-    @Query(
-        filter: #Predicate<Friend> { friend in
-            friend.me
-        }
-    ) var me: [Friend]
-    
-    var profile: Friend? { me.first }
     
     @Binding var currentSubTab: SubTabs
     @Binding var selectedTab: Tabs
@@ -58,46 +51,48 @@ struct ScanResultView: View {
                 .padding(.bottom, 5)
                 .listRowSeparator(.hidden)
                 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(splitItem.friends) { friend in
-                            VStack {
-                                BagirataAvatar(
-                                    name: friend.name,
-                                    width: 55,
-                                    height: 55,
-                                    fontSize: 30,
-                                    background: Color(hex: friend.accentColor),
-                                    style: .plain
-                                )
-                                .padding(1)
-                                
-                                Text(friend.name.truncate(length: 10))
-                                    .font(.system(size: 10))
-                                    .foregroundStyle(.gray)
-                            }
-                        }
-                            Button(action: {
-                                showFriendSheet.toggle()
-                            }, label: {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 100)
-                                        .fill(Color.gray.opacity(0.1))
-                                        .frame(width: 55, height: 55)
-                                    VStack {
-                                        Image(systemName: "plus")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 25, height: 25)
-                                    }
-                                    .frame(width: 50)
+                Section("Friends") {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(splitItem.friends) { friend in
+                                VStack {
+                                    BagirataAvatar(
+                                        name: friend.name,
+                                        width: 55,
+                                        height: 55,
+                                        fontSize: 30,
+                                        background: Color(hex: friend.accentColor),
+                                        style: .plain
+                                    )
+                                    .padding(1)
+                                    
+                                    Text(friend.name.truncate(length: 10))
+                                        .font(.system(size: 10))
+                                        .foregroundStyle(.gray)
                                 }
-                            })
-                            .tint(Color.blue)
-                            .padding(.top, -12)
+                            }
+                                Button(action: {
+                                    showFriendSheet.toggle()
+                                }, label: {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 100)
+                                            .fill(Color.gray.opacity(0.1))
+                                            .frame(width: 55, height: 55)
+                                        VStack {
+                                            Image(systemName: "plus")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 25, height: 25)
+                                        }
+                                        .frame(width: 50)
+                                    }
+                                })
+                                .tint(Color.blue)
+                                .padding(.top, splitItem.friends.count > 0 ? -12 : 0)
+                        }
                     }
+                    .listRowSeparator(.hidden)
                 }
-                .listRowSeparator(.hidden)
                 
                 Section("Items") {
                     ForEach(splitItem.items.sorted(by: { $0.createdAt < $1.createdAt })) { item in
@@ -258,14 +253,6 @@ struct ScanResultView: View {
                 }, label: {
                     Text("Discard")
                 })
-            }
-        }
-        .onAppear {
-            if splitItem.friends.count == 0 {
-                if let pf = profile {
-                    hasMe = pf.me
-                    splitItem.toggleFriend(pf.toAssignedFriend())
-                }
             }
         }
     }

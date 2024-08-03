@@ -583,7 +583,7 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
         friends: Array(transformedFriends.values),
         bankName: bank.name,
         bankAccount: bank.accountName,
-        bankNumber: String(bank.number),
+        bankNumber: bank.number,
         subTotal: splitItem.subTotal()
     )
 }

@@ -89,7 +89,6 @@ struct EditMe: View {
                             bankNumber = String(bankData.number)
                             bankAccount = bankData.accountName
                         }
-                        
                     }
                 }
             }
