@@ -14,13 +14,15 @@ class FriendOther: Identifiable, Codable {
     let amount: Double
     let price: Double
     let type: String
+    let usePercentage: Bool
 
-    init(id: UUID, name: String, amount: Double, price: Double, type: String) {
+    init(id: UUID, name: String, amount: Double, price: Double, type: String, usePercentage: Bool) {
         self.id = id
         self.name = name
         self.amount = amount
         self.price = price
         self.type = type
+        self.usePercentage = usePercentage
     }
     
     func hasFormula() -> Bool {
@@ -261,7 +263,8 @@ class Splitted: Identifiable, Codable {
             name: "Tax",
             amount: 12,
             price: 2000,
-            type: "tax"
+            type: "tax",
+            usePercentage: true
         )
         
         let friends = [
@@ -358,7 +361,8 @@ class Splitted: Identifiable, Codable {
             name: "Tax",
             amount: 12,
             price: 2000,
-            type: "tax"
+            type: "tax",
+            usePercentage: true
         )
         
         let friends = [
@@ -480,14 +484,20 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
     }
     
     for payment in splitItem.otherPayments {
-        if payment.isDiscount() || payment.isTax() {
+        if payment.isDiscount() || payment.isTax() || payment.isServiceCharge() {
             continue
         }
         
-        let amountSplitted = payment.amount / Double(splitItem.friends.count)
+        var amountSplitted = payment.amount / Double(splitItem.friends.count)
         
         for friendId in transformedFriends.keys {
             if let friend = transformedFriends[friendId] {
+                if payment.usePercentage {
+                    amountSplitted = ((payment.amount / 100) * splitItem.subTotal()) / Double(splitItem.friends.count)
+                    friend.total -= amountSplitted
+                    friend.subTotal -= amountSplitted
+                }
+                
                 if payment.isDeduction() {
                     friend.total -= amountSplitted
                     friend.subTotal -= amountSplitted
@@ -501,7 +511,8 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
                     name: payment.name,
                     amount: payment.amount,
                     price: amountSplitted,
-                    type: payment.type
+                    type: payment.type,
+                    usePercentage: payment.usePercentage
                 )
                 
                 var updatedOthers = friend.others
@@ -522,18 +533,24 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
             continue
         }
         
+        var amountSplitted = payment.amount / Double(splitItem.friends.count)
+        
         for friendId in transformedFriends.keys {
             if let friend = transformedFriends[friendId] {
-                let discountPrice = (payment.amount / 100) * splitItem.subTotal()
-                friend.total -= (discountPrice / Double(splitItem.friends.count))
-                friend.subTotal -= (discountPrice / Double(splitItem.friends.count))
+                if payment.usePercentage {
+                    let amountSplitted = ((payment.amount / 100) * splitItem.subTotal()) / Double(splitItem.friends.count)
+                }
+                
+                friend.total -= amountSplitted
+                friend.subTotal -= amountSplitted
                 
                 let otherItem = FriendOther(
                     id: payment.id,
                     name: payment.name,
                     amount: payment.amount,
-                    price: discountPrice / Double(splitItem.friends.count),
-                    type: payment.type
+                    price: amountSplitted,
+                    type: payment.type,
+                    usePercentage: payment.usePercentage
                 )
                 
                 var updatedOthers = friend.others
@@ -554,12 +571,47 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
             continue
         }
         
+        var amountSplitted = payment.amount / Double(splitItem.friends.count)
+        
         for friendId in transformedFriends.keys {
             if let friend = transformedFriends[friendId] {
-                let taxPrice = (payment.amount / 100) * friend.total
-                friend.total += taxPrice
+                if payment.usePercentage {
+                    amountSplitted = (payment.amount / 100) * friend.total
+                }
                 
-                let otherItem = FriendOther(id: payment.id, name: payment.name, amount: payment.amount, price: taxPrice, type: payment.type)
+                friend.total += amountSplitted
+                
+                let otherItem = FriendOther(id: payment.id, name: payment.name, amount: payment.amount, price: amountSplitted, type: payment.type, usePercentage: payment.usePercentage)
+                
+                var updatedOthers = friend.others
+                if let index = updatedOthers.firstIndex(where: { $0.id == otherItem.id }) {
+                    updatedOthers[index] = otherItem
+                } else {
+                    updatedOthers.append(otherItem)
+                }
+                
+                friend.others = updatedOthers
+                transformedFriends[friendId] = friend
+            }
+        }
+    }
+    
+    for payment in splitItem.otherPayments {
+        if !payment.isServiceCharge() {
+            continue
+        }
+        
+        var amountSplitted = payment.amount / Double(splitItem.friends.count)
+        
+        for friendId in transformedFriends.keys {
+            if let friend = transformedFriends[friendId] {
+                if payment.usePercentage {
+                    amountSplitted = (payment.amount / 100) * friend.total
+                }
+                
+                friend.total += amountSplitted
+                
+                let otherItem = FriendOther(id: payment.id, name: payment.name, amount: payment.amount, price: amountSplitted, type: payment.type, usePercentage: payment.usePercentage)
                 
                 var updatedOthers = friend.others
                 if let index = updatedOthers.firstIndex(where: { $0.id == otherItem.id }) {

@@ -155,6 +155,8 @@ struct AssignView: View {
                                                     .font(.system(size: 16))
                                                     .foregroundStyle(.gray)
                                             }
+                                            
+                                            FriendAvatarGroup(friends: item.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
                                         }
                                         Spacer()
                                         Text(IDR(item.price * item.qty))
@@ -174,9 +176,9 @@ struct AssignView: View {
                                         Text("Drop")
                                     }
                                     .tint(
-                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 ? .bagirataDimmed : .teal)
+                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 ? .bagirataDimmed : .red)
                                     .disabled(
-                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0)
+                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 || item.equal)
                                 }
                                 .swipeActions() {
                                     Button {
@@ -222,12 +224,12 @@ struct AssignView: View {
                                                 .foregroundStyle(.gray)
                                         }
                                         Spacer()
-                                        switch item.type {
-                                        case "addition", "deduction":
-                                            Text(IDR(item.amount))
-                                                .foregroundColor(.gray)
-                                        default:
+                                        
+                                        if item.usePercentage {
                                             Text(Percent(item.amount))
+                                                .foregroundColor(.gray)
+                                        } else {
+                                            Text(IDR(item.amount))
                                                 .foregroundColor(.gray)
                                         }
                                     }

@@ -15,6 +15,7 @@ struct EditOtherItem: View {
     @State var id: UUID = UUID()
     @State var name: String = ""
     @State var type: PaymentType = .addition
+    @State var usePercentage: Bool = false
     @State var amount: String = ""
     @State var createdAt: Date = Date()
     
@@ -82,7 +83,7 @@ struct EditOtherItem: View {
                         
                         Button(action: {
                             if let amountInt = Double(amount) {
-                                let other = OtherItem(id: id, name: name, type: type.rawValue, amount: amountInt, createdAt: createdAt)
+                                let other = OtherItem(id: id, name: name, type: type.rawValue, usePercentage: usePercentage, amount: amountInt, createdAt: createdAt)
                                 splitItem.updateOtherItem(other)
                             }
                             
@@ -103,6 +104,7 @@ struct EditOtherItem: View {
                     id = item.id
                     name = item.name
                     type = PaymentType.ID(rawValue: item.type)!
+                    usePercentage = item.usePercentage
                     amount = String(Int(item.amount))
                     createdAt = item.createdAt
                 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F9121EBB2C346D2F00AD0587 /* RecognizeHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */; };
 		F9143BD82C5D494B008A54AA /* AddBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9143BD72C5D494B008A54AA /* AddBank.swift */; };
+		F9143BDA2C5E8F1F008A54AA /* FriendAvatarGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9143BD92C5E8F1F008A54AA /* FriendAvatarGroup.swift */; };
 		F91C6C692C384DA800206F52 /* FriendSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91C6C682C384DA800206F52 /* FriendSheet.swift */; };
 		F91C6C6B2C39114F00206F52 /* AddFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91C6C6A2C39114F00206F52 /* AddFriend.swift */; };
 		F91E77512C2C794100AF877B /* BagirataApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E77502C2C794100AF877B /* BagirataApp.swift */; };
@@ -54,6 +55,7 @@
 /* Begin PBXFileReference section */
 		F9121EBA2C346D2F00AD0587 /* RecognizeHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizeHTTP.swift; sourceTree = "<group>"; };
 		F9143BD72C5D494B008A54AA /* AddBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBank.swift; sourceTree = "<group>"; };
+		F9143BD92C5E8F1F008A54AA /* FriendAvatarGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendAvatarGroup.swift; sourceTree = "<group>"; };
 		F91C6C682C384DA800206F52 /* FriendSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSheet.swift; sourceTree = "<group>"; };
 		F91C6C6A2C39114F00206F52 /* AddFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriend.swift; sourceTree = "<group>"; };
 		F91E774D2C2C794100AF877B /* Bagirata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bagirata.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -188,6 +190,7 @@
 				F91E77662C2C897400AF877B /* InputText.swift */,
 				F9BCDA8F2C2D159400EE1E40 /* BagirataAvatar.swift */,
 				F96A0A972C2EAEAD00A0EFA9 /* BagirataAvatarGroup.swift */,
+				F9143BD92C5E8F1F008A54AA /* FriendAvatarGroup.swift */,
 				F9BCDA912C2D18D000EE1E40 /* ColorGen.swift */,
 				F9BCDA9A2C2D5EE200EE1E40 /* Recognizer.swift */,
 				F9705BED2C2D7F5E0057D419 /* Formatter.swift */,
@@ -320,6 +323,7 @@
 				F9705BF62C2E59420057D419 /* Split.swift in Sources */,
 				F91C6C6B2C39114F00206F52 /* AddFriend.swift in Sources */,
 				F9C8CCD22C3AF2DE001204CF /* Setting.swift in Sources */,
+				F9143BDA2C5E8F1F008A54AA /* FriendAvatarGroup.swift in Sources */,
 				F9C8CCCE2C391DA3001204CF /* SplitView.swift in Sources */,
 				F91E77692C2C8FA500AF877B /* FriendView.swift in Sources */,
 				F96905BF2C363D55003BEC5D /* EditItem.swift in Sources */,

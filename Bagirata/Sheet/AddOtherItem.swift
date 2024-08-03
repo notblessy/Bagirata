@@ -10,12 +10,13 @@ import SwiftUI
 struct AddOtherItem: View {
     @Environment(\.dismiss) var dismiss
     
-    @State private var type: PaymentType = .addition
+    @State private var type: PaymentType = .tax
     
     @Binding var splitItem: SplitItem
     
     @State var name: String = ""
     @State var amount: String = ""
+    @State var usePercentage: Bool = false
     
     private var disabledButton: Bool {
         name.isEmpty || type.rawValue.isEmpty || amount.isEmpty || Int(amount) == 0
@@ -32,20 +33,27 @@ struct AddOtherItem: View {
                         .fontWeight(.medium)
                         .padding(.top, 20)
                     
-                    Picker("Type", selection: $type) {
-                        Text("Addition").tag(PaymentType.addition)
-                        Text("Deduction").tag(PaymentType.deduction)
-                        Text("Tax").tag(PaymentType.tax)
-                        Text("Discount").tag(PaymentType.discount)
+                    HStack {
+                        Picker("Type", selection: $type) {
+                            Text("Tax").tag(PaymentType.tax)
+                            Text("Addition").tag(PaymentType.addition)
+                            Text("Deduction").tag(PaymentType.deduction)
+                        }
+                        .pickerStyle(.menu)
+                        .buttonStyle(.bordered)
+
+                        Toggle(isOn: $usePercentage) {
+                            Text("Use Percentage")
+                                .foregroundStyle(.gray)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
                     }
-                    .pickerStyle(.menu)
-                    .padding(.horizontal)
-                    .buttonStyle(.bordered)
+                    .padding(.horizontal, 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Form {
                         TextField("Name", text: $name)
-                        switch type {
-                        case .addition, .deduction:
+                        if !usePercentage {
                             ZStack(alignment: .leading) {
                                 Text("IDR")
                                     .foregroundStyle(.gray)
@@ -53,7 +61,7 @@ struct AddOtherItem: View {
                                     .keyboardType(.numberPad)
                                     .padding(.leading, 35)
                             }
-                        default:
+                        } else {
                             ZStack(alignment: .trailing) {
                                 TextField("Amount", text: $amount)
                                     .keyboardType(.numberPad)
@@ -79,7 +87,7 @@ struct AddOtherItem: View {
                         
                         Button(action: {
                             if let amountInt = Double(amount) {
-                                let other = OtherItem(name: name, type: type.rawValue, amount: amountInt)
+                                let other = OtherItem(name: name, type: type.rawValue, usePercentage: usePercentage, amount: amountInt)
                                 splitItem.otherPayments.append(other)
                             }
                             

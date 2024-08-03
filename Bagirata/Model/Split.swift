@@ -138,6 +138,10 @@ struct AssignedItem: Identifiable, Codable {
         if let index = friends.firstIndex(where: { $0.friendId == friend.friendId }) {
             friends[index].qty += newQty
             friends[index].subTotal = price * friends[index].qty
+            
+            if friends[index].qty == 0 {
+                friends.remove(at: index)
+            }
         } else {
             let subTotal = price + newQty
 
@@ -187,19 +191,22 @@ struct OtherItem: Identifiable, Codable {
     var id = UUID()
     let name: String
     let type: String
+    var usePercentage: Bool
     let amount: Double
     var createdAt = Date()
     
-    init(name: String, type: String, amount: Double) {
+    init(name: String, type: String, usePercentage: Bool, amount: Double) {
         self.name = name
         self.type = type
+        self.usePercentage = usePercentage
         self.amount = amount
     }
     
-    init(id: UUID, name: String, type: String, amount: Double, createdAt: Date) {
+    init(id: UUID, name: String, type: String, usePercentage: Bool,  amount: Double, createdAt: Date) {
         self.id = id
         self.name = name
         self.type = type
+        self.usePercentage = usePercentage
         self.amount = amount
         self.createdAt = createdAt
     }
@@ -209,6 +216,7 @@ struct OtherItem: Identifiable, Codable {
         self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         self.name = try container.decode(String.self, forKey: .name)
         self.type = try container.decode(String.self, forKey: .type)
+        self.usePercentage = try container.decode(Bool.self, forKey: .usePercentage)
         self.amount = try container.decode(Double.self, forKey: .amount)
     }
     
@@ -217,7 +225,7 @@ struct OtherItem: Identifiable, Codable {
     }
     
     func isDeduction() -> Bool {
-        return type == "deduction"
+        return type == "deduction" && !usePercentage
     }
     
     func isTax() -> Bool {
@@ -225,18 +233,23 @@ struct OtherItem: Identifiable, Codable {
     }
     
     func isDiscount() -> Bool {
-        return type == "discount"
+        return type == "deduction" && usePercentage
+    }
+    
+    func isServiceCharge() -> Bool {
+        let lowercasedName = name.lowercased()
+        return lowercasedName == "sc" || lowercasedName.contains("service") || lowercasedName.contains("service cost")
     }
     
     static func examples() -> [OtherItem] {
         return [
-            OtherItem(name: "Discount", type: "discount", amount: 22),
-            OtherItem(name: "Tax", type: "tax", amount: 12),
+            OtherItem(name: "Discount", type: "discount", usePercentage: true, amount: 22),
+            OtherItem(name: "Tax", type: "tax", usePercentage: true, amount: 12),
         ]
     }
     
     static func example() -> OtherItem {
-        return OtherItem(id: UUID(uuidString: "B2391D93-80E4-444E-8B4F-81B09D8FA4AD") ?? UUID(), name: "Tax", type: "addition", amount: 15000,  createdAt: Date())
+        return OtherItem(id: UUID(uuidString: "B2391D93-80E4-444E-8B4F-81B09D8FA4AD") ?? UUID(), name: "Tax", type: "addition", usePercentage: false, amount: 15000,  createdAt: Date())
     }
 }
 
