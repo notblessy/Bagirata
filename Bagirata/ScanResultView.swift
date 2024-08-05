@@ -194,7 +194,7 @@ struct ScanResultView: View {
                     }, label: {
                         Text("Continue")
                     })
-                    .disabled(splitItem.items.isEmpty && splitItem.otherPayments.isEmpty)
+                    .disabled(splitItem.items.isEmpty || splitItem.friends.isEmpty)
                     
                 }
             }

@@ -157,7 +157,9 @@ struct AssignView: View {
                                                     .foregroundStyle(.gray)
                                             }
                                             
-                                            FriendAvatarGroup(friends: item.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
+                                            if item.friends.count > 0 {
+                                                FriendAvatarGroup(friends: item.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
+                                            }
                                         }
                                         Spacer()
                                         Text(IDR(item.price * item.qty))
@@ -177,7 +179,7 @@ struct AssignView: View {
                                         Text("Drop")
                                     }
                                     .tint(
-                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 ? .bagirataDimmed : .red)
+                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 || item.equal ? .bagirataDimmed : .red)
                                     .disabled(
                                         (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 || item.equal)
                                 }
@@ -191,9 +193,10 @@ struct AssignView: View {
                                     } label: {
                                         Text("Add")
                                     }
-                                    .tint(item.getTakenQty() >= item.qty ? .bagirataDimmed : .indigo)
-                                    .disabled(item.getTakenQty() >= item.qty)
-                                    
+                                    .tint(item.getTakenQty() >= item.qty || item.equal ? .bagirataDimmed : .indigo)
+                                    .disabled((item.getTakenQty() >= item.qty) || item.equal)
+                                }
+                                .swipeActions() {
                                     Button() {
                                         var it = item
                                         if it.equal {
@@ -206,7 +209,8 @@ struct AssignView: View {
                                     } label: {
                                         Text(!item.equal ? "Equal" : "Unequal")
                                     }
-                                    .tint(!item.equal ? .blue.opacity(0.3) : .red.opacity(0.3))
+                                    .tint(!item.equal ? .blue : .red)
+                                    .disabled(false)
                                 }
                             }
                         }
