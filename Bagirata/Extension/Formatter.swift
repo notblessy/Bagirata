@@ -20,6 +20,15 @@ func IDR(_ price: Double) -> String {
     }
 }
 
+func formatNumber(_ number: Double) -> String {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.groupingSeparator = "."
+    formatter.decimalSeparator = ","
+    
+    return formatter.string(from: NSNumber(value: number)) ?? "\(number)"
+}
+
 func Percent(_ amount: Double) -> String {
     return "\(Int(amount))%"
 }

@@ -95,6 +95,18 @@ struct HistoryDetailView: View {
                                         Text(IDR(friend.total))
                                     }
                                     
+                                    HStack {
+                                        Text("Subtotal")
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(.gray)
+                                            .fontWeight(.semibold)
+                                        Spacer()
+                                        Text(IDR(friend.subTotal))
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(.gray)
+                                            .fontWeight(.semibold)
+                                    }
+                                    
                                     ForEach(friend.items) { item in
                                         if item.qty > 0 {
                                             HStack {
@@ -102,12 +114,20 @@ struct HistoryDetailView: View {
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Spacer()
-                                                Text(!item.equal ? "x\(Int(item.qty))" : "x1/\(split.friends.count)")
+                                                Text(item.formattedQuantity(split.friends.count))
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
-                                                Text(IDR(item.price))
-                                                    .font(.system(size: 12))
-                                                    .foregroundStyle(.gray)
+                                                if item.equal {
+                                                    Text(IDR(item.splittedPrice(split.friends.count)))
+                                                        .font(.system(size: 12))
+                                                        .foregroundStyle(.gray)
+                                                        .padding(.leading, 3)
+                                                } else {
+                                                    Text(IDR(item.price * item.qty))
+                                                        .font(.system(size: 12))
+                                                        .foregroundStyle(.gray)
+                                                        .padding(.leading, 3)
+                                                }
                                             }
                                         }
                                     }
@@ -126,6 +146,7 @@ struct HistoryDetailView: View {
                                             Text(item.getPrice())
                                                 .font(.system(size: 12))
                                                 .foregroundStyle(.gray)
+                                                .padding(.leading, 3)
                                         }
                                     }
                                 }

@@ -30,7 +30,7 @@ class FriendOther: Identifiable, Codable {
     }
     
     func getFormula(_ multiplier: Double) -> String {
-        return "\(Int(amount))% * \(IDR(multiplier))"
+        return "\(Int(amount))% x \(formatNumber(multiplier))"
     }
     
     func getPrice() -> String {
@@ -118,10 +118,23 @@ class FriendItem: Identifiable, Codable {
     
     func formattedQuantity(_ totalFriends: Int) -> String {        
         if equal {
-            return "x1/\(Int(totalFriends))"
+            return "1/\(Int(totalFriends)) x \(formatNumber(price))"
         } else {
-            return "x\(Int(qty))"
+            if qty > 1 {
+                return "\(Int(qty)) x \(formatNumber(price))"
+            } else {
+                return "\(Int(qty)) x"
+            }
         }
+    }
+    
+    func splittedPrice(_ totalFriends: Int) -> Double {
+        guard totalFriends > 0 else {
+            return price
+        }
+        
+        let t = Double(totalFriends)
+        return price / t
     }
 }
 
@@ -230,7 +243,7 @@ class Splitted: Identifiable, Codable {
                 id: UUID(uuidString: "3FCEA1EE-1033-420B-9024-B875E6D0FA8B")!,
                 name: "Iced Thai Tea D Glazy",
                 price: 29000,
-                qty: 1
+                qty: 2
             )
         ]
         
@@ -254,7 +267,7 @@ class Splitted: Identifiable, Codable {
                 id: UUID(uuidString: "D62F87D3-3445-4C96-96BA-07D3829BE5E6")!,
                 name: "Jcoccino",
                 price: 32000,
-                qty: 1
+                qty: 2
             )
         ]
         

@@ -99,26 +99,46 @@ struct SplitView: View {
                                             Text(IDR(friend.total))
                                         }
                                         
+                                        HStack {
+                                            Text("Subtotal")
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(.gray)
+                                                .fontWeight(.semibold)
+                                            Spacer()
+                                            Text(IDR(friend.subTotal))
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(.gray)
+                                                .fontWeight(.semibold)
+                                        }
+                                        
                                         ForEach(friend.items) { item in
                                             if item.qty > 0 {
                                                 HStack {
-                                                    Text(item.name.truncate(length: 22))
+                                                    Text("- \(item.name.truncate(length: 22))")
                                                         .font(.system(size: 12))
                                                         .foregroundStyle(.gray)
                                                     Spacer()
                                                     Text(item.formattedQuantity(splitted.friends.count))
                                                         .font(.system(size: 12))
                                                         .foregroundStyle(.gray)
-                                                    Text(IDR(item.price))
-                                                        .font(.system(size: 12))
-                                                        .foregroundStyle(.gray)
+                                                    if item.equal {
+                                                        Text(IDR(item.splittedPrice(splitted.friends.count)))
+                                                            .font(.system(size: 12))
+                                                            .foregroundStyle(.gray)
+                                                            .padding(.leading, 3)
+                                                    } else {
+                                                        Text(IDR(item.price * item.qty))
+                                                            .font(.system(size: 12))
+                                                            .foregroundStyle(.gray)
+                                                            .padding(.leading, 3)
+                                                    }
                                                 }
                                             }
                                         }
                                         
                                         ForEach(friend.others) { item in
                                             HStack {
-                                                Text(item.name.truncate(length: 22))
+                                                Text("- \(item.name.truncate(length: 22))")
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
                                                 Spacer()
@@ -130,6 +150,7 @@ struct SplitView: View {
                                                 Text(item.getPrice())
                                                     .font(.system(size: 12))
                                                     .foregroundStyle(.gray)
+                                                    .padding(.leading, 3)
                                             }
                                         }
                                     }
