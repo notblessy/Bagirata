@@ -331,7 +331,11 @@ struct SplitItem: Identifiable, Codable {
         let itemsTotal = items.reduce(Double(0)) { $0 + $1.subTotal() }
         
         let otherPaymentsTotal = otherPayments.reduce(Double(0)) {
-            if $1.isTax() || $1.isDiscount() {
+            if $1.isTax() || $1.isDiscount() || $1.isServiceCharge(){
+                return $0
+            }
+            
+            if $1.usePercentage {
                 return $0
             }
             
@@ -342,13 +346,28 @@ struct SplitItem: Identifiable, Codable {
             return $0 + $1.subTotal()
         }
         
-        return itemsTotal + otherPaymentsTotal
+        var total = itemsTotal + otherPaymentsTotal
+        
+        for payment in otherPayments {
+            if !payment.isDiscount() && !payment.isTax() && !payment.isServiceCharge() && payment.usePercentage {
+                let amountTotal = payment.amount / 100 * total
+                if !payment.isDeduction() {
+                    total += amountTotal
+                }
+            }
+        }
+        
+        return total
     }
     
     func grandTotal() -> Double {
         let itemsTotal = items.reduce(0) { $0 + $1.subTotal() }
         let otherPaymentsTotal = otherPayments.reduce(0) {
-            if $1.isTax() || $1.isDiscount() {
+            if $1.isTax() || $1.isDiscount() || $1.isServiceCharge() {
+                return $0
+            }
+            
+            if $1.usePercentage {
                 return $0
             }
             
@@ -356,18 +375,48 @@ struct SplitItem: Identifiable, Codable {
         }
         
         var total = itemsTotal + otherPaymentsTotal
+        
+        for payment in otherPayments {
+            if !payment.isDiscount() && !payment.isTax() && !payment.isServiceCharge() && payment.usePercentage {
+                var amountTotal = (payment.amount / 100) * total
+                if payment.isDeduction() {
+                    amountTotal = -amountTotal
+                }
+                
+                total += amountTotal
+            }
+        }
 
         for payment in otherPayments {
             if payment.isDiscount() {
-                let disc = payment.amount / 100 * total
+                var disc = payment.amount
+                if payment.usePercentage {
+                    disc = (payment.amount / 100) * total
+                }
+                
                 total -= disc
             }
         }
         
         for payment in otherPayments {
             if payment.isTax() {
-                let tax = payment.amount / 100 * total
+                var tax = payment.amount
+                if payment.usePercentage {
+                    tax = (payment.amount / 100) * total
+                }
+                
                 total += tax
+            }
+        }
+        
+        for payment in otherPayments {
+            if payment.isServiceCharge() {
+                var sc = payment.amount
+                if payment.usePercentage {
+                    sc = payment.amount / 100 * total
+                }
+                
+                total += sc
             }
         }
         

@@ -66,7 +66,8 @@ struct AssignView: View {
                                                 style: selectedFriend?.id == friend.id ? .active : .plain
                                             )
                                         })
-                                        .padding(1)
+                                        .padding(2)
+                                        .buttonStyle(NoFadeButtonStyle())
                                         
                                         Text(friend.name.truncate(length: 10))
                                             .font(.system(size: 10))
@@ -289,5 +290,4 @@ struct AssignView: View {
 
 #Preview {
     AssignView(currentSubTab: .constant(.assign), splitItem: .constant(SplitItem.example()), splittedData: .constant(Splitted.example()))
-        .modelContainer(previewContainer)
 }

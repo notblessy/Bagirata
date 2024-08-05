@@ -149,7 +149,7 @@ struct ScanResultView: View {
                                         .foregroundStyle(.gray)
                                 }
                                 Spacer()
-                                if item.isTax() || item.isDiscount() {
+                                if item.usePercentage {
                                     Text(Percent(item.amount))
                                         .foregroundStyle(.gray)
                                 } else {

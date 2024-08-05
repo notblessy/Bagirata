@@ -36,20 +36,27 @@ struct EditOtherItem: View {
                         .fontWeight(.medium)
                         .padding(.top, 20)
                     
-                    Picker("Type", selection: $type) {
-                        Text("Addition").tag(PaymentType.addition)
-                        Text("Deduction").tag(PaymentType.deduction)
-                        Text("Tax").tag(PaymentType.tax)
-                        Text("Discount").tag(PaymentType.discount)
+                    HStack {
+                        Picker("Type", selection: $type) {
+                            Text("Tax").tag(PaymentType.tax)
+                            Text("Addition").tag(PaymentType.addition)
+                            Text("Deduction").tag(PaymentType.deduction)
+                        }
+                        .pickerStyle(.menu)
+                        .buttonStyle(.bordered)
+
+                        Toggle(isOn: $usePercentage) {
+                            Text("Use Percentage")
+                                .foregroundStyle(.gray)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
                     }
-                    .pickerStyle(.menu)
-                    .padding(.horizontal)
-                    .buttonStyle(.bordered)
+                    .padding(.horizontal, 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Form {
                         TextField("Name", text: $name)
-                        switch type {
-                        case .addition, .deduction:
+                        if !usePercentage {
                             ZStack(alignment: .leading) {
                                 Text("IDR")
                                     .foregroundStyle(.gray)
@@ -57,7 +64,7 @@ struct EditOtherItem: View {
                                     .keyboardType(.numberPad)
                                     .padding(.leading, 35)
                             }
-                        default:
+                        } else {
                             ZStack(alignment: .trailing) {
                                 TextField("Amount", text: $amount)
                                     .keyboardType(.numberPad)

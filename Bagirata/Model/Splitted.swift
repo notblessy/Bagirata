@@ -488,16 +488,14 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
             continue
         }
         
-        var amountSplitted = payment.amount / Double(splitItem.friends.count)
+        if payment.usePercentage {
+            continue
+        }
+        
+        let amountSplitted = payment.amount / Double(splitItem.friends.count)
         
         for friendId in transformedFriends.keys {
             if let friend = transformedFriends[friendId] {
-                if payment.usePercentage {
-                    amountSplitted = ((payment.amount / 100) * splitItem.subTotal()) / Double(splitItem.friends.count)
-                    friend.total -= amountSplitted
-                    friend.subTotal -= amountSplitted
-                }
-                
                 if payment.isDeduction() {
                     friend.total -= amountSplitted
                     friend.subTotal -= amountSplitted
@@ -505,6 +503,49 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
                     friend.total += amountSplitted
                     friend.subTotal += amountSplitted
                 }
+                
+                let otherItem = FriendOther(
+                    id: payment.id,
+                    name: payment.name,
+                    amount: payment.amount,
+                    price: amountSplitted,
+                    type: payment.type,
+                    usePercentage: payment.usePercentage
+                )
+                
+                var updatedOthers = friend.others
+                if let index = updatedOthers.firstIndex(where: { $0.id == otherItem.id }) {
+                    updatedOthers[index] = otherItem
+                } else {
+                    updatedOthers.append(otherItem)
+                }
+                
+                friend.others = updatedOthers
+                transformedFriends[friendId] = friend
+            }
+        }
+    }
+    
+    for payment in splitItem.otherPayments {
+        if payment.isDiscount() || payment.isTax() || payment.isServiceCharge() {
+            continue
+        }
+        
+        if !payment.usePercentage {
+            continue
+        }
+        
+        if payment.isDeduction() {
+            continue
+        }
+        
+        
+        for friendId in transformedFriends.keys {
+            if let friend = transformedFriends[friendId] {
+                let amountSplitted = ((payment.amount / 100) * splitItem.subTotal()) / Double(splitItem.friends.count)
+                
+                friend.total += amountSplitted
+                friend.subTotal += amountSplitted
                 
                 let otherItem = FriendOther(
                     id: payment.id,
@@ -538,7 +579,7 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
         for friendId in transformedFriends.keys {
             if let friend = transformedFriends[friendId] {
                 if payment.usePercentage {
-                    let amountSplitted = ((payment.amount / 100) * splitItem.subTotal()) / Double(splitItem.friends.count)
+                    amountSplitted = ((payment.amount / 100) * splitItem.subTotal()) / Double(splitItem.friends.count)
                 }
                 
                 friend.total -= amountSplitted

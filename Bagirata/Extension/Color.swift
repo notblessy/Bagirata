@@ -48,3 +48,12 @@ extension Color {
     public static let bagirataDimmed = Color(hex: "CACED0")
     public static let bagirataDimmedLight = Color(hex: "F4F4F4")
 }
+
+struct NoFadeButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 1.0 : 1.0) // Maintain opacity regardless of press state
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0) // Optional: add a scaling effect
+            .animation(.none, value: configuration.isPressed) // Disable animations
+    }
+}

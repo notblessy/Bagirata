@@ -39,7 +39,7 @@ struct BagirataAvatar: View {
                     .frame(width: width, height: height)
                     .overlay(
                         Circle()
-                            .stroke(Color.blue, lineWidth: 2)
+                            .stroke(Color.bagirataOk, lineWidth: 3)
                     )
             case .inactive:
                 Circle()
