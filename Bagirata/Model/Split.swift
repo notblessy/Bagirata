@@ -216,7 +216,7 @@ struct OtherItem: Identifiable, Codable {
         self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         self.name = try container.decode(String.self, forKey: .name)
         self.type = try container.decode(String.self, forKey: .type)
-        self.usePercentage = try container.decode(Bool.self, forKey: .usePercentage)
+        self.usePercentage = try container.decodeIfPresent(Bool.self, forKey: .usePercentage) ?? false
         self.amount = try container.decode(Double.self, forKey: .amount)
     }
     

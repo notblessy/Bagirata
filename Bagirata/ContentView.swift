@@ -32,7 +32,7 @@ struct ContentView: View {
     @State private var texts: [Scan] = []
     
     @State private var split: SplitItem = SplitItem()
-    @State private var splitted: Splitted = Splitted.example()
+    @State private var splitted: Splitted = Splitted()
     
     @State private var hasUser: Bool = false
     @State private var showUserSheet: Bool = false
@@ -41,9 +41,9 @@ struct ContentView: View {
         NavigationStack {
             switch selectedTab {
             case .history:
-                HistoryView(split: $split, selectedTab: $selectedTab, scannerResultActive: $scannerResultActive, currentSubTab: $currentSubTab)
+                HistoryView(split: $split, selectedTab: $selectedTab, scannerResultActive: $scannerResultActive, currentSubTab: $currentSubTab, isLoading: $isLoading, showAlertRecognizer: $showAlertRecognizer, errMessage: $errMessage)
                 .alert(isPresented: $showAlertRecognizer) {
-                        Alert(title: Text("Scan Error"), message: Text(errMessage), dismissButton: .default(Text("OK")))
+                        Alert(title: Text("Error Recognizing Text"), message: Text(errMessage), dismissButton: .default(Text("OK")))
                     }
             case .friend:
                 NavigationStack {
@@ -118,4 +118,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .modelContainer(previewContainer)
 }

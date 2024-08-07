@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct HistoryView: View {
     @Environment(\.modelContext) private var context
@@ -17,11 +18,17 @@ struct HistoryView: View {
     
     @State private var showSheet: Bool = false
     @State private var selectedSplit: Splitted?
+    @State private var picker: PhotosPickerItem?
+    @State private var showPicker: Bool = false
     
     @Binding var split: SplitItem
     @Binding var selectedTab: Tabs
     @Binding var scannerResultActive: Bool
     @Binding var currentSubTab: SubTabs
+    
+    @Binding var isLoading: Bool
+    @Binding var showAlertRecognizer: Bool
+    @Binding var errMessage: String
     
     var body: some View {
         NavigationSplitView(sidebar: {
@@ -64,19 +71,36 @@ struct HistoryView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        split.name = "untitled"
-                        
-                        scannerResultActive = true
-                        selectedTab = .result
-                        currentSubTab = .review
+                    Menu(content: {
+                        Button(action: {
+                            showPicker.toggle()
+                        }, label: {
+                            HStack {
+                                Image(systemName: "photo.stack")
+                                Text("Upload")
+                            }
+                        })
+                        Button(action: {
+                            split.name = "untitled"
+                            
+                            scannerResultActive = true
+                            selectedTab = .result
+                            currentSubTab = .review
+                        }, label: {
+                            HStack {
+                                Image(systemName: "plus")
+                                Text("Create Manual")
+                            }
+                        })
                     }, label: {
                         HStack {
                             Image(systemName: "plus")
                             Text("New Split")
                         }
                     })
+                    .photosPicker(isPresented: $showPicker, selection: $picker, matching: .images)
                 }
+                
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
                         showSheet.toggle()
@@ -87,6 +111,7 @@ struct HistoryView: View {
                     })
                 }
             }
+            .tint(Color.bagirataOk)
             .navigationTitle("History")
             .sheet(isPresented: $showSheet, content: {
                 EditMe()
@@ -111,6 +136,47 @@ struct HistoryView: View {
         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Histories")
         .onChange(of: search) { oldValue, newValue in
             fetchHistories(currentPage: 0, search: newValue)
+        }
+        .onChange(of: picker) {_, _ in
+            Task {
+                if let picker, let data = try? await picker.loadTransferable(type: Data.self) {
+                    if let image = UIImage(data: data) {
+                        recognizerFrom(image, withCompletionHandler: { result in
+                            if result.isEmpty {
+                                errMessage = "Could not recognize text"
+                                showAlertRecognizer = true
+                                return
+                            }
+                            
+                            selectedTab = .result
+                            isLoading = true
+                            
+                            recognize(model: result) { res in
+                                switch res {
+                                case .success(let response):
+                                    split = response.data
+                                    scannerResultActive = true
+                                    currentSubTab = .review
+                                    
+                                    isLoading = false
+                                case .failure(let error):
+                                    errMessage = error.localizedDescription
+                                    isLoading = false
+                                    
+                                    showAlertRecognizer = true
+                                    
+                                    selectedTab = .history
+                                }
+                            }
+                        })
+                    }
+                }
+                
+                picker = nil
+            }
+        }
+        .alert(isPresented: $showAlertRecognizer) {
+            Alert(title: Text("Scan Error"), message: Text(errMessage), dismissButton: .default(Text("OK")))
         }
     }
     
@@ -148,5 +214,6 @@ struct HistoryView: View {
 }
 
 #Preview {
-    HistoryView(split: .constant(SplitItem.example()), selectedTab: .constant(.history), scannerResultActive: .constant(false), currentSubTab: .constant(.review))
+    HistoryView(split: .constant(SplitItem.example()), selectedTab: .constant(.history), scannerResultActive: .constant(false), currentSubTab: .constant(.review), isLoading: .constant(false), showAlertRecognizer: .constant(false), errMessage: .constant(""))
+        .modelContainer(previewContainer)
 }

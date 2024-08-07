@@ -69,6 +69,7 @@ struct FriendView: View {
                 })
             }
         }
+        .tint(Color.bagirataOk)
         .navigationTitle("Friends")
         .sheet(isPresented: $showSheet, content: {
             AddFriend()

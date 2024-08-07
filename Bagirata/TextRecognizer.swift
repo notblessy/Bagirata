@@ -48,3 +48,38 @@ final class TextRecognizer {
     }
 }
 
+func recognizerFrom(_ image: UIImage, withCompletionHandler completionHandler:@escaping (String) -> Void) {
+    guard let cgImage = image.cgImage else { return }
+    
+    var recognizedText: String = ""
+    
+    let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+    let request = VNRecognizeTextRequest { request, error in
+        guard error == nil else {
+            print(error?.localizedDescription ?? "")
+            return
+        }
+        
+        guard let obsvr = request.results as? [VNRecognizedTextObservation] else {
+            print("error observe text result")
+            return
+        }
+        
+        let texts = obsvr.compactMap { result in
+            result.topCandidates(1).first?.string
+        }
+        
+        recognizedText = texts.joined(separator: " ")
+    }
+    
+    request.recognitionLevel = .accurate
+    
+    do {
+        try handler.perform([request])
+    } catch {
+        print(error.localizedDescription)
+    }
+    
+    completionHandler(recognizedText)
+}
+

@@ -31,12 +31,13 @@ func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>
         }
         
         do {
-            print(data)
+//            if let jsonString = String(bytes: data, encoding: .utf8) {
+//                    print(jsonString)
+//            }
             let response = try JSONDecoder().decode(ItemResponse.self, from: data)
             completion(.success(response))
-        }
-        catch {
-            completion(.failure(HTTPError.invalidResponse))
+        } catch {
+            completion(.failure(error))
         }
     }
     

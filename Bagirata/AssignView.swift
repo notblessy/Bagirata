@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import GoogleMobileAds
 
 struct AssignView: View {
     @Environment(\.modelContext) private var context
@@ -24,6 +25,8 @@ struct AssignView: View {
     @State private var showBankSheet: Bool = false
     
     @State var bankForm: Bank = Bank()
+    
+    @StateObject private var interstisialAdManager = InterstisialAdsManager()
     
     var body: some View {
         NavigationStack {
@@ -256,6 +259,8 @@ struct AssignView: View {
                     
                     ToolbarItem {
                         Button(action: {
+                            interstisialAdManager.displayInterstisialAd()
+                            
                             let transformedSplit = splitted(splitItem: splitItem, bank: bankForm)
                             
                             context.insert(transformedSplit)
@@ -288,6 +293,10 @@ struct AssignView: View {
                     .presentationDetents([.height(400)])
                 })
             }
+            .onAppear{
+                interstisialAdManager.loadInterstisialAd()
+            }
+            .disabled(!interstisialAdManager.interstisialAdLoaded)
         }
     }
 }
