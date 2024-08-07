@@ -38,14 +38,16 @@ class InterstisialAdsManager: NSObject, GADFullScreenContentDelegate, Observable
     
     // Display InterstitialAd
     func displayInterstisialAd(){
-        guard let root = UIApplication.shared.windows.first?.rootViewController else {
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0 is UIWindowScene }) as? UIWindowScene,
+              let window = scene.windows.first,
+              let root = window.rootViewController else {
             return
         }
-        
-        if let add = interstisialAd{
-            add.present(fromRootViewController: root)
+
+        if let ad = interstisialAd {
+            ad.present(fromRootViewController: root)
             self.interstisialAdLoaded = false
-        }else{
+        } else {
             print("🔵: Ad wasn't ready")
             self.interstisialAdLoaded = false
             self.loadInterstisialAd()
