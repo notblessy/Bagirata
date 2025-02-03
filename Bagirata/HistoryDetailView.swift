@@ -177,7 +177,7 @@ struct HistoryDetailView: View {
                                             
                                             isLoading = false
                                             
-                                            pasteboard.string = "http://bagirata.co/\(response.data)"
+                                            pasteboard.string = "http://bagirata.co/view/\(response.data)"
                                             showAlert.toggle()
                                         }
                                     case .failure(let error):

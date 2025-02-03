@@ -8,7 +8,7 @@
 import Foundation
 
 func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>) -> Void) {
-    let endpoint = "https://bagirata.co/v1/recognize"
+    let endpoint = "https://bagirata.sepiksel.com/v1/recognize"
     guard let url = URL(string: endpoint) else {
         completion(.failure(HTTPError.invalidURL))
         return
@@ -31,9 +31,9 @@ func recognize(model: String, completion: @escaping (Result<ItemResponse, Error>
         }
         
         do {
-//            if let jsonString = String(bytes: data, encoding: .utf8) {
-//                    print(jsonString)
-//            }
+            if let jsonString = String(bytes: data, encoding: .utf8) {
+                    print(jsonString)
+            }
             let response = try JSONDecoder().decode(ItemResponse.self, from: data)
             completion(.success(response))
         } catch {

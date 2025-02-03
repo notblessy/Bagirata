@@ -20,6 +20,7 @@ struct ScanResultView: View {
     @State private var selectedOther: OtherItem?
     
     @State private var hasMe: Bool = false
+    @State private var showAlert: Bool = false
     
     @State private var showSheet: Bool = false
     @State private var showOtherSheet: Bool = false
@@ -28,6 +29,7 @@ struct ScanResultView: View {
     
     @State private var search: String = ""
     @State private var searchFriend: String = ""
+    @State private var alertMessage: String = ""
     
     var body: some View {
         NavigationStack {
@@ -190,7 +192,12 @@ struct ScanResultView: View {
                 
                 ToolbarItem {
                     Button(action: {
-                        currentSubTab = .assign
+                        if splitItem.name.count > 25 {
+                            alertMessage = "Name cannot exceed 25 characters."
+                            showAlert.toggle()
+                        } else {
+                            currentSubTab = .assign
+                        }
                     }, label: {
                         Text("Continue")
                     })
@@ -253,6 +260,15 @@ struct ScanResultView: View {
                 }, label: {
                     Text("Discard")
                 })
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Error"),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("OK")) {
+                        splitItem.name = String(splitItem.name.prefix(25))
+                    }
+                )
             }
         }
     }
