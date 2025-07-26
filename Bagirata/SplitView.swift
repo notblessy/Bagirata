@@ -190,7 +190,7 @@ struct SplitView: View {
                                         
                                         isLoading = false
                                         
-                                        pasteboard.string = "http://bagirata.co/view/\(response.data)"
+                                        pasteboard.string = "https://bagirata.notblessy.com/view/\(response.data)"
                                         showAlert = true
                                     }
                                 case .failure(let error):

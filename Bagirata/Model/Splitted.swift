@@ -140,13 +140,13 @@ class FriendItem: Identifiable, Codable {
 
 @Model
 class Splitted: Identifiable, Codable {
-    let id: UUID
-    let slug: String
-    let name: String
-    let bankName: String
-    let bankAccount: String
-    let bankNumber: String
-    let createdAt: String
+    var id: UUID
+    var slug: String
+    var name: String
+    var bankName: String
+    var bankAccount: String
+    var bankNumber: String
+    var createdAt: String
     var subTotal: Double
     var grandTotal: Double
     var friends: [SplittedFriend]
@@ -444,6 +444,16 @@ class Splitted: Identifiable, Codable {
         )
         
         return [splitted1, splitted2]
+    }
+}
+
+extension Splitted: Hashable {
+    static func == (lhs: Splitted, rhs: Splitted) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

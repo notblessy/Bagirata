@@ -515,7 +515,7 @@ class Split {
     var status: String
     var items: [AssignedItem]
     var otherPayments: [OtherItem]
-    let createdAt: Date
+    var createdAt: Date
     
     init(id: UUID, name: String, status: String, items: [AssignedItem], otherPayments: [OtherItem], createdAt: Date) {
         self.id = id

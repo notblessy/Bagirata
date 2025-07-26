@@ -26,7 +26,7 @@ struct EditMe: View {
     @State private var bankName: String = ""
     @State private var bankNumber: String = ""
     @State private var bankAccount: String = ""
-    
+
     private var disabledButton: Bool {
         name.isEmpty || bankNumber.isEmpty || bankName.isEmpty || bankAccount.isEmpty
     }

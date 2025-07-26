@@ -14,7 +14,7 @@ class Bank {
     var name: String
     var number: String
     var accountName: String
-    let createdAt: Date
+    var createdAt: Date
     
     init() {
         self.id = UUID()

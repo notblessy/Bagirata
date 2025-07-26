@@ -15,7 +15,7 @@ class Friend {
     var name: String
     var me: Bool
     var accentColor: String
-    let createdAt: Date
+    var createdAt: Date
     
     init(id: UUID, name: String, me: Bool, accentColor: String, createdAt: Date) {
         self.id = id
