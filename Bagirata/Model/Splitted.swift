@@ -120,10 +120,17 @@ class FriendItem: Identifiable, Codable {
         if equal {
             return "1/\(Int(totalFriends)) x \(formatNumber(price))"
         } else {
-            if qty > 1 {
-                return "\(Int(qty)) x \(formatNumber(price))"
+            let formattedQty: String
+            if qty.truncatingRemainder(dividingBy: 1) == 0 {
+                formattedQty = String(Int(qty))
             } else {
-                return "\(Int(qty)) x"
+                formattedQty = String(format: "%.1f", qty)
+            }
+            
+            if qty > 1 {
+                return "\(formattedQty) x \(formatNumber(price))"
+            } else {
+                return "\(formattedQty) x"
             }
         }
     }
@@ -463,6 +470,7 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
     for item in splitItem.items {
         for friend in item.friends {
             let friendId = friend.friendId
+            // Always use the actual item unit price
             let friendItem = FriendItem(id: item.id, name: item.name, price: item.price, qty: friend.qty, equal: item.equal)
             
             if let existingFriend = transformedFriends[friendId] {
@@ -474,7 +482,9 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
                     updatedItems.append(friendItem)
                 }
                 
-                let updatedTotal = item.equal ? existingFriend.total + (item.price / Double(item.friends.count)) : existingFriend.total + (friend.qty * item.price)
+                // Calculate subtotal using qty * price for both equal and individual splits
+                let itemSubtotal = friend.qty * item.price
+                let updatedTotal = existingFriend.total + itemSubtotal
                 
                 transformedFriends[friendId] = SplittedFriend(
                     id: existingFriend.id,
@@ -489,13 +499,16 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
                     createdAt: existingFriend.createdAt
                 )
             } else {
+                // Calculate subtotal using qty * price for both equal and individual splits
+                let itemSubtotal = friend.qty * item.price
+                
                 let newFriend = SplittedFriend(
                     id: friend.id,
                     friendId: friend.friendId,
                     name: friend.name,
                     accentColor: friend.accentColor,
-                    total: item.equal ? item.price / Double(item.friends.count) : friend.qty * item.price,
-                    subTotal: item.equal ? item.price / Double(item.friends.count) : friend.qty * item.price,
+                    total: itemSubtotal,
+                    subTotal: itemSubtotal,
                     items: [friendItem],
                     others: [],
                     me: friend.me,

@@ -19,10 +19,10 @@ struct AssignView: View {
     @Binding var splitItem: SplitItem
     @Binding var splittedData: Splitted
     
-    @State private var selectedFriend: AssignedFriend?
     @State private var selectedItem: AssignedItem?
     @State private var selectedOther: OtherItem?
     @State private var showBankSheet: Bool = false
+    @State private var showAssignItemSheet: Bool = false
     
     @State var bankForm: Bank = Bank()
     
@@ -52,35 +52,7 @@ struct AssignView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top)
                     
-                    Section("Friends") {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(splitItem.friends) { friend in
-                                    VStack {
-                                        Button(action: {
-                                            selectedFriend = friend
-                                        }, label: {
-                                            BagirataAvatar(
-                                                name: friend.name,
-                                                width: 55,
-                                                height: 55,
-                                                fontSize: 30,
-                                                background: Color(hex: friend.accentColor),
-                                                style: selectedFriend?.id == friend.id ? .active : .plain
-                                            )
-                                        })
-                                        .padding(2)
-                                        .buttonStyle(NoFadeButtonStyle())
-                                        
-                                        Text(friend.name.truncate(length: 10))
-                                            .font(.system(size: 10))
-                                            .foregroundStyle(.gray)
-                                    }
-                                }
-                            }
-                        }
-                        .listRowSeparator(.hidden)
-                    }
+                    Divider()
                     
                     if bankForm.isEmpty() {
                         HStack {
@@ -128,96 +100,99 @@ struct AssignView: View {
                         .listRowSeparator(.hidden)
                     }
                     
-                    if selectedFriend != nil {
-                        Section("Item") {
-                            ForEach(splitItem.items.sorted(by: { $0.createdAt < $1.createdAt })) { item in
-                                
-                                HStack {
-                                    HStack(alignment: .center, spacing: 10) {
-                                        VStack(alignment: .leading) {
-                                            ZStack(alignment: .topTrailing) {
-                                                Text(item.name)
-                                                    .font(.system(size: 18))
-                                                
-                                                if item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") > 0 {
-                                                    Text(item.equal ? "=" : String(Int(item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? ""))))
-                                                        .font(.system(size: 10))
-                                                        .fontWeight(.bold)
-                                                        .padding(7)
-                                                        .background(Color.red)
-                                                        .foregroundColor(.white)
-                                                        .clipShape(Circle())
-                                                        .offset(x: 30, y: -10)
-                                                }
-                                                
-                                            }
-                                            HStack {
-                                                Text(qty(item.qty))
-                                                    .font(.system(size: 16))
-                                                    .foregroundStyle(.gray)
-                                                Text(IDR(item.price))
-                                                    .font(.system(size: 16))
-                                                    .foregroundStyle(.gray)
-                                            }
-                                            
-                                            if item.friends.count > 0 {
-                                                FriendAvatarGroup(friends: item.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
-                                            }
-                                        }
-                                        Spacer()
-                                        Text(IDR(item.price * item.qty))
-                                            .foregroundStyle(.gray)
-                                    }
-                                }
-                                .padding(.vertical, 10)
-                                .swipeActions(edge: .leading) {
-                                    Button() {
-                                        var it = item
-                                        if let fr = selectedFriend {
-                                            it.assignFriend(friend: fr, newQty: -1)
-                                            
-                                            splitItem.updateItem(it)
-                                        }
-                                    } label: {
-                                        Text("Drop")
-                                    }
-                                    .tint(
-                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 || item.equal ? .bagirataDimmed : .red)
-                                    .disabled(
-                                        (item.getTakenQty(by: selectedFriend?.friendId.uuidString ?? "") == 0 && item.getTakenQty() > 0) || item.getTakenQty() == 0 || item.equal)
-                                }
-                                .swipeActions() {
-                                    Button {
-                                        var it = item
-                                        if let fr = selectedFriend {
-                                            it.assignFriend(friend: fr, newQty: 1)
-                                            splitItem.updateItem(it)
-                                        }
-                                    } label: {
-                                        Text("Add")
-                                    }
-                                    .tint(item.getTakenQty() >= item.qty || item.equal ? .bagirataDimmed : .indigo)
-                                    .disabled((item.getTakenQty() >= item.qty) || item.equal)
-                                }
-                                .swipeActions() {
-                                    Button() {
-                                        var it = item
-                                        if it.equal {
-                                            it.unEqualAssign()
-                                            splitItem.updateItem(it)
+                    Section("Items") {
+                        ForEach(splitItem.items.sorted(by: { $0.createdAt < $1.createdAt })) { item in
+                            Button(action: {
+                                // Update the item's friends in splitItem.items directly
+                                if let idx = splitItem.items.firstIndex(where: { $0.id == item.id }) {
+                                    splitItem.items[idx].friends = splitItem.friends.map { friend in
+                                        if let assigned = item.friends.first(where: { $0.friendId == friend.friendId }) {
+                                            return assigned
                                         } else {
-                                            it.equalAssign(assignedFriends: splitItem.friends)
-                                            splitItem.updateItem(it)
+                                            return AssignedFriend(
+                                                friendId: friend.friendId,
+                                                name: friend.name,
+                                                me: friend.me,
+                                                accentColor: friend.accentColor,
+                                                qty: 0,
+                                                subTotal: 0
+                                            )
                                         }
-                                    } label: {
-                                        Text(!item.equal ? "Equal" : "Unequal")
                                     }
-                                    .tint(!item.equal ? .blue : .red)
-                                    .disabled(false)
+                                    selectedItem = splitItem.items[idx]
+                                } else {
+                                    selectedItem = item
+                                }
+                                showAssignItemSheet = true
+                            }) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        HStack {
+                                            Text(item.name)
+                                                .font(.system(size: 18))
+                                                .foregroundColor(.primary)
+                                            
+                                            Spacer()
+                                            
+                                            // Assignment status indicator
+                                            if item.friends.isEmpty {
+                                                Image(systemName: "exclamationmark.circle.fill")
+                                                    .foregroundColor(.red)
+                                                    .font(.system(size: 16))
+                                            } else if item.getTakenQty() == item.qty {
+                                                Image(systemName: "checkmark.circle.fill")
+                                                    .foregroundColor(.green)
+                                                    .font(.system(size: 16))
+                                            } else {
+                                                Image(systemName: "clock.circle.fill")
+                                                    .foregroundColor(.orange)
+                                                    .font(.system(size: 16))
+                                            }
+                                        }
+                                        
+                                        HStack {
+                                            Text(qty(item.qty))
+                                                .font(.system(size: 16))
+                                                .foregroundStyle(.gray)
+                                            Text(IDR(item.price))
+                                                .font(.system(size: 16))
+                                                .foregroundStyle(.gray)
+                                            
+                                            Spacer()
+                                            
+                                            Text(IDR(item.price * item.qty))
+                                                .foregroundStyle(.gray)
+                                        }
+                                        
+                                        if !item.friends.isEmpty {
+                                            HStack {
+                                                FriendAvatarGroup(friends: item.friends, width: 26, height: 26, overlapOffset: 15, fontSize: 12)
+                                                
+                                                Spacer()
+                                                
+                                                if item.equal {
+                                                    Text("Equal Split")
+                                                        .font(.system(size: 12))
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 2)
+                                                        .background(Color.blue.opacity(0.2))
+                                                        .foregroundColor(.blue)
+                                                        .cornerRadius(8)
+                                                } else {
+                                                    Text("Assigned: \(formatQuantity(item.getTakenQty()))/\(formatQuantity(item.qty))")
+                                                        .font(.system(size: 12))
+                                                        .foregroundStyle(.gray)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                            .padding(.vertical, 8)
                         }
-                        
+                    }
+                    
+                    if !splitItem.otherPayments.isEmpty {
                         Section("Other") {
                             ForEach(splitItem.otherPayments.sorted(by: { $0.createdAt < $1.createdAt })) { item in
                                 Button(action: {
@@ -275,28 +250,32 @@ struct AssignView: View {
                         .disabled(splitItem.hasUnassignedItem())
                     }
                 }
-                .overlay {
-                    if selectedFriend == nil {
-                        VStack {
-                            Text("No Data")
-                                .font(.title2)
-                                .foregroundStyle(.gray)
-                            Text("Please select friend")
-                                .font(.system(size: 16))
-                                .foregroundStyle(.gray)
-                        }
-                        .padding(.top, 200)
-                    }
-                }
                 .sheet(isPresented: $showBankSheet, content: {
                     AddBank(edit: !bankForm.isEmpty(), userBank: bank, bank: $bankForm)
-                    .presentationDetents([.height(400)])
+                        .presentationDetents([.height(400)])
+                })
+                .sheet(isPresented: $showAssignItemSheet, content: {
+                    if let selectedItem = selectedItem {
+                        AssignItem(
+                            splitItem: $splitItem,
+                            item: .constant(selectedItem)
+                        )
+                        .presentationDetents([.height(600)])
+                    }
                 })
             }
-            .onAppear{
+            .onAppear {
                 interstisialAdManager.loadInterstisialAd()
             }
             .disabled(!interstisialAdManager.interstisialAdLoaded)
+        }
+    }
+    
+    private func formatQuantity(_ quantity: Double) -> String {
+        if quantity.truncatingRemainder(dividingBy: 1) == 0 {
+            return String(Int(quantity))
+        } else {
+            return String(format: "%.1f", quantity)
         }
     }
 }

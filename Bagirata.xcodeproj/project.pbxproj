@@ -41,6 +41,7 @@
 		F9BCDA972C2D49D800EE1E40 /* BagiratabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA962C2D49D800EE1E40 /* BagiratabButton.swift */; };
 		F9BCDA9B2C2D5EE200EE1E40 /* Recognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA9A2C2D5EE200EE1E40 /* Recognizer.swift */; };
 		F9BCDA9D2C2D6F5300EE1E40 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCDA9C2C2D6F5300EE1E40 /* Item.swift */; };
+		F9BF6B212E350E8D0078430C /* AssignItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BF6B202E350E8D0078430C /* AssignItem.swift */; };
 		F9C15BD02C378E5B002AD186 /* AddOtherItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BCF2C378E5B002AD186 /* AddOtherItem.swift */; };
 		F9C15BD22C3794DF002AD186 /* EditOtherItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */; };
 		F9C15BD42C379ECA002AD186 /* AssignView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C15BD32C379ECA002AD186 /* AssignView.swift */; };
@@ -93,6 +94,7 @@
 		F9BCDA962C2D49D800EE1E40 /* BagiratabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagiratabButton.swift; sourceTree = "<group>"; };
 		F9BCDA9A2C2D5EE200EE1E40 /* Recognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recognizer.swift; sourceTree = "<group>"; };
 		F9BCDA9C2C2D6F5300EE1E40 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		F9BF6B202E350E8D0078430C /* AssignItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignItem.swift; sourceTree = "<group>"; };
 		F9C15BCF2C378E5B002AD186 /* AddOtherItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOtherItem.swift; sourceTree = "<group>"; };
 		F9C15BD12C3794DF002AD186 /* EditOtherItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOtherItem.swift; sourceTree = "<group>"; };
 		F9C15BD32C379ECA002AD186 /* AssignView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignView.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				F9C8CCD32C3AF912001204CF /* Me.swift */,
 				F93F71882C3D9F8C005CC0A8 /* EditMe.swift */,
 				F9143BD72C5D494B008A54AA /* AddBank.swift */,
+				F9BF6B202E350E8D0078430C /* AssignItem.swift */,
 			);
 			path = Sheet;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				F9BCDA9D2C2D6F5300EE1E40 /* Item.swift in Sources */,
 				F9AC58052C3ED46100D8F836 /* SaveSplitHTTP.swift in Sources */,
 				F91E776B2C2C907000AF877B /* HistoryView.swift in Sources */,
+				F9BF6B212E350E8D0078430C /* AssignItem.swift in Sources */,
 				F95BC2092C2F22B500A86CAE /* EditFriend.swift in Sources */,
 				F9C8CCD02C3AF061001204CF /* ScanResultView.swift in Sources */,
 				F98685EF2C41793400F852D6 /* PreviewContainer.swift in Sources */,
@@ -489,7 +493,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"Bagirata/Preview Content\"";
 				DEVELOPMENT_TEAM = V8532TS6AU;
 				ENABLE_PREVIEWS = YES;
@@ -508,7 +512,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = keepgoing.Bagirata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -528,7 +532,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"Bagirata/Preview Content\"";
 				DEVELOPMENT_TEAM = V8532TS6AU;
 				ENABLE_PREVIEWS = YES;
@@ -547,7 +551,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = keepgoing.Bagirata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

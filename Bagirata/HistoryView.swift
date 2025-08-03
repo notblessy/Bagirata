@@ -165,7 +165,11 @@ struct HistoryView: View {
             }
             .navigationDestination(isPresented: Binding<Bool>(
                 get: { selectedSplit != nil },
-                set: { if !$0 { selectedSplit = nil } }
+                set: { if !$0 { 
+                    selectedSplit = nil
+                    // Reload data when returning from detail view
+                    fetchHistories(search: search)
+                } }
             )) {
                 if let selected = selectedSplit {
                     HistoryDetailView(split: selected)
@@ -173,6 +177,10 @@ struct HistoryView: View {
             }
         }
         .tint(Color.bagirataOk)
+        .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
+            // Reload data when SwiftData context changes
+            fetchHistories(search: search)
+        }
     }
 
     private func fetchHistories(currentPage: Int = 0, search: String = "", loadMore: Bool = false) {
