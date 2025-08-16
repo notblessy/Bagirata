@@ -113,10 +113,37 @@ struct ScanResultView: View {
                                             .font(.system(size: 16))
                                             .foregroundStyle(.gray)
                                     }
+                                    
+                                    // Show discount if applicable
+                                    if item.discount > 0 {
+                                        HStack {
+                                            Text("Discount:")
+                                                .font(.system(size: 14))
+                                                .foregroundStyle(.orange)
+                                            if item.discountIsPercentage {
+                                                Text("\(String(format: "%.1f", item.discount))%")
+                                                    .font(.system(size: 14))
+                                                    .foregroundStyle(.orange)
+                                            } else {
+                                                Text(IDR(item.discount))
+                                                    .font(.system(size: 14))
+                                                    .foregroundStyle(.orange)
+                                            }
+                                        }
+                                    }
                                 }
                                 Spacer()
-                                Text(IDR(item.price * item.qty))
-                                    .foregroundStyle(.gray)
+                                VStack(alignment: .trailing) {
+                                    if item.discount > 0 {
+                                        Text(IDR(item.baseSubTotal()))
+                                            .font(.system(size: 14))
+                                            .foregroundStyle(.gray)
+                                            .strikethrough()
+                                    }
+                                    Text(IDR(item.subTotal()))
+                                        .foregroundStyle(item.discount > 0 ? .orange : .gray)
+                                        .fontWeight(item.discount > 0 ? .semibold : .regular)
+                                }
                             }
                         })
                         .padding(.vertical, 10)
@@ -207,11 +234,11 @@ struct ScanResultView: View {
             }
             .sheet(isPresented: $showSheet, content: {
                 AddItem(splitItem: $splitItem)
-                    .presentationDetents([.height(300)])
+                    .presentationDetents([.height(400)])
             })
             .sheet(item: $selectedItem) { item in
                 EditItem(splitItem: $splitItem, item: item)
-                    .presentationDetents([.height(300)])
+                    .presentationDetents([.height(400)])
             }
             .sheet(isPresented: $showOtherSheet, content: {
                 AddOtherItem(splitItem: $splitItem)

@@ -160,8 +160,42 @@ struct AssignView: View {
                                             
                                             Spacer()
                                             
-                                            Text(IDR(item.price * item.qty))
-                                                .foregroundStyle(.gray)
+                                            VStack(alignment: .trailing) {
+                                                if item.discount > 0 {
+                                                    Text(IDR(item.baseSubTotal()))
+                                                        .font(.system(size: 14))
+                                                        .foregroundStyle(.gray)
+                                                        .strikethrough()
+                                                    Text(IDR(item.subTotal()))
+                                                        .foregroundStyle(.orange)
+                                                        .fontWeight(.semibold)
+                                                } else {
+                                                    Text(IDR(item.subTotal()))
+                                                        .foregroundStyle(.gray)
+                                                }
+                                            }
+                                        }
+                                        
+                                        // Show discount if applicable
+                                        if item.discount > 0 {
+                                            HStack {
+                                                Text("Discount:")
+                                                    .font(.system(size: 14))
+                                                    .foregroundStyle(.orange)
+                                                if item.discountIsPercentage {
+                                                    Text("\(String(format: "%.1f", item.discount))%")
+                                                        .font(.system(size: 14))
+                                                        .foregroundStyle(.orange)
+                                                } else {
+                                                    Text(IDR(item.discount))
+                                                        .font(.system(size: 14))
+                                                        .foregroundStyle(.orange)
+                                                }
+                                                Spacer()
+                                                Text("(-\(IDR(item.discountAmount())))")
+                                                    .font(.system(size: 12))
+                                                    .foregroundStyle(.orange)
+                                            }
                                         }
                                         
                                         if !item.friends.isEmpty {

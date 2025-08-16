@@ -88,13 +88,21 @@ struct AssignedItem: Identifiable, Codable {
     let price: Double
     var equal: Bool
     var friends: [AssignedFriend] = []
+    var discount: Double = 0  // Discount amount (can be percentage or fixed amount)
+    var discountIsPercentage: Bool = false  // Whether discount is percentage-based
     var createdAt = Date()
+    
+    private enum CodingKeys: String, CodingKey {
+        case id, name, qty, price, equal, friends, discount, discountIsPercentage, createdAt
+    }
     
     init(name: String, qty: Double, price: Double) {
         self.name = name
         self.qty = qty
         self.price = price
         self.equal = false
+        self.discount = 0
+        self.discountIsPercentage = false
     }
     
     init(id: UUID, name: String, qty: Double, equal: Bool = false, price: Double, createdAt: Date) {
@@ -103,7 +111,23 @@ struct AssignedItem: Identifiable, Codable {
         self.qty = qty
         self.equal = equal
         self.price = price
+        self.discount = 0
+        self.discountIsPercentage = false
         self.createdAt = createdAt
+    }
+    
+    // Custom encoder to ensure all fields are properly encoded
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(qty, forKey: .qty)
+        try container.encode(price, forKey: .price)
+        try container.encode(equal, forKey: .equal)
+        try container.encode(friends, forKey: .friends)
+        try container.encode(discount, forKey: .discount)
+        try container.encode(discountIsPercentage, forKey: .discountIsPercentage)
+        try container.encode(createdAt, forKey: .createdAt)
     }
     
     init(from decoder: any Decoder) throws {
@@ -113,10 +137,40 @@ struct AssignedItem: Identifiable, Codable {
         self.qty = try container.decode(Double.self, forKey: .qty)
         self.equal = try container.decodeIfPresent(Bool.self, forKey: .equal) ?? false
         self.price = try container.decode(Double.self, forKey: .price)
+        self.discount = try container.decodeIfPresent(Double.self, forKey: .discount) ?? 0
+        self.discountIsPercentage = try container.decodeIfPresent(Bool.self, forKey: .discountIsPercentage) ?? false
+        self.friends = try container.decodeIfPresent([AssignedFriend].self, forKey: .friends) ?? []
+        self.createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
     }
     
     func subTotal() -> Double {
+        let baseSubtotal = qty * price
+        
+        if discount > 0 {
+            if discountIsPercentage {
+                let discountAmount = (discount / 100) * baseSubtotal
+                return baseSubtotal - discountAmount
+            } else {
+                return baseSubtotal - discount
+            }
+        }
+        
+        return baseSubtotal
+    }
+    
+    func baseSubTotal() -> Double {
         return qty * price
+    }
+    
+    func discountAmount() -> Double {
+        if discount > 0 {
+            if discountIsPercentage {
+                return (discount / 100) * baseSubTotal()
+            } else {
+                return discount
+            }
+        }
+        return 0
     }
     
     func getTakenQty() -> Double {
@@ -137,15 +191,18 @@ struct AssignedItem: Identifiable, Codable {
     mutating func assignFriend(friend: AssignedFriend, newQty: Double) {
         if let index = friends.firstIndex(where: { $0.friendId == friend.friendId }) {
             friends[index].qty += newQty
-            friends[index].subTotal = price * friends[index].qty
+            // Calculate subtotal with discount applied proportionally
+            let friendSubtotal = (price * friends[index].qty) - ((discountAmount() / qty) * friends[index].qty)
+            friends[index].subTotal = friendSubtotal
             
             if friends[index].qty == 0 {
                 friends.remove(at: index)
             }
         } else {
-            let subTotal = price + newQty
-
-            let newFriend = AssignedFriend(friendId: friend.friendId, name: friend.name, me: friend.me, accentColor: friend.accentColor, qty: newQty, subTotal: subTotal)
+            // Calculate subtotal with discount applied proportionally
+            let friendSubtotal = (price * newQty) - ((discountAmount() / qty) * newQty)
+            
+            let newFriend = AssignedFriend(friendId: friend.friendId, name: friend.name, me: friend.me, accentColor: friend.accentColor, qty: newQty, subTotal: friendSubtotal)
             friends.append(newFriend)
         }
     }
@@ -158,8 +215,8 @@ struct AssignedItem: Identifiable, Codable {
     }
     
     mutating func equalAssign(assignedFriends: [AssignedFriend]) {
-        let totalPrice = price * qty
-        let eachPrice = totalPrice / Double(assignedFriends.count)
+        let totalDiscountedPrice = subTotal() // This already includes discount
+        let eachPrice = totalDiscountedPrice / Double(assignedFriends.count)
         
         for friend in assignedFriends {
             if let index = friends.firstIndex(where: { $0.friendId == friend.friendId }) {
@@ -175,15 +232,28 @@ struct AssignedItem: Identifiable, Codable {
     }
     
     static func examples() -> [AssignedItem] {
+        // Item with percentage discount
+        var discountedItem1 = AssignedItem(id: UUID(uuidString: "B2391D93-80B3-444E-8B4F-81B09D8BF6AD") ?? UUID(), name: "Onigiri Tuna Mayo", qty: 2, price: 15000, createdAt: Date())
+        discountedItem1.discount = 15
+        discountedItem1.discountIsPercentage = true
+        
+        // Item with fixed amount discount
+        var discountedItem2 = AssignedItem(name: "UC1000 Lemon", qty: 2, price: 10000)
+        discountedItem2.discount = 2000
+        discountedItem2.discountIsPercentage = false
+        
         return [
-            AssignedItem(id: UUID(uuidString: "B2391D93-80B3-444E-8B4F-81B09D8BF6AD") ?? UUID(),name: "Onigiri Tuna Mayo", qty: 2, price: 15000, createdAt: Date()),
-            AssignedItem(name: "UC1000 Lemon", qty: 2, price: 10000),
+            discountedItem1,
+            discountedItem2,
             AssignedItem(name: "Double Tape Strong", qty: 3, price: 45000)
         ]
     }
     
     static func example() -> AssignedItem {
-        return AssignedItem(id: UUID(uuidString: "B2391D93-80B3-444E-8B4F-81B09D8BF6AD") ?? UUID(), name: "Onigiri Tuna Mayo", qty: 2, price: 15000,  createdAt: Date())
+        var item = AssignedItem(id: UUID(uuidString: "B2391D93-80B3-444E-8B4F-81B09D8BF6AD") ?? UUID(), name: "Onigiri Tuna Mayo", qty: 2, price: 15000,  createdAt: Date())
+        item.discount = 10
+        item.discountIsPercentage = true
+        return item
     }
 }
 

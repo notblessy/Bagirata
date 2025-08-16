@@ -15,6 +15,8 @@ struct AddItem: View {
     @State var name: String = ""
     @State var qty: String = ""
     @State var price: String = ""
+    @State var discount: String = ""
+    @State var discountIsPercentage: Bool = false
     
     private var disabledButton: Bool {
         name.isEmpty || qty.isEmpty || price.isEmpty || Int(qty) == 0 || Int(price) == 0
@@ -45,6 +47,34 @@ struct AddItem: View {
                                     .padding(.leading, 35)
                             }
                         }
+                        
+                        // Discount section
+                        Section("Discount (Optional)") {
+                            HStack {
+                                Toggle(isOn: $discountIsPercentage) {
+                                    Text("Use Percentage")
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            
+                            if !discountIsPercentage {
+                                ZStack(alignment: .leading) {
+                                    Text("IDR")
+                                        .foregroundStyle(.gray)
+                                    TextField("Discount Amount", text: $discount)
+                                        .keyboardType(.numberPad)
+                                        .padding(.leading, 35)
+                                }
+                            } else {
+                                ZStack(alignment: .trailing) {
+                                    TextField("Discount Percentage", text: $discount)
+                                        .keyboardType(.numberPad)
+                                        .padding(.trailing, 25)
+                                    Text("%")
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                        }
                     }
                     .background(Color.clear)
                     .scrollContentBackground(.hidden)
@@ -61,7 +91,14 @@ struct AddItem: View {
                         
                         Button(action: {
                             if let qtyInt = Double(qty), let priceInt = Double(price) {
-                                let sp = AssignedItem(name: name, qty: qtyInt, price: priceInt)
+                                var sp = AssignedItem(name: name, qty: qtyInt, price: priceInt)
+                                
+                                // Apply discount if provided
+                                if let discountValue = Double(discount), discountValue > 0 {
+                                    sp.discount = discountValue
+                                    sp.discountIsPercentage = discountIsPercentage
+                                }
+                                
                                 splitItem.items.append(sp)
                             }
                             

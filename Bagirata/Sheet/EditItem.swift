@@ -16,6 +16,8 @@ struct EditItem: View {
     @State var name: String = ""
     @State var qty: String = ""
     @State var price: String = ""
+    @State var discount: String = ""
+    @State var discountIsPercentage: Bool = false
     @State var createdAt: Date = Date()
     
     let item: AssignedItem
@@ -49,6 +51,34 @@ struct EditItem: View {
                                     .padding(.leading, 35)
                             }
                         }
+                        
+                        // Discount section
+                        Section("Discount (Optional)") {
+                            HStack {
+                                Toggle(isOn: $discountIsPercentage) {
+                                    Text("Use Percentage")
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            
+                            if !discountIsPercentage {
+                                ZStack(alignment: .leading) {
+                                    Text("IDR")
+                                        .foregroundStyle(.gray)
+                                    TextField("Discount Amount", text: $discount)
+                                        .keyboardType(.numberPad)
+                                        .padding(.leading, 35)
+                                }
+                            } else {
+                                ZStack(alignment: .trailing) {
+                                    TextField("Discount Percentage", text: $discount)
+                                        .keyboardType(.numberPad)
+                                        .padding(.trailing, 25)
+                                    Text("%")
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                        }
                     }
                     .background(Color.clear)
                     .scrollContentBackground(.hidden)
@@ -65,7 +95,13 @@ struct EditItem: View {
                         
                         Button(action: {
                             if let qtyInt = Double(qty), let priceInt = Double(price) {
-                                let sp = AssignedItem(id: id, name: name, qty: qtyInt, price: priceInt, createdAt: createdAt)
+                                var sp = AssignedItem(id: id, name: name, qty: qtyInt, price: priceInt, createdAt: createdAt)
+                                
+                                // Apply discount if provided
+                                if let discountValue = Double(discount), discountValue > 0 {
+                                    sp.discount = discountValue
+                                    sp.discountIsPercentage = discountIsPercentage
+                                }
                                 
                                 splitItem.updateItem(sp)
                             }
@@ -87,6 +123,8 @@ struct EditItem: View {
                     name = item.name
                     qty = String(Int(item.qty))
                     price = String(Int(item.price))
+                    discount = item.discount > 0 ? String(Int(item.discount)) : ""
+                    discountIsPercentage = item.discountIsPercentage
                     createdAt = item.createdAt
                 }
             }

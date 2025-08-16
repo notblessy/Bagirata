@@ -32,9 +32,44 @@ struct AssignItem: View {
                             Text("\(qty(item.qty)) \(IDR(item.price))")
                                 .foregroundStyle(.gray)
                             Spacer()
-                            Text(IDR(item.price * item.qty))
-                                .font(.headline)
-                                .fontWeight(.bold)
+                            VStack(alignment: .trailing) {
+                                if item.discount > 0 {
+                                    Text(IDR(item.baseSubTotal()))
+                                        .font(.system(size: 16))
+                                        .foregroundStyle(.gray)
+                                        .strikethrough()
+                                    Text(IDR(item.subTotal()))
+                                        .font(.headline)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.orange)
+                                } else {
+                                    Text(IDR(item.subTotal()))
+                                        .font(.headline)
+                                        .fontWeight(.bold)
+                                }
+                            }
+                        }
+                        
+                        // Show discount info if applicable
+                        if item.discount > 0 {
+                            HStack {
+                                Text("Discount:")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(.orange)
+                                if item.discountIsPercentage {
+                                    Text("\(String(format: "%.1f", item.discount))%")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.orange)
+                                } else {
+                                    Text(IDR(item.discount))
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.orange)
+                                }
+                                Spacer()
+                                Text("(-\(IDR(item.discountAmount())))")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(.orange)
+                            }
                         }
                         HStack {
                             
@@ -365,7 +400,11 @@ struct AssignItem: View {
         for friendId in selectedParticipants {
             if let friend = splitItem.friends.first(where: { $0.friendId == friendId }),
                let qty = participantQuantities[friendId], qty > 0 {
-                let subTotal = roundToTwoDecimals(item.price * qty)
+                // Calculate subtotal with discount applied proportionally
+                let baseSubtotal = item.price * qty
+                let discountAmount = (item.discountAmount() / item.qty) * qty
+                let subTotal = roundToTwoDecimals(baseSubtotal - discountAmount)
+                
                 let assignedFriend = AssignedFriend(
                     friendId: friend.friendId,
                     name: friend.name,

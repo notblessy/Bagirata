@@ -107,13 +107,50 @@ class FriendItem: Identifiable, Codable {
     let price: Double
     let equal: Bool
     let qty: Double
+    let friendSubTotal: Double  // The actual amount this friend pays for this item (after discount)
+    let discount: Double
+    let discountIsPercentage: Bool
 
-    init(id: UUID, name: String, price: Double, qty: Double, equal: Bool = false) {
+    private enum CodingKeys: String, CodingKey {
+        case id, name, price, equal, qty, friendSubTotal, discount, discountIsPercentage
+    }
+
+    init(id: UUID, name: String, price: Double, qty: Double, equal: Bool = false, friendSubTotal: Double? = nil, discount: Double = 0, discountIsPercentage: Bool = false) {
         self.id = id
         self.name = name
         self.price = price
         self.qty = qty
         self.equal = equal
+        self.friendSubTotal = friendSubTotal ?? (price * qty)
+        self.discount = discount
+        self.discountIsPercentage = discountIsPercentage
+    }
+    
+    // Custom encoder to ensure all fields are properly encoded
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(price, forKey: .price)
+        try container.encode(equal, forKey: .equal)
+        try container.encode(qty, forKey: .qty)
+        try container.encode(friendSubTotal, forKey: .friendSubTotal)
+        try container.encode(discount, forKey: .discount)
+        try container.encode(discountIsPercentage, forKey: .discountIsPercentage)
+    }
+    
+    // Custom decoder to handle backward compatibility
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.price = try container.decode(Double.self, forKey: .price)
+        self.equal = try container.decodeIfPresent(Bool.self, forKey: .equal) ?? false
+        self.qty = try container.decode(Double.self, forKey: .qty)
+        // Handle missing friendSubTotal for backward compatibility
+        self.friendSubTotal = try container.decodeIfPresent(Double.self, forKey: .friendSubTotal) ?? (price * qty)
+        self.discount = try container.decodeIfPresent(Double.self, forKey: .discount) ?? 0
+        self.discountIsPercentage = try container.decodeIfPresent(Bool.self, forKey: .discountIsPercentage) ?? false
     }
     
     func formattedQuantity(_ totalFriends: Int) -> String {        
@@ -142,6 +179,19 @@ class FriendItem: Identifiable, Codable {
         
         let t = Double(totalFriends)
         return price / t
+    }
+    
+    func baseSubTotal() -> Double {
+        return qty * price
+    }
+    
+    func discountAmount() -> Double {
+        if discount > 0 {
+            // The discount amount is the difference between what they would pay without discount
+            // and what they actually pay (friendSubTotal already includes discount)
+            return baseSubTotal() - friendSubTotal
+        }
+        return 0
     }
 }
 
@@ -250,7 +300,10 @@ class Splitted: Identifiable, Codable {
                 id: UUID(uuidString: "3FCEA1EE-1033-420B-9024-B875E6D0FA8B")!,
                 name: "Iced Thai Tea D Glazy",
                 price: 29000,
-                qty: 2
+                qty: 2,
+                friendSubTotal: 50000,
+                discount: 8000,
+                discountIsPercentage: false
             )
         ]
         
@@ -265,7 +318,10 @@ class Splitted: Identifiable, Codable {
                 id: UUID(uuidString: "D62F87D3-3445-4C96-96BA-07D3829BE5E6")!,
                 name: "Jcoccino",
                 price: 32000,
-                qty: 1
+                qty: 1,
+                friendSubTotal: 25600,
+                discount: 20,
+                discountIsPercentage: true
             )
         ]
         
@@ -470,8 +526,8 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
     for item in splitItem.items {
         for friend in item.friends {
             let friendId = friend.friendId
-            // Always use the actual item unit price
-            let friendItem = FriendItem(id: item.id, name: item.name, price: item.price, qty: friend.qty, equal: item.equal)
+            // Pass the friend's calculated subtotal to the FriendItem along with discount info
+            let friendItem = FriendItem(id: item.id, name: item.name, price: item.price, qty: friend.qty, equal: item.equal, friendSubTotal: friend.subTotal, discount: item.discount, discountIsPercentage: item.discountIsPercentage)
             
             if let existingFriend = transformedFriends[friendId] {
                 var updatedItems = existingFriend.items
@@ -482,8 +538,8 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
                     updatedItems.append(friendItem)
                 }
                 
-                // Calculate subtotal using qty * price for both equal and individual splits
-                let itemSubtotal = friend.qty * item.price
+                // Use the friend's subtotal which already includes discount calculation
+                let itemSubtotal = friend.subTotal
                 let updatedTotal = existingFriend.total + itemSubtotal
                 
                 transformedFriends[friendId] = SplittedFriend(
@@ -499,8 +555,8 @@ func splitted(splitItem: SplitItem, bank: Bank) -> Splitted {
                     createdAt: existingFriend.createdAt
                 )
             } else {
-                // Calculate subtotal using qty * price for both equal and individual splits
-                let itemSubtotal = friend.qty * item.price
+                // Use the friend's subtotal which already includes discount calculation
+                let itemSubtotal = friend.subTotal
                 
                 let newFriend = SplittedFriend(
                     id: friend.id,
